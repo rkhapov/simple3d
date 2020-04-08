@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "simple3d", "simple3d\simple3d.csproj", "{3C366A0C-8F22-4D04-9D04-AFEC51740F49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "playground", "playground\playground.csproj", "{7833136B-DE4B-40D3-B1C1-24DF32AA974F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C366A0C-8F22-4D04-9D04-AFEC51740F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C366A0C-8F22-4D04-9D04-AFEC51740F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C366A0C-8F22-4D04-9D04-AFEC51740F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C366A0C-8F22-4D04-9D04-AFEC51740F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
