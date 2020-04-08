@@ -2,6 +2,7 @@
 using simple3d.Builder;
 using simple3d.Events;
 using simple3d.Scene;
+using simple3d.SDL2;
 using simple3d.Ui;
 using static simple3d.SDL2.SDL;
 
@@ -32,6 +33,11 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant initialize SDL2: {SDL_GetError()}");
             }
 
+            if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG) < 0)
+            {
+                throw new InvalidOperationException($"Cant initialize SDL_image: {SDL_GetError()}");
+            }
+
             if (SDL_ShowCursor(0) < 0)
             {
                 throw new InvalidOperationException($"Cant disable cursor: {SDL_GetError()}");
@@ -40,7 +46,7 @@ namespace simple3d
             var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth);
             var controller = new Controller();
             var eventsCycle = new EventsCycle();
-            var sceneRenderer = new SceneRenderer();
+            var sceneRenderer = new SceneRenderer(Sprite.Load("./sprites/brick_wall.png"));
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
@@ -176,8 +182,10 @@ namespace simple3d
 
         public void Dispose()
         {
+            sceneRenderer.Dispose();
+            screen.Dispose();
+            SDL_image.IMG_Quit();
             SDL_Quit();
-            screen?.Dispose();
         }
     }
 }

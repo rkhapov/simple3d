@@ -5,12 +5,20 @@ namespace simple3d.Scene
 {
     public class SceneRenderer : ISceneRenderer
     {
+        private readonly Sprite wallSprite;
+
+        public SceneRenderer(Sprite wallSprite)
+        {
+            this.wallSprite = wallSprite;
+        }
+
         public void Render(IScreen screen, Level level, double elapsedMilliseconds)
         {
             var screenWidth = screen.Width;
             var screenHeight = screen.Height;
             var player = level.Player;
             var viewAngle = player.ViewAngle;
+            var viewDistance = player.ViewDistance;
 
             for (var x = 0; x < screenWidth; x++)
             {
@@ -22,7 +30,7 @@ namespace simple3d.Scene
                 {
                     if (y <= ceil)
                     {
-                        screen.Draw(y, x, 0, 0, 0x64);
+                        screen.Draw(y, x, 0, 0, 0);
                     }
                     else if (y > floor)
                     {
@@ -30,7 +38,16 @@ namespace simple3d.Scene
                     }
                     else
                     {
-                        screen.Draw(y, x, 0x64, 0, 0);
+                        if (ray.Length < viewDistance)
+                        {
+                            var sampleY = (y - ceil) / ((double) floor - ceil);
+                            var wallPixel = wallSprite.GetSample(sampleY, ray.SampleX);
+                            screen.Draw(y, x, wallPixel);
+                        }
+                        else
+                        {
+                            screen.Draw(y, x, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -38,16 +55,18 @@ namespace simple3d.Scene
 
         private struct Ray
         {
-            public Ray(bool hit, double length, double angle)
+            public Ray(bool hit, double length, double angle, double sampleX)
             {
                 Hit = hit;
                 Length = length;
                 Angle = angle;
+                SampleX = sampleX;
             }
 
             public bool Hit { get; }
             public double Length { get; }
             public double Angle { get; }
+            public double SampleX { get; }
         }
 
         private Ray ComputeRay(int x, IScreen screen, Player player, Map map)
@@ -61,12 +80,15 @@ namespace simple3d.Scene
             var viewDistance = player.ViewDistance;
             var rayLength = 0.0;
             var hit = false;
+            var sampleX = 0.0;
 
             while (!hit && rayLength < viewDistance)
             {
                 rayLength += 0.01;
-                var testX = (int) (playerX + xRayUnit * rayLength);
-                var testY = (int) (playerY + yRayUnit * rayLength);
+                var currentX = playerX + xRayUnit * rayLength;
+                var currentY = playerY + yRayUnit * rayLength;
+                var testX = (int) currentX;
+                var testY = (int) currentY;
 
                 if (!map.InBound(testY, testX))
                 {
@@ -78,10 +100,33 @@ namespace simple3d.Scene
                 if (map.At(testY, testX) == Cell.Wall)
                 {
                     hit = true;
+                    var blockMiddleX = testX + 0.5;
+                    var blockMiddleY = testY + 0.5;
+                    var angle = Math.Atan2(currentY - blockMiddleY, currentX - blockMiddleX);
+                    const double oneFourthOfPi = Math.PI * 0.25;
+                    const double threeFourthOfPi = Math.PI * 0.75;
+
+                    if (angle > -oneFourthOfPi && angle < oneFourthOfPi) {
+                        sampleX = currentY - testY;
+                    }
+                    else if (angle > oneFourthOfPi && angle < threeFourthOfPi) {
+                        sampleX = currentX - testX;
+                    }
+                    else if (angle < -oneFourthOfPi && angle > -threeFourthOfPi) {
+                        sampleX = currentX - testX;
+                    }
+                    else {
+                        sampleX = currentY - testY;
+                    }
                 }
             }
 
-            return new Ray(hit, rayLength, rayAngle);
+            return new Ray(hit, rayLength, rayAngle, sampleX);
+        }
+
+        public void Dispose()
+        {
+            wallSprite?.Dispose();
         }
     }
 }

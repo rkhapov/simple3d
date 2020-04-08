@@ -29,7 +29,7 @@ namespace simple3d.Ui
                 SDL.SDL_WINDOWPOS_CENTERED,
                 SDL.SDL_WINDOWPOS_CENTERED,
                 height, width,
-                SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN
+                SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN
             );
 
             if (window == IntPtr.Zero)
@@ -68,6 +68,11 @@ namespace simple3d.Ui
             {
                 buffer[y * Width + x] = 255 << 24 | r << 16 | g << 8 | b;
             }
+        }
+
+        public void Draw(int y, int x, int v)
+        {
+            buffer[y * Width + x] = 255 << 24 | v;
         }
 
         public unsafe void Update()
