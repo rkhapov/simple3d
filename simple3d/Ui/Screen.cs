@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using simple3d.SDL2;
 
 namespace simple3d.Ui
@@ -72,7 +73,7 @@ namespace simple3d.Ui
 
         public void Draw(int y, int x, int v)
         {
-            buffer[y * Width + x] = 255 << 24 | v;
+            buffer[y * Width + x] = v;
         }
 
         public unsafe void Update()

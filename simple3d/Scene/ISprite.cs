@@ -6,6 +6,6 @@ namespace simple3d.Scene
     {
         int Height { get; }
         int Width { get; }
-        int GetSample(double y, double x);
+        int GetSample(float y, float x);
     }
 }

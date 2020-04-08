@@ -4,11 +4,11 @@ namespace simple3d.Scene
 {
     public class Player
     {
-        public double X = 1.0;
-        public double Y = 1.0;
-        public double ViewAngle = 0.0;
-        public readonly double FieldOfView = MathF.PI / 3;
-        public readonly double ViewDistance = 30.0;
-        public readonly double MovingSpeed = 0.005;
+        public float X = 1.0f;
+        public float Y = 1.0f;
+        public float ViewAngle = 0.0f;
+        public readonly float FieldOfView = MathF.PI / 3;
+        public readonly float ViewDistance = 30.0f;
+        public readonly float MovingSpeed = 0.005f;
     }
 }

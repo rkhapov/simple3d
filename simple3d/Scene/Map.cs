@@ -1,10 +1,24 @@
-﻿namespace simple3d.Scene
+﻿using System.Collections.Generic;
+
+namespace simple3d.Scene
 {
     public enum Cell
     {
         Empty,
         Wall,
         Skeleton
+    }
+
+    public class Skeleton
+    {
+        public Skeleton(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public float X { get; }
+        public float Y { get; }
     }
 
     public class Map
@@ -38,6 +52,19 @@
             return new Map(map, height, width);
         }
 
+        public IEnumerable<Skeleton> GetSkeletons()
+        {
+            for (var i = 0; i < Height; i++)
+            {
+                for (var j = 0; j < Width; j++)
+                {
+                    if (map[i, j] == Cell.Skeleton)
+                    {
+                        yield return new Skeleton(j + 0.5f, i + 0.5f);
+                    }
+                } 
+            }
+        }
 
         private static Cell GetCellByChar(char c)
         {

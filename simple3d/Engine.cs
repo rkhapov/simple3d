@@ -46,7 +46,9 @@ namespace simple3d
             var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth);
             var controller = new Controller();
             var eventsCycle = new EventsCycle();
-            var sceneRenderer = new SceneRenderer(Sprite.Load("./sprites/brick_wall.png"));
+            var wallSprite = Sprite.Load("./sprites/brick_wall.png");
+            var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
+            var sceneRenderer = new SceneRenderer(wallSprite, skeletonSprite);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
@@ -56,7 +58,7 @@ namespace simple3d
             eventsCycle.AddListener(controller);
             controller.OnMouseMove(x => OnMouseMove(x, level.Player));
             var previousTime = SDL_GetPerformanceCounter();
-            var counterFrequency = SDL_GetPerformanceFrequency() / 1000.0;
+            var counterFrequency = SDL_GetPerformanceFrequency() / 1000.0f;
 
             while (true)
             {
@@ -111,7 +113,7 @@ namespace simple3d
             lastMousePosition = x;
         }
 
-        private void ProcessKeyboard(double elapsedMs, Map map, Player player)
+        private void ProcessKeyboard(float elapsedMs, Map map, Player player)
         {
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_LEFT))
             {
@@ -125,38 +127,38 @@ namespace simple3d
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_w))
             {
-                var dx = Math.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = Math.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
 
                 TryMove(dx, dy, map, player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_s))
             {
-                var dx = Math.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = Math.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
 
                 TryMove(-dx, -dy, map, player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_a))
             {
-                var dx = Math.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = Math.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
 
                 TryMove(-dx, dy, map, player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_d))
             {
-                var dx = Math.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = Math.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
 
                 TryMove(dx, -dy, map, player);
             }
         }
 
-        private void TryMove(double dx, double dy, Map map, Player player)
+        private void TryMove(float dx, float dy, Map map, Player player)
         {
             var newX = player.X + dx;
             var newY = player.Y + dy;
@@ -170,14 +172,14 @@ namespace simple3d
             }
         }
 
-        private static void DoLeftTurn(double elapsed, Player player)
+        private static void DoLeftTurn(float elapsed, Player player)
         {
-            player.ViewAngle -= 0.003 * elapsed;
+            player.ViewAngle -= 0.003f * elapsed;
         }
 
-        private static void DoRightTurn(double elapsed, Player player)
+        private static void DoRightTurn(float elapsed, Player player)
         {
-            player.ViewAngle += 0.003 * elapsed;
+            player.ViewAngle += 0.003f * elapsed;
         }
 
         public void Dispose()

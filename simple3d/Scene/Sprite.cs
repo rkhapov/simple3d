@@ -22,10 +22,10 @@ namespace simple3d.Scene
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSample(double y, double x)
+        public int GetSample(float y, float x)
         {
-            var y0 = (int)((y - 1e-6) * Height);
-            var x0 = (int)((x - 1e-6) * Width);
+            var y0 = (int)((y - 1e-6f) * Height);
+            var x0 = (int)((x - 1e-6f) * Width);
 
             return buffer[y0 * Width + x0];
         }

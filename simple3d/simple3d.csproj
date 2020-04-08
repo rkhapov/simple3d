@@ -37,6 +37,9 @@
       <None Update="sprites\brick_wall.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="sprites\skeleton.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Update="libjpeg-9.dll">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
