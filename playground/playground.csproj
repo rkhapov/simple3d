@@ -9,4 +9,13 @@
       <ProjectReference Include="..\simple3d\simple3d.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="sprites\brick_wall.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="sprites\skeleton.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

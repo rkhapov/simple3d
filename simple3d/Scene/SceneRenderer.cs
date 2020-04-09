@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Linq;
+using simple3d.Scene.Tools;
 using simple3d.Ui;
 
 namespace simple3d.Scene
 {
     public class SceneRenderer : ISceneRenderer
     {
-        private readonly Sprite wallSprite;
-        private readonly Sprite skeletonSprite;
         private static readonly float[] depthBuffer = new float[1000];
-
-        public SceneRenderer(Sprite wallSprite, Sprite skeletonSprite)
-        {
-            this.wallSprite = wallSprite;
-            this.skeletonSprite = skeletonSprite;
-        }
 
         public void Render(IScreen screen, Level level, float elapsedMilliseconds)
         {
-            Render3dScene(screen, level);
-            RenderSkeletons(screen, level.Player, level.Map);
+            RenderWorld(screen, level);
+            RenderObjects(screen, level, elapsedMilliseconds);
         }
 
-        private void Render3dScene(IScreen screen, Level level)
+        private void RenderWorld(IScreen screen, Level level)
         {
             var screenWidth = screen.Width;
             var screenHeight = screen.Height;
-            var player = level.Player;
+            var player = level.PlayerCamera;
             var viewAngle = player.ViewAngle;
             var viewDistance = player.ViewDistance;
 
@@ -45,15 +38,15 @@ namespace simple3d.Scene
                     }
                     else if (y > floor)
                     {
-                        screen.Draw(y, x, 0, 0x64, 0);
+                        screen.Draw(y, x, 0x80, 0x80, 0x80);
                     }
                     else
                     {
                         if (ray.Length < viewDistance)
                         {
                             var sampleY = (y - ceil) / ((float) floor - ceil);
-                            var wallPixel = wallSprite.GetSample(sampleY, ray.SampleX);
-                            screen.Draw(y, x, wallPixel);
+                            var pixel = ray.MapCell.Sprite.GetSample(sampleY, ray.SampleX);
+                            screen.Draw(y, x, pixel);
                         }
                         else
                         {
@@ -66,49 +59,57 @@ namespace simple3d.Scene
 
         private struct Ray
         {
-            public Ray(bool hit, float length, float angle, float sampleX)
+            public Ray(float length, float angle, float sampleX, int wallX, int wallY, MapCell mapCell)
             {
-                Hit = hit;
                 Length = length;
                 Angle = angle;
                 SampleX = sampleX;
+                WallX = wallX;
+                WallY = wallY;
+                MapCell = mapCell;
             }
 
-            public bool Hit { get; }
             public float Length { get; }
             public float Angle { get; }
             public float SampleX { get; }
+            public int WallX { get; }
+            public int WallY { get; }
+            public MapCell MapCell { get; }
         }
 
-        private Ray ComputeRay(int x, IScreen screen, Player player, Map map)
+        private static Ray ComputeRay(int x, IScreen screen, PlayerCamera playerCamera, Map map)
         {
-            var fov = player.FieldOfView;
-            var playerX = player.X;
-            var playerY = player.Y;
-            var rayAngle = player.ViewAngle - fov / 2 + ((float) x / screen.Width) * fov;
+            var fov = playerCamera.FieldOfView;
+            var playerX = playerCamera.X;
+            var playerY = playerCamera.Y;
+            var rayAngle = playerCamera.ViewAngle - fov / 2 + ((float) x / screen.Width) * fov;
             var xRayUnit = MathF.Sin(rayAngle);
             var yRayUnit = MathF.Cos(rayAngle);
-            var viewDistance = player.ViewDistance;
+            var viewDistance = playerCamera.ViewDistance;
             var rayLength = 0.0f;
             var hit = false;
             var sampleX = 0.0f;
+            var testX = -1;
+            var testY = -1;
+            MapCell cell = default;
 
             while (!hit && rayLength < viewDistance)
             {
                 rayLength += 0.01f;
                 var currentX = playerX + xRayUnit * rayLength;
                 var currentY = playerY + yRayUnit * rayLength;
-                var testX = (int) currentX;
-                var testY = (int) currentY;
+                testX = (int) currentX;
+                testY = (int) currentY;
 
                 if (!map.InBound(testY, testX))
                 {
-                    hit = true;
                     rayLength = viewDistance;
                     break;
                 }
 
-                if (map.At(testY, testX) == Cell.Wall)
+                cell = map.At(testY, testX);
+
+                if (cell.Type == MapCellType.Wall)
                 {
                     hit = true;
                     var blockMiddleX = testX + 0.5f;
@@ -136,11 +137,12 @@ namespace simple3d.Scene
                 }
             }
 
-            return new Ray(hit, rayLength, rayAngle, sampleX);
+            return new Ray(rayLength, rayAngle, sampleX, testX, testY, cell);
         }
 
-        private void RenderSkeletons(IScreen screen, Player player, Map map)
+        private static void RenderObjects(IScreen screen, Level level, float elapsedMilliseconds)
         {
+            var player = level.PlayerCamera;
             var playerX = player.X;
             var playerY = player.Y;
             var eyeX = MathF.Sin(player.ViewAngle);
@@ -151,18 +153,12 @@ namespace simple3d.Scene
             var viewDistance = player.ViewDistance;
             var screenHeight = screen.Height;
             var screenWidth = screen.Width;
-            var aspectRatio = (float) skeletonSprite.Height / skeletonSprite.Width;
             var halfFov = fov / 2;
 
-            foreach (var skeleton in map.GetSkeletons().OrderByDescending(s =>
+            foreach (var mapObject in level.Objects.OrderByDescending(s => s.GetDistanceToPlayer(player)))
             {
-                var dx = s.X - playerX;
-                var dy = s.Y - playerY;
-                return MathF.Sqrt(dx * dx + dy * dy);
-            }))
-            {
-                var dx = skeleton.X - playerX;
-                var dy = skeleton.Y - playerY;
+                var dx = mapObject.PositionX - playerX;
+                var dy = mapObject.PositionY - playerY;
                 var distance = MathF.Sqrt(dx * dx + dy * dy);
 
                 if (distance > viewDistance || distance < 0.5f)
@@ -192,7 +188,8 @@ namespace simple3d.Scene
                 var height = floor - ceil;
                 if (ceil < 0 || floor < 0 || height < 0)
                     continue;
-                var width = height / aspectRatio;
+                var sprite = mapObject.Sprite;
+                var width = height / sprite.AspectRatio;
                 var middle = (0.5f * angle / halfFov + 0.5f) * screenWidth;
 
                 for (var x = 0; x < width; x++)
@@ -207,14 +204,11 @@ namespace simple3d.Scene
                         if (ceil + y >= screenHeight)
                             continue;
                         var sampleY = y / (float) height;
-                        var pixel = skeletonSprite.GetSample(sampleY, sampleX);
-                        if ((pixel & 0xFF000000) == 0)
+                        var pixel = sprite.GetSample(sampleY, sampleX);
+                        if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
                         {
                             continue;
                         }
-                        // var b = (byte) ((pixel & 0xFF0000) >> 16);
-                        // var g = (byte) ((pixel & 0xFF00) >> 8);
-                        // var r = (byte) (pixel & 0xFF);
                         screen.Draw(ceil + y, column, pixel);
                     }
                 }
@@ -223,7 +217,7 @@ namespace simple3d.Scene
 
         public void Dispose()
         {
-            wallSprite?.Dispose();
+            //empty
         }
     }
 }

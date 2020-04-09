@@ -1,14 +1,21 @@
-﻿namespace simple3d.Scene
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace simple3d.Scene
 {
     public class Level
     {
-        public Level(Player player, Map map)
+        private readonly HashSet<IMapObject> mapObjects;
+        
+        public Level(PlayerCamera playerCamera, Map map, IEnumerable<IMapObject> mapObjects)
         {
-            Player = player;
+            PlayerCamera = playerCamera;
             Map = map;
+            this.mapObjects = mapObjects.ToHashSet();
         }
 
-        public Player Player { get; }
+        public PlayerCamera PlayerCamera { get; }
         public Map Map { get; }
+        public IEnumerable<IMapObject> Objects => mapObjects;
     }
 }

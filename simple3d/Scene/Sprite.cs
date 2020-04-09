@@ -12,6 +12,7 @@ namespace simple3d.Scene
         {
             Height = height;
             Width = width;
+            AspectRatio = (float) Height / Width;
             this.buffer = buffer;
         }
 
@@ -79,5 +80,6 @@ namespace simple3d.Scene
         public int Height { get; }
 
         public int Width { get; }
+        public readonly float AspectRatio;
     }
 }

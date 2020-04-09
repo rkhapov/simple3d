@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using simple3d.Builder;
 using simple3d.Events;
 using simple3d.Scene;
@@ -46,17 +47,15 @@ namespace simple3d
             var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth);
             var controller = new Controller();
             var eventsCycle = new EventsCycle();
-            var wallSprite = Sprite.Load("./sprites/brick_wall.png");
-            var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
-            var sceneRenderer = new SceneRenderer(wallSprite, skeletonSprite);
+            var sceneRenderer = new SceneRenderer();
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
 
-        public void Run(Level level)
+        public void RunLevel(Level level)
         {
             eventsCycle.AddListener(controller);
-            controller.OnMouseMove(x => OnMouseMove(x, level.Player));
+            controller.OnMouseMove(x => OnMouseMove(x, level.PlayerCamera));
             var previousTime = SDL_GetPerformanceCounter();
             var counterFrequency = SDL_GetPerformanceFrequency() / 1000.0f;
 
@@ -72,13 +71,13 @@ namespace simple3d
                     break;
 
                 screen.Clear();
-                ProcessKeyboard(elapsedMilliseconds, level.Map, level.Player);
+                ProcessKeyboard(elapsedMilliseconds, level.Map, level.PlayerCamera);
                 sceneRenderer.Render(screen, level, elapsedMilliseconds);
                 screen.Update();
             }
         }
 
-        private void OnMouseMove(int x, Player player)
+        private void OnMouseMove(int x, PlayerCamera playerCamera)
         {
             if (lastMousePosition < 0)
             {
@@ -91,95 +90,98 @@ namespace simple3d
             {
                 if (x == 0)
                 {
-                    DoLeftTurn(mouseSensitivity, player);
+                    DoLeftTurn(mouseSensitivity, playerCamera);
                 }
                 else
                 {
-                    DoRightTurn(mouseSensitivity, player);
+                    DoRightTurn(mouseSensitivity, playerCamera);
                 }
             }
             else
             {
                 if (x < lastMousePosition)
                 {
-                    DoLeftTurn(mouseSensitivity, player);
+                    DoLeftTurn(mouseSensitivity, playerCamera);
                 }
                 else
                 {
-                    DoRightTurn(mouseSensitivity, player);
+                    DoRightTurn(mouseSensitivity, playerCamera);
                 }
             }
 
             lastMousePosition = x;
         }
 
-        private void ProcessKeyboard(float elapsedMs, Map map, Player player)
+        private void ProcessKeyboard(float elapsedMs, Map map, PlayerCamera playerCamera)
         {
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_LEFT))
             {
-                DoLeftTurn(elapsedMs, player);
+                DoLeftTurn(elapsedMs, playerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_RIGHT))
             {
-                DoRightTurn(elapsedMs, player);
+                DoRightTurn(elapsedMs, playerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_w))
             {
-                var dx = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
 
-                TryMove(dx, dy, map, player);
+                TryMove(dx, dy, map, playerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_s))
             {
-                var dx = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, -dy, map, player);
+                TryMove(-dx, -dy, map, playerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_a))
             {
-                var dx = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, dy, map, player);
+                TryMove(-dx, dy, map, playerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_d))
             {
-                var dx = MathF.Cos(player.ViewAngle) * player.MovingSpeed * elapsedMs;
-                var dy = MathF.Sin(player.ViewAngle) * player.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
 
-                TryMove(dx, -dy, map, player);
+                TryMove(dx, -dy, map, playerCamera);
             }
         }
 
-        private void TryMove(float dx, float dy, Map map, Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void TryMove(float dx, float dy, Map map, PlayerCamera playerCamera)
         {
-            var newX = player.X + dx;
-            var newY = player.Y + dy;
+            var newX = playerCamera.X + dx;
+            var newY = playerCamera.Y + dy;
             var testX = (int) newX;
             var testY = (int) newY;
 
-            if (map.InBound(testY, testX) && map.At(testY, testX) != Cell.Wall)
+            if (map.InBound(testY, testX) && map.At(testY, testX).Type != MapCellType.Wall)
             {
-                player.X = newX;
-                player.Y = newY;
+                playerCamera.X = newX;
+                playerCamera.Y = newY;
             }
         }
 
-        private static void DoLeftTurn(float elapsed, Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void DoLeftTurn(float elapsed, PlayerCamera playerCamera)
         {
-            player.ViewAngle -= 0.003f * elapsed;
+            playerCamera.ViewAngle -= 0.003f * elapsed;
         }
 
-        private static void DoRightTurn(float elapsed, Player player)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void DoRightTurn(float elapsed, PlayerCamera playerCamera)
         {
-            player.ViewAngle += 0.003f * elapsed;
+            playerCamera.ViewAngle += 0.003f * elapsed;
         }
 
         public void Dispose()

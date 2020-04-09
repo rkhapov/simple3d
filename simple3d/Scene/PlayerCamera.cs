@@ -2,7 +2,7 @@
 
 namespace simple3d.Scene
 {
-    public class Player
+    public class PlayerCamera
     {
         public float X = 1.0f;
         public float Y = 1.0f;
