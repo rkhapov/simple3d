@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using simple3d.Levels;
 using simple3d.SDL2;
 
-namespace simple3d.Scene
+namespace simple3d.Drawing
 {
     public class Sprite : ISprite
     {

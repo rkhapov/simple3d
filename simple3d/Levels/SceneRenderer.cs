@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using simple3d.Scene.Tools;
+using simple3d.Levels.Tools;
 using simple3d.Ui;
 
-namespace simple3d.Scene
+namespace simple3d.Levels
 {
     public class SceneRenderer : ISceneRenderer
     {

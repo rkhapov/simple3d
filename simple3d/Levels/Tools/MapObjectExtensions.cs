@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace simple3d.Scene.Tools
+namespace simple3d.Levels.Tools
 {
-    public static class MapObjectExtensions
+    internal static class MapObjectExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static float GetDistanceToPlayer(this IMapObject mapObject, PlayerCamera camera)

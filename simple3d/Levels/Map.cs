@@ -1,4 +1,6 @@
-﻿namespace simple3d.Scene
+﻿using simple3d.Drawing;
+
+namespace simple3d.Levels
 {
     public class Map
     {

@@ -1,4 +1,4 @@
-﻿namespace simple3d.Scene
+﻿namespace simple3d.Levels
 {
     public enum MapCellType
     {

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using simple3d.Builder;
 using simple3d.Events;
-using simple3d.Scene;
+using simple3d.Levels;
 using simple3d.SDL2;
 using simple3d.Ui;
 using static simple3d.SDL2.SDL;
@@ -69,6 +69,11 @@ namespace simple3d
 
                 if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
                     break;
+
+                foreach (var mapObject in level.Objects)
+                {
+                    mapObject.OnWorldUpdate(level, elapsedMilliseconds);
+                }
 
                 screen.Clear();
                 ProcessKeyboard(elapsedMilliseconds, level.Map, level.PlayerCamera);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace simple3d.Scene
+namespace simple3d.Levels
 {
     public class PlayerCamera
     {

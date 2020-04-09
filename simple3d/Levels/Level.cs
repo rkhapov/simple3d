@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace simple3d.Scene
+namespace simple3d.Levels
 {
     public class Level
     {

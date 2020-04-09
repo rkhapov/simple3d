@@ -1,5 +1,5 @@
 ﻿using System;
-using simple3d.Scene;
+using simple3d.Levels;
 
 namespace simple3d
 {
