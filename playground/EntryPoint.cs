@@ -44,6 +44,25 @@ namespace playground
         }
     }
 
+    internal class Box : IMapObject
+    {
+        public Box(float positionX, float positionY, Sprite sprite)
+        {
+            PositionX = positionX;
+            PositionY = positionY;
+            Sprite = sprite;
+        }
+
+        public float PositionX { get; }
+        public float PositionY { get; }
+        public Sprite Sprite { get; }
+
+        public void OnWorldUpdate(Level level, float elapsedMilliseconds)
+        {
+            //nothing
+        }
+    }
+
     internal static class EntryPoint
     {
         private static void Main(string[] args)
@@ -53,7 +72,13 @@ namespace playground
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/brick_wall.png");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
-            var objects = new[] { new Skeleton(5, 5, skeletonSprite), (IMapObject) new Ghost(7, 7, ghostAnimation) };
+            var boxSprite = Sprite.Load("./sprites/box.png");
+            var objects = new IMapObject[]
+            {
+                new Skeleton(5, 5, skeletonSprite),
+                new Ghost(7, 7, ghostAnimation),
+                new Box(18, 1.8f, boxSprite),
+            };
             var map = Map.FromStrings(new[]
             {
                 "###############################",

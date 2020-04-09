@@ -22,6 +22,9 @@
       <None Update="animations\ghost\2.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="sprites\box.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
