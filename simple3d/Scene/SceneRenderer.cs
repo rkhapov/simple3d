@@ -212,6 +212,9 @@ namespace simple3d.Scene
                         {
                             continue;
                         }
+                        // var b = (byte) ((pixel & 0xFF0000) >> 16);
+                        // var g = (byte) ((pixel & 0xFF00) >> 8);
+                        // var r = (byte) (pixel & 0xFF);
                         screen.Draw(ceil + y, column, pixel);
                     }
                 }

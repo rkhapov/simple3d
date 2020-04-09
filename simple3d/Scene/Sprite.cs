@@ -64,6 +64,7 @@ namespace simple3d.Scene
                 for (var j = 0; j < width; j++)
                 {
                     var pixel = *(int*)((byte*)pixels + i * pitch + j * bytesPerPixel);
+                    pixel = (int) (pixel & 0xFF00FF00 | ((pixel & 0xFF) << 16) | ((pixel & 0xFF0000) >> 16));
                     buffer[i * width + j] = pixel;
                 }
             }
