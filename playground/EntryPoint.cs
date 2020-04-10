@@ -67,7 +67,7 @@ namespace playground
     {
         private static void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine(new EngineOptions("simple 3d game", 800, 600));
+            using var engine = EngineBuilder.BuildEngine(new EngineOptions("simple 3d game", 800, 800));
             var player = new PlayerCamera();
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/brick_wall.png");
