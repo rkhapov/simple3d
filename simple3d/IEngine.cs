@@ -5,6 +5,6 @@ namespace simple3d
 {
     public interface IEngine: IDisposable
     {
-        void RunLevel(Level level);
+        bool Update(Level level);
     }
 }

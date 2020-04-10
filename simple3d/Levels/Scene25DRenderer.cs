@@ -5,7 +5,7 @@ using simple3d.Ui;
 
 namespace simple3d.Levels
 {
-    public class SceneRenderer : ISceneRenderer
+    public class Scene25DRenderer : ISceneRenderer
     {
         private static readonly float[] depthBuffer = new float[1000];
 
@@ -161,7 +161,7 @@ namespace simple3d.Levels
                 var dy = mapObject.PositionY - playerY;
                 var distance = MathF.Sqrt(dx * dx + dy * dy);
 
-                if (distance > viewDistance || distance < 0.5f)
+                if (distance > viewDistance)
                 {
                     continue;
                 }

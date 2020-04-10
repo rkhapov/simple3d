@@ -15,6 +15,8 @@ namespace simple3d
         private readonly IEventsCycle eventsCycle;
         private readonly IScreen screen;
         private readonly ISceneRenderer sceneRenderer;
+        private ulong previousTime;
+        private readonly float counterFrequency;
 
         private int lastMousePosition;
 
@@ -25,9 +27,15 @@ namespace simple3d
             this.eventsCycle = eventsCycle;
             this.sceneRenderer = sceneRenderer;
             lastMousePosition = -1;
+
+            previousTime = SDL_GetPerformanceCounter();
+            counterFrequency = SDL_GetPerformanceFrequency() / 1000.0f;
+
+            eventsCycle.AddListener(controller);
         }
 
-        public static Engine Create(EngineOptions options)
+        public static Engine Create(EngineOptions options, IController controller, IEventsCycle eventsCycle,
+            ISceneRenderer sceneRenderer)
         {
             if (SDL_Init(SDL_INIT_VIDEO) < 0)
             {
@@ -45,41 +53,37 @@ namespace simple3d
             }
 
             var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth);
-            var controller = new Controller();
-            var eventsCycle = new EventsCycle();
-            var sceneRenderer = new SceneRenderer();
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
 
-        public void RunLevel(Level level)
+        public bool Update(Level level)
         {
-            eventsCycle.AddListener(controller);
-            controller.OnMouseMove(x => OnMouseMove(x, level.PlayerCamera));
-            var previousTime = SDL_GetPerformanceCounter();
-            var counterFrequency = SDL_GetPerformanceFrequency() / 1000.0f;
+            var currentTime = SDL_GetPerformanceCounter();
+            var elapsedMilliseconds = (currentTime - previousTime) / counterFrequency;
+            previousTime = currentTime;
 
-            while (true)
+            eventsCycle.ProcessEvents();
+
+            if (lastMousePosition != controller.GetMousePositionX())
             {
-                var currentTime = SDL_GetPerformanceCounter();
-                var elapsedMilliseconds = (currentTime - previousTime) / counterFrequency;
-                previousTime = currentTime;
-
-                eventsCycle.ProcessEvents();
-
-                if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
-                    break;
-
-                foreach (var mapObject in level.Objects)
-                {
-                    mapObject.OnWorldUpdate(level, elapsedMilliseconds);
-                }
-
-                screen.Clear();
-                ProcessKeyboard(elapsedMilliseconds, level.Map, level.PlayerCamera);
-                sceneRenderer.Render(screen, level, elapsedMilliseconds);
-                screen.Update();
+                OnMouseMove(controller.GetMousePositionX(), level.PlayerCamera);
             }
+
+            if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
+                return false;
+
+            foreach (var mapObject in level.Objects)
+            {
+                mapObject.OnWorldUpdate(level, elapsedMilliseconds);
+            }
+
+            screen.Clear();
+            ProcessKeyboard(elapsedMilliseconds, level.Map, level.PlayerCamera);
+            sceneRenderer.Render(screen, level, elapsedMilliseconds);
+            screen.Update();
+
+            return true;
         }
 
         private void OnMouseMove(int x, PlayerCamera playerCamera)

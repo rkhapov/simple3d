@@ -7,18 +7,18 @@ namespace simple3d.Ui
 {
     public class Controller : IController, IEventsListener
     {
-        private readonly List<Action<int>> mouseHandlers;
         private readonly Dictionary<SDL.SDL_Keycode, bool> keycodeToState;
+        private int mousePositionX;
 
         public Controller()
         {
-            mouseHandlers = new List<Action<int>>();
             keycodeToState = new Dictionary<SDL.SDL_Keycode, bool>();
+            mousePositionX = -1;
         }
 
-        public void OnMouseMove(Action<int> handler)
+        public int GetMousePositionX()
         {
-            mouseHandlers.Add(handler);
+            return mousePositionX;
         }
 
         public bool IsKeyPressed(SDL.SDL_Keycode keycode)
@@ -37,10 +37,7 @@ namespace simple3d.Ui
                     keycodeToState[@event.key.keysym.sym] = false;
                     break;
                 case SDL.SDL_EventType.SDL_MOUSEMOTION:
-                    foreach (var mouseHandler in mouseHandlers)
-                    {
-                        mouseHandler(@event.motion.x);
-                    }
+                    mousePositionX = @event.motion.x;
                     break;
             }
         }

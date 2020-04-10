@@ -32,7 +32,7 @@ namespace simple3d.Levels
 
             return new Map(map, height, width);
         }
-        
+
         private static MapCell GetCellByChar(char c, Sprite sprite)
         {
             return c switch
