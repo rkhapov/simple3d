@@ -17,7 +17,7 @@ namespace playground
         public float PositionY { get; }
         public Sprite Sprite { get; }
 
-        public void OnWorldUpdate(Level level, float elapsedMilliseconds)
+        public void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             //nothing
         }
@@ -38,7 +38,7 @@ namespace playground
         public float PositionY { get; }
         public Sprite Sprite => animation.CurrentFrame;
 
-        public void OnWorldUpdate(Level level, float elapsedMilliseconds)
+        public void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             animation.UpdateFrame(elapsedMilliseconds);
         }
@@ -57,7 +57,7 @@ namespace playground
         public float PositionY { get; }
         public Sprite Sprite { get; }
 
-        public void OnWorldUpdate(Level level, float elapsedMilliseconds)
+        public void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             //nothing
         }
@@ -68,16 +68,17 @@ namespace playground
         private static void Main(string[] args)
         {
             using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 800, 800));
-            var player = new PlayerCamera();
+            var player = new PlayerCamera {X = 2.0f, Y = 2.0f};
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
-            var wallTexture = Sprite.Load("./sprites/brick_wall.png");
+            var wallTexture = Sprite.Load("./sprites/greystone.png");
+            var floorTexture = Sprite.Load("./sprites/colorstone.png");
+            var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
             var boxSprite = Sprite.Load("./sprites/box.png");
             var objects = new IMapObject[]
             {
                 new Skeleton(5, 5, skeletonSprite),
-                new Ghost(7, 7, ghostAnimation),
-                new Box(18, 1.8f, boxSprite),
+                new Ghost(7, 7, ghostAnimation)
             };
             var map = Map.FromStrings(new[]
             {
@@ -101,8 +102,8 @@ namespace playground
                 "#####.####..####.....#........#",
                 "#....................#........#",
                 "###############################"
-            }, wallTexture);
-            var level = new Level(player, map, objects);
+            }, wallTexture, floorTexture, ceilingTexture);
+            var level = new Scene(player, map, objects);
 
             while (engine.Update(level))
                 ;

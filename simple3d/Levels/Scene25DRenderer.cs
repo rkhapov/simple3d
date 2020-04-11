@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using simple3d.Levels.Tools;
 using simple3d.Ui;
 
@@ -7,54 +8,80 @@ namespace simple3d.Levels
 {
     public class Scene25DRenderer : ISceneRenderer
     {
-        private static readonly float[] depthBuffer = new float[1000];
+        private static readonly float[] depthBuffer = new float[2000];
 
-        public void Render(IScreen screen, Level level, float elapsedMilliseconds)
+        public void Render(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
-            RenderWorld(screen, level);
-            RenderObjects(screen, level, elapsedMilliseconds);
+            RenderWorld(screen, scene);
+            RenderObjects(screen, scene, elapsedMilliseconds);
         }
 
-        private void RenderWorld(IScreen screen, Level level)
+        private void RenderWorld(IScreen screen, Scene scene)
         {
             var screenWidth = screen.Width;
             var screenHeight = screen.Height;
-            var player = level.PlayerCamera;
+            var player = scene.PlayerCamera;
             var viewAngle = player.ViewAngle;
             var viewDistance = player.ViewDistance;
 
             for (var x = 0; x < screenWidth; x++)
             {
-                var ray = ComputeRay(x, screen, player, level.Map);
-                var ceil = (int) (screenHeight / 2.0 - screenHeight / (ray.Length * MathF.Cos(viewAngle - ray.Angle)));
+                var rayAngle = player.ViewAngle - player.FieldOfView / 2 + ((float) x / screen.Width) * player.FieldOfView;
+                var xRayUnit = MathF.Sin(rayAngle);
+                var yRayUnit = MathF.Cos(rayAngle);
+                var ray = ComputeRay(rayAngle, player, scene.Map, xRayUnit, yRayUnit);
+                var cosinePerspectiveCorrection = MathF.Cos(viewAngle - ray.Angle);
+                var ceil = (int) (screenHeight / 2.0 - screenHeight / (ray.Length * cosinePerspectiveCorrection));
                 var floor = screenHeight - ceil;
+                var wallHeight = (float) floor - ceil;
+                var wallCeil = ceil < 0 ? 0 : ceil + 1;
+                var wallFloor = floor > screenHeight ? screenHeight : floor;
+
                 depthBuffer[x] = ray.Length;
 
-                for (var y = 0; y < screenHeight; y++)
+                for (var y = wallFloor; y < screenHeight; y++)
                 {
-                    if (y <= ceil)
-                    {
-                        screen.Draw(y, x, 0, 0, 0);
-                    }
-                    else if (y > floor)
-                    {
-                        screen.Draw(y, x, 0x80, 0x80, 0x80);
-                    }
-                    else
-                    {
-                        if (ray.Length < viewDistance)
-                        {
-                            var sampleY = (y - ceil) / ((float) floor - ceil);
-                            var pixel = ray.MapCell.Sprite.GetSample(sampleY, ray.SampleX);
-                            screen.Draw(y, x, pixel);
-                        }
-                        else
-                        {
-                            screen.Draw(y, x, 0, 0, 0);
-                        }
-                    }
+                    RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection, xRayUnit, yRayUnit, x);
+                }
+
+                for (var y = wallCeil; y < wallFloor; y++)
+                {
+                    RenderWallAt(screen, ray, viewDistance, y, ceil, wallHeight, x);
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void RenderWallAt(IScreen screen, Ray ray, float viewDistance, int y, int ceil, float wallHeight, int x)
+        {
+            if (ray.Length < viewDistance)
+            {
+                var sampleY = (y - ceil) / wallHeight;
+                var pixel = ray.MapCell.Sprite.GetSample(sampleY, ray.SampleX);
+                screen.Draw(y, x, pixel);
+            }
+            else
+            {
+                screen.Draw(y, x, 0, 0, 0);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void RenderFloorAndCeilAt(IScreen screen, Scene scene, int screenHeight, int y, PlayerCamera player,
+            float cosinePerspectiveCorrection, float xRayUnit, float yRayUnit, int x)
+        {
+            var distance = screenHeight / (y - screenHeight / 2.0f);
+            var currentX = player.X + distance / cosinePerspectiveCorrection * xRayUnit;
+            var currentY = player.Y + distance / cosinePerspectiveCorrection * yRayUnit;
+            var testX = (int) Math.Floor(currentX);
+            var testY = (int) Math.Floor(currentY);
+            var sampleX = currentX - testX;
+            var sampleY = currentY - testY;
+            if (!scene.Map.InBound(testY, testX))
+                return;
+            var cell = scene.Map.At(testY, testX);
+            screen.Draw(y, x, cell.Sprite.GetSample(sampleY, sampleX));
+            screen.Draw(screenHeight - y, x, cell.CeilingSprite.GetSample(sampleY, sampleX));
         }
 
         private struct Ray
@@ -77,14 +104,16 @@ namespace simple3d.Levels
             public MapCell MapCell { get; }
         }
 
-        private static Ray ComputeRay(int x, IScreen screen, PlayerCamera playerCamera, Map map)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Ray ComputeRay(
+            float rayAngle,
+            PlayerCamera playerCamera,
+            Map map,
+            float xRayUnit,
+            float yRayUnit)
         {
-            var fov = playerCamera.FieldOfView;
             var playerX = playerCamera.X;
             var playerY = playerCamera.Y;
-            var rayAngle = playerCamera.ViewAngle - fov / 2 + ((float) x / screen.Width) * fov;
-            var xRayUnit = MathF.Sin(rayAngle);
-            var yRayUnit = MathF.Cos(rayAngle);
             var viewDistance = playerCamera.ViewDistance;
             var rayLength = 0.0f;
             var hit = false;
@@ -140,9 +169,9 @@ namespace simple3d.Levels
             return new Ray(rayLength, rayAngle, sampleX, testX, testY, cell);
         }
 
-        private static void RenderObjects(IScreen screen, Level level, float elapsedMilliseconds)
+        private static void RenderObjects(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
-            var player = level.PlayerCamera;
+            var player = scene.PlayerCamera;
             var playerX = player.X;
             var playerY = player.Y;
             var eyeX = MathF.Sin(player.ViewAngle);
@@ -155,7 +184,7 @@ namespace simple3d.Levels
             var screenWidth = screen.Width;
             var halfFov = fov / 2;
 
-            foreach (var mapObject in level.Objects.OrderByDescending(s => s.GetDistanceToPlayer(player)))
+            foreach (var mapObject in scene.Objects.OrderByDescending(s => s.GetDistanceToPlayer(player)))
             {
                 var dx = mapObject.PositionX - playerX;
                 var dy = mapObject.PositionY - playerY;

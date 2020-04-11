@@ -5,6 +5,6 @@ namespace simple3d
 {
     public interface IEngine: IDisposable
     {
-        bool Update(Level level);
+        bool Update(Scene scene);
     }
 }

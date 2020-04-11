@@ -7,6 +7,6 @@ namespace simple3d.Levels
         float PositionX { get; }
         float PositionY { get; }
         Sprite Sprite { get; }
-        void OnWorldUpdate(Level level, float elapsedMilliseconds);
+        void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
     }
 }

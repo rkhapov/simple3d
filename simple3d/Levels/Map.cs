@@ -16,7 +16,7 @@ namespace simple3d.Levels
             Width = width;
         }
 
-        public static Map FromStrings(string[] strings, Sprite wallSprite)
+        public static Map FromStrings(string[] strings, Sprite wallSprite, Sprite floorTexture, Sprite ceilingTexture)
         {
             var height = strings.Length;
             var width = strings[0].Length;
@@ -26,19 +26,19 @@ namespace simple3d.Levels
             {
                 for (var j = 0; j < width; j++)
                 {
-                    map[i, j] = GetCellByChar(strings[i][j], wallSprite);
+                    map[i, j] = GetCellByChar(strings[i][j], wallSprite, floorTexture, ceilingTexture);
                 }
             }
 
             return new Map(map, height, width);
         }
 
-        private static MapCell GetCellByChar(char c, Sprite sprite)
+        private static MapCell GetCellByChar(char c, Sprite wallTexture, Sprite floorTexture, Sprite ceilingTexture)
         {
             return c switch
             {
-                '#' => new MapCell(MapCellType.Wall, sprite),
-                _ => new MapCell(MapCellType.Empty, sprite)
+                '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
+                _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
             };
         }
 

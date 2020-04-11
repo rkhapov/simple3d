@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace simple3d.Levels
 {
-    public class Level
+    public class Scene
     {
         private readonly HashSet<IMapObject> mapObjects;
         
-        public Level(PlayerCamera playerCamera, Map map, IEnumerable<IMapObject> mapObjects)
+        public Scene(PlayerCamera playerCamera, Map map, IEnumerable<IMapObject> mapObjects)
         {
             PlayerCamera = playerCamera;
             Map = map;

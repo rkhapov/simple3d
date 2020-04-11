@@ -10,19 +10,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="sprites\brick_wall.png">
+      <None Update="sprites\*.*">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="sprites\skeleton.png">
+      <None Update="animations\*\*.*">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="animations\ghost\1.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="animations\ghost\2.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="sprites\box.png">
+      <None Update="sprites\greystone.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

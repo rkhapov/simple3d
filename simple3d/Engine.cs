@@ -57,7 +57,7 @@ namespace simple3d
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
 
-        public bool Update(Level level)
+        public bool Update(Scene scene)
         {
             var currentTime = SDL_GetPerformanceCounter();
             var elapsedMilliseconds = (currentTime - previousTime) / counterFrequency;
@@ -67,21 +67,22 @@ namespace simple3d
 
             if (lastMousePosition != controller.GetMousePositionX())
             {
-                OnMouseMove(controller.GetMousePositionX(), level.PlayerCamera);
+                OnMouseMove(controller.GetMousePositionX(), scene.PlayerCamera);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
                 return false;
 
-            foreach (var mapObject in level.Objects)
+            foreach (var mapObject in scene.Objects)
             {
-                mapObject.OnWorldUpdate(level, elapsedMilliseconds);
+                mapObject.OnWorldUpdate(scene, elapsedMilliseconds);
             }
 
             screen.Clear();
-            ProcessKeyboard(elapsedMilliseconds, level.Map, level.PlayerCamera);
-            sceneRenderer.Render(screen, level, elapsedMilliseconds);
+            ProcessKeyboard(elapsedMilliseconds, scene.Map, scene.PlayerCamera);
+            sceneRenderer.Render(screen, scene, elapsedMilliseconds);
             screen.Update();
+            Console.WriteLine($"FPS: {1000 / elapsedMilliseconds}");
 
             return true;
         }
