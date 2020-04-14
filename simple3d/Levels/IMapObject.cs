@@ -1,11 +1,13 @@
-﻿using simple3d.Drawing;
+﻿using System.Numerics;
+using simple3d.Drawing;
 
 namespace simple3d.Levels
 {
     public interface IMapObject
     {
-        float PositionX { get; }
-        float PositionY { get; }
+        Vector2 Position { get; }
+        Vector2 Size { get; }
+        float DirectionAngle { get; }
         Sprite Sprite { get; }
         void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
     }

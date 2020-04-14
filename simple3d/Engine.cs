@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Builder;
 using simple3d.Events;
 using simple3d.Levels;
+using simple3d.MathUtils;
 using simple3d.SDL2;
 using simple3d.Ui;
 using static simple3d.SDL2.SDL;
@@ -67,7 +70,7 @@ namespace simple3d
 
             if (lastMousePosition != controller.GetMousePositionX())
             {
-                OnMouseMove(controller.GetMousePositionX(), scene.PlayerCamera);
+                OnMouseMove(controller.GetMousePositionX(), scene.Player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
@@ -79,15 +82,15 @@ namespace simple3d
             }
 
             screen.Clear();
-            ProcessKeyboard(elapsedMilliseconds, scene.Map, scene.PlayerCamera);
-            sceneRenderer.Render(screen, scene, elapsedMilliseconds);
+            ProcessKeyboard(elapsedMilliseconds, scene);
+            sceneRenderer.Render(screen, scene, elapsedMilliseconds, controller.IsKeyPressed(SDL_Keycode.SDLK_m));
             screen.Update();
             Console.WriteLine($"FPS: {1000 / elapsedMilliseconds}");
 
             return true;
         }
 
-        private void OnMouseMove(int x, PlayerCamera playerCamera)
+        private void OnMouseMove(int x, Player player)
         {
             if (lastMousePosition < 0)
             {
@@ -100,98 +103,118 @@ namespace simple3d
             {
                 if (x == 0)
                 {
-                    DoLeftTurn(mouseSensitivity, playerCamera);
+                    DoLeftTurn(mouseSensitivity, player);
                 }
                 else
                 {
-                    DoRightTurn(mouseSensitivity, playerCamera);
+                    DoRightTurn(mouseSensitivity, player);
                 }
             }
             else
             {
                 if (x < lastMousePosition)
                 {
-                    DoLeftTurn(mouseSensitivity, playerCamera);
+                    DoLeftTurn(mouseSensitivity, player);
                 }
                 else
                 {
-                    DoRightTurn(mouseSensitivity, playerCamera);
+                    DoRightTurn(mouseSensitivity, player);
                 }
             }
 
             lastMousePosition = x;
         }
 
-        private void ProcessKeyboard(float elapsedMs, Map map, PlayerCamera playerCamera)
+        private void ProcessKeyboard(float elapsedMs, Scene scene)
         {
+            var player = scene.Player;
+
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_LEFT))
             {
-                DoLeftTurn(elapsedMs, playerCamera);
+                DoLeftTurn(elapsedMs, player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_RIGHT))
             {
-                DoRightTurn(elapsedMs, playerCamera);
+                DoRightTurn(elapsedMs, player);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_w))
             {
-                var dx = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
-                var dy = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(dx, dy, map, playerCamera);
+                TryMove(dx, dy, scene);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_s))
             {
-                var dx = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
-                var dy = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, -dy, map, playerCamera);
+                TryMove(-dx, -dy, scene);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_a))
             {
-                var dx = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
-                var dy = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, dy, map, playerCamera);
+                TryMove(-dx, dy, scene);
             }
 
             if (controller.IsKeyPressed(SDL_Keycode.SDLK_d))
             {
-                var dx = MathF.Cos(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
-                var dy = MathF.Sin(playerCamera.ViewAngle) * playerCamera.MovingSpeed * elapsedMs;
+                var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
+                var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(dx, -dy, map, playerCamera);
+                TryMove(dx, -dy, scene);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void TryMove(float dx, float dy, Map map, PlayerCamera playerCamera)
+        private static void TryMove(float dx, float dy, Scene scene)
         {
-            var newX = playerCamera.X + dx;
-            var newY = playerCamera.Y + dy;
-            var testX = (int) newX;
-            var testY = (int) newY;
+            //TODO: implement with physics engine?
+            var player = scene.Player;
+            var map = scene.Map;
+            var newPosition = player.Position + new Vector2(dx, dy);
+            var playerNewVertices = GeometryHelper.GetRotatedVertices(newPosition, player.Size, player.DirectionAngle);
 
-            if (map.InBound(testY, testX) && map.At(testY, testX).Type != MapCellType.Wall)
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var vertex in playerNewVertices)
             {
-                playerCamera.X = newX;
-                playerCamera.Y = newY;
+                var testX = (int) vertex.X;
+                var testY = (int) vertex.Y;
+
+                if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall)
+                {
+                    return;
+                }
             }
+
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var objectVertices in scene
+                .Objects
+                .Select(o => o.GetRotatedVertices()))
+            {
+                if (GeometryHelper.IsRectanglesIntersects(playerNewVertices, objectVertices))
+                    return;
+            }
+
+            player.Position = newPosition;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoLeftTurn(float elapsed, PlayerCamera playerCamera)
+        private static void DoLeftTurn(float elapsed, Player player)
         {
-            playerCamera.ViewAngle -= 0.003f * elapsed;
+            player.DirectionAngle -= 0.003f * elapsed;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoRightTurn(float elapsed, PlayerCamera playerCamera)
+        private static void DoRightTurn(float elapsed, Player player)
         {
-            playerCamera.ViewAngle += 0.003f * elapsed;
+            player.DirectionAngle += 0.003f * elapsed;
         }
 
         public void Dispose()

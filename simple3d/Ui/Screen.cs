@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using simple3d.SDL2;
 
 namespace simple3d.Ui

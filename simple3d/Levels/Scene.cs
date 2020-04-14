@@ -7,14 +7,14 @@ namespace simple3d.Levels
     {
         private readonly HashSet<IMapObject> mapObjects;
         
-        public Scene(PlayerCamera playerCamera, Map map, IEnumerable<IMapObject> mapObjects)
+        public Scene(Player player, Map map, IEnumerable<IMapObject> mapObjects)
         {
-            PlayerCamera = playerCamera;
+            Player = player;
             Map = map;
             this.mapObjects = mapObjects.ToHashSet();
         }
 
-        public PlayerCamera PlayerCamera { get; }
+        public Player Player { get; }
         public Map Map { get; }
         public IEnumerable<IMapObject> Objects => mapObjects;
     }
