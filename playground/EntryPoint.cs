@@ -104,7 +104,7 @@ namespace playground
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
             var objects = new IMapObject[]
             {
-                new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.3f, 0.3f), 0.0f, ghostAnimation),
+                new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
                 new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
             };
             var map = Map.FromStrings(new[]

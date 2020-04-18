@@ -241,7 +241,7 @@ namespace simple3d.Levels
             var player = scene.Player;
             var eyeX = MathF.Sin(player.DirectionAngle);
             var eyeY = MathF.Cos(player.DirectionAngle);
-            var pi2 = MathF.PI * 2;
+            const float pi2 = MathF.PI * 2;
             var playerAngle = MathF.Atan2(eyeY, eyeX);
             var fov = player.FieldOfView;
             var viewDistance = player.ViewDistance;
@@ -249,6 +249,7 @@ namespace simple3d.Levels
             var screenWidth = screen.Width;
             var screenHeight2 = screenHeight / 2.0f;
             var halfFov = fov / 2;
+            var fov15 = fov / 1.5f;
 
             foreach (var mapObject in scene.Objects.OrderByDescending(s => s.GetDistanceToPlayerSquared(player)))
             {
@@ -266,10 +267,13 @@ namespace simple3d.Levels
                     angle -= pi2;
                 }
 
-                var inPlayerFov = MathF.Abs(angle) < halfFov;
+                var inPlayerFov = MathF.Abs(angle) < fov15;
 
                 if (!inPlayerFov)
+                {
+                    Console.WriteLine($"{mapObject} not in player fov");
                     continue;
+                }
 
                 var distance = fromObjectToPlayer.Length();
                 if (distance > viewDistance)
@@ -280,8 +284,6 @@ namespace simple3d.Levels
                 var ceil = (int) (screenHeight2 - screenHeight / distance);
                 var floor = screenHeight - ceil;
                 var height = floor - ceil;
-                // if (ceil < 0 || floor < 0 || height < 0)
-                //     continue;
                 var sprite = mapObject.Sprite;
                 var width = height / sprite.AspectRatio;
                 var width2 = width / 2.0f;
@@ -292,6 +294,8 @@ namespace simple3d.Levels
                 var sampleXStep = 1.0f / width - 1e-5f;
                 var sampleX = startX / width;
                 var drawingCeil = ceil < 0 ? 0 : ceil;
+                var startSampleX = (drawingCeil - ceil) / (float) height;
+                var endY = (int) MathF.Min(screenHeight - ceil - 1, MathF.Min(height, screenHeight));
 
                 for (var x = startX; x < endX; x++)
                 {
@@ -301,13 +305,10 @@ namespace simple3d.Levels
                     if (depthBuffer[column] < distance)
                         continue;
 
-                    var endY = (int) MathF.Min(screenHeight - ceil - 1, MathF.Min(height, screenHeight));
-                    var sampleY = (drawingCeil - ceil) / (float) height;
+                    var sampleY = startSampleX;
                     for (var y = 0; y < endY; y++)
                     {
                         sampleY += sampleYStep;
-                        if (y < 0)
-                            continue;
                         var pixel = sprite.GetSample(sampleY, sampleX);
                         if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
                         {
