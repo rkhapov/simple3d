@@ -78,6 +78,18 @@ namespace playground
         }
     }
 
+    internal class GreenLight : BaseStaticMapObject
+    {
+        public GreenLight(Vector2 position, Vector2 size, float directionAngle, Sprite sprite) : base(position, size, directionAngle, sprite)
+        {
+        }
+
+        public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
+        {
+            //nothing
+        }
+    }
+
     internal static class EntryPoint
     {
         private static void Main(string[] args)
@@ -88,11 +100,12 @@ namespace playground
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
+            var greenLightTexture = Sprite.Load("./sprites/greenlight.png");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
             var objects = new IMapObject[]
             {
-                new Skeleton(new Vector2(5.0f, 5.0f), new Vector2(0.3f, 0.3f), MathF.PI / 4, skeletonSprite),
-                new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.3f, 0.3f), 0.0f, ghostAnimation)
+                new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.3f, 0.3f), 0.0f, ghostAnimation),
+                new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
             };
             var map = Map.FromStrings(new[]
             {

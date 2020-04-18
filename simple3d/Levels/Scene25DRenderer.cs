@@ -75,6 +75,7 @@ namespace simple3d.Levels
             {
                 DrawPoint(obj.Position.X, obj.Position.Y, true);
                 var rotatedVertices = obj.GetRotatedVertices();
+                Console.WriteLine($"{obj} {obj.GetDistanceToPlayerSquared(scene.Player)}");
                 foreach (var vertex in rotatedVertices)
                 {
                     DrawPoint(vertex.X, vertex.Y, false);
@@ -279,8 +280,8 @@ namespace simple3d.Levels
                 var ceil = (int) (screenHeight2 - screenHeight / distance);
                 var floor = screenHeight - ceil;
                 var height = floor - ceil;
-                if (ceil < 0 || floor < 0 || height < 0)
-                    continue;
+                // if (ceil < 0 || floor < 0 || height < 0)
+                //     continue;
                 var sprite = mapObject.Sprite;
                 var width = height / sprite.AspectRatio;
                 var width2 = width / 2.0f;
@@ -290,6 +291,7 @@ namespace simple3d.Levels
                 var sampleYStep = 1.0f / height - 1e-5f;
                 var sampleXStep = 1.0f / width - 1e-5f;
                 var sampleX = startX / width;
+                var drawingCeil = ceil < 0 ? 0 : ceil;
 
                 for (var x = startX; x < endX; x++)
                 {
@@ -299,17 +301,19 @@ namespace simple3d.Levels
                     if (depthBuffer[column] < distance)
                         continue;
 
-                    var endY = (int) MathF.Min(screenHeight - ceil - 1, height);
-                    var sampleY = 0.0f;
+                    var endY = (int) MathF.Min(screenHeight - ceil - 1, MathF.Min(height, screenHeight));
+                    var sampleY = (drawingCeil - ceil) / (float) height;
                     for (var y = 0; y < endY; y++)
                     {
                         sampleY += sampleYStep;
+                        if (y < 0)
+                            continue;
                         var pixel = sprite.GetSample(sampleY, sampleX);
                         if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
                         {
                             continue;
                         }
-                        screen.Draw(ceil + y, column, pixel);
+                        screen.Draw(drawingCeil + y, column, pixel);
                     }
                 }
             }
