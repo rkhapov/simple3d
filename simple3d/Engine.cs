@@ -178,7 +178,18 @@ namespace simple3d
             //TODO: implement with physics engine?
             var player = scene.Player;
             var map = scene.Map;
-            var newPosition = player.Position + new Vector2(dx, dy);
+            var newPosition = player.Position + new Vector2(dx, 0);
+
+            TryMove(scene, player, newPosition, map);
+
+            newPosition = player.Position + new Vector2(0, dy);
+
+            TryMove(scene, player, newPosition, map);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void TryMove(Scene scene, Player player, Vector2 newPosition, Map map)
+        {
             var playerNewVertices = GeometryHelper.GetRotatedVertices(newPosition, player.Size, player.DirectionAngle);
 
             // ReSharper disable once LoopCanBeConvertedToQuery
