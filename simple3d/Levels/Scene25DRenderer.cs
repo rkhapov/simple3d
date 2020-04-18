@@ -239,8 +239,9 @@ namespace simple3d.Levels
         private static void RenderObjects(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
             var player = scene.Player;
-            var eyeX = MathF.Sin(player.DirectionAngle);
-            var eyeY = MathF.Cos(player.DirectionAngle);
+            var directionAngle = player.DirectionAngle;
+            var eyeX = MathF.Sin(directionAngle);
+            var eyeY = MathF.Cos(directionAngle);
             const float pi2 = MathF.PI * 2;
             var playerAngle = MathF.Atan2(eyeY, eyeX);
             var fov = player.FieldOfView;
@@ -271,11 +272,11 @@ namespace simple3d.Levels
 
                 if (!inPlayerFov)
                 {
-                    Console.WriteLine($"{mapObject} not in player fov");
                     continue;
                 }
 
-                var distance = fromObjectToPlayer.Length();
+                var cosinePerspectiveCorrection = MathF.Cos(angle);
+                var distance = fromObjectToPlayer.Length() * cosinePerspectiveCorrection;
                 if (distance > viewDistance)
                 {
                     continue;

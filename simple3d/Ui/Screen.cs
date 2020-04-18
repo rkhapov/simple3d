@@ -29,7 +29,7 @@ namespace simple3d.Ui
                 SDL.SDL_WINDOWPOS_CENTERED,
                 SDL.SDL_WINDOWPOS_CENTERED,
                 height, width,
-                SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL //| SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN
+                SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN
             );
 
             if (window == IntPtr.Zero)
