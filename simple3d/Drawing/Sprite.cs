@@ -24,12 +24,16 @@ namespace simple3d.Drawing
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSample(float y, float x)
+        public unsafe int GetSample(float y, float x)
         {
             var y0 = (int)((y - 1e-6f) * Height);
             var x0 = (int)((x - 1e-6f) * Width);
 
-            return buffer[y0 * Width + x0];
+            //disabling bound checking
+            fixed (int* p = buffer)
+            {
+                return p[y0 * Width + x0];
+            }
         }
 
         public static Sprite Load(string path)

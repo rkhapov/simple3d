@@ -4,12 +4,12 @@ namespace simple3d.Levels
 {
     public class Map
     {
-        private readonly MapCell[,] map;
+        private readonly MapCell[] map;
 
         public int Height { get; }
         public int Width { get; }
 
-        private Map(MapCell[,] map, int height, int width)
+        private Map(MapCell[] map, int height, int width)
         {
             this.map = map;
             Height = height;
@@ -20,13 +20,13 @@ namespace simple3d.Levels
         {
             var height = strings.Length;
             var width = strings[0].Length;
-            var map = new MapCell[height, width];
+            var map = new MapCell[height * width];
 
             for (var i = 0; i < height; i++)
             {
                 for (var j = 0; j < width; j++)
                 {
-                    map[i, j] = GetCellByChar(strings[i][j], wallSprite, floorTexture, ceilingTexture);
+                    map[i * width + j] = GetCellByChar(strings[i][j], wallSprite, floorTexture, ceilingTexture);
                 }
             }
 
@@ -49,7 +49,9 @@ namespace simple3d.Levels
 
         public MapCell At(int y, int x)
         {
-            return map[y, x];
+            //TODO: speed up this shit, we will assume that before every
+            //cell acessing user will call InBound
+            return map[y * Width + x];
         }
     }
 }

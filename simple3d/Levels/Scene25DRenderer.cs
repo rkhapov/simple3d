@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Levels.Tools;
 using simple3d.MathUtils;
@@ -144,11 +143,14 @@ namespace simple3d.Levels
             var testY = (int) MathF.Floor(currentY);
             var sampleX = currentX - testX;
             var sampleY = currentY - testY;
-            if (!scene.Map.InBound(testY, testX))
-                return;
-            var cell = scene.Map.At(testY, testX);
-            screen.Draw(y, x, cell.Sprite.GetSample(sampleY, sampleX));
-            screen.Draw(screenHeight - y, x, cell.CeilingSprite.GetSample(sampleY, sampleX));
+            // branch prediction will speed up this code
+            // ReSharper disable once InvertIf
+            if (scene.Map.InBound(testY, testX))
+            {
+                var cell = scene.Map.At(testY, testX);
+                screen.Draw(y, x, cell.Sprite.GetSample(sampleY, sampleX));
+                screen.Draw(screenHeight - y, x, cell.CeilingSprite.GetSample(sampleY, sampleX));
+            }
         }
 
         private struct Ray
@@ -188,25 +190,26 @@ namespace simple3d.Levels
             var testX = -1;
             var testY = -1;
             MapCell cell = default;
+            var currentX = playerX;
+            var currentY = playerY;
+            var currentXStep = xRayUnit / 100.0f;
+            var currentYStep = yRayUnit / 100.0f;
 
             while (!hit && rayLength < viewDistance)
             {
                 rayLength += 0.01f;
-                var currentX = playerX + xRayUnit * rayLength;
-                var currentY = playerY + yRayUnit * rayLength;
+                currentX += currentXStep;
+                currentY += currentYStep;
                 testX = (int) currentX;
                 testY = (int) currentY;
 
-                if (!map.InBound(testY, testX))
+                if (map.InBound(testY, testX))
                 {
-                    rayLength = viewDistance;
-                    break;
-                }
+                    cell = map.At(testY, testX);
 
-                cell = map.At(testY, testX);
+                    if (cell.Type != MapCellType.Wall)
+                        continue;
 
-                if (cell.Type == MapCellType.Wall)
-                {
                     hit = true;
                     var blockMiddleX = testX + 0.5f;
                     var blockMiddleY = testY + 0.5f;
@@ -230,6 +233,11 @@ namespace simple3d.Levels
                     {
                         sampleX = currentY - testY;
                     }
+                }
+                else
+                {
+                    rayLength = viewDistance;
+                    break;
                 }
             }
 

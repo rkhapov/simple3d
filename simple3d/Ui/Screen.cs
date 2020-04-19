@@ -62,17 +62,23 @@ namespace simple3d.Ui
             return new Screen(window, renderer, screenTexture, height, width, buffer);
         }
 
-        public void Draw(int y, int x, byte r, byte g, byte b)
+        public unsafe void Draw(int y, int x, byte r, byte g, byte b)
         {
             unchecked
             {
-                buffer[y * Width + x] = 255 << 24 | r << 16 | g << 8 | b;
+                fixed (int* p = buffer)
+                {
+                    p[y * Width + x] = 255 << 24 | r << 16 | g << 8 | b;
+                }
             }
         }
 
-        public void Draw(int y, int x, int v)
+        public unsafe void Draw(int y, int x, int v)
         {
-            buffer[y * Width + x] = v;
+            fixed (int* p = buffer)
+            {
+                p[y * Width + x] = v;
+            }
         }
 
         public unsafe void Update()
