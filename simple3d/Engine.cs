@@ -112,6 +112,8 @@ namespace simple3d
             {
                 mapObject.OnWorldUpdate(scene, elapsedMilliseconds);
             }
+
+            scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -184,7 +186,7 @@ namespace simple3d
                 var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(dx, dy, scene);
+                TryMove(dx, dy, scene, elapsedMs);
             }
 
             if (Controller.IsKeyPressed(SDL_Keycode.SDLK_s))
@@ -192,7 +194,7 @@ namespace simple3d
                 var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, -dy, scene);
+                TryMove(-dx, -dy, scene, elapsedMs);
             }
 
             if (Controller.IsKeyPressed(SDL_Keycode.SDLK_a))
@@ -200,7 +202,7 @@ namespace simple3d
                 var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(-dx, dy, scene);
+                TryMove(-dx, dy, scene, elapsedMs);
             }
 
             if (Controller.IsKeyPressed(SDL_Keycode.SDLK_d))
@@ -208,16 +210,17 @@ namespace simple3d
                 var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
 
-                TryMove(dx, -dy, scene);
+                TryMove(dx, -dy, scene, elapsedMs);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void TryMove(float dx, float dy, Scene scene)
+        private static void TryMove(float dx, float dy, Scene scene, float elapsedMilliseconds)
         {
             //TODO: implement with physics engine?
             var player = scene.Player;
             var map = scene.Map;
+            var oldPosition = player.Position;
             var newPosition = player.Position + new Vector2(dx, 0);
 
             TryMove(scene, player, newPosition, map);
@@ -225,6 +228,16 @@ namespace simple3d
             newPosition = player.Position + new Vector2(0, dy);
 
             TryMove(scene, player, newPosition, map);
+
+            var dEndurance = (oldPosition - player.Position).Length() * elapsedMilliseconds * 0.03f;
+            if (player.Endurance > dEndurance)
+            {
+                player.Endurance -= dEndurance;
+            }
+            else
+            {
+                player.Position = oldPosition;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

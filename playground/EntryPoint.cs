@@ -74,7 +74,11 @@ namespace playground
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
-            //nothing
+            if (Endurance < MaxEndurance)
+            {
+                Endurance += elapsedMilliseconds * 0.001f;
+                Endurance = MathF.Min(Endurance, MaxEndurance);
+            }
         }
     }
 
@@ -94,7 +98,7 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 500, 500, false));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 500, 500, true));
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
