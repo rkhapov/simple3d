@@ -23,13 +23,18 @@ namespace simple3d.Ui
             this.screenTexture = screenTexture;
         }
 
-        public static Screen Create(string title, int height, int width)
+        public static Screen Create(string title, int height, int width, bool fullScreen)
         {
+            var flags = SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL;
+
+            if (fullScreen)
+                flags |= SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN;
+
             var window = SDL.SDL_CreateWindow(title,
                 SDL.SDL_WINDOWPOS_CENTERED,
                 SDL.SDL_WINDOWPOS_CENTERED,
                 height, width,
-                SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN
+                flags
             );
 
             if (window == IntPtr.Zero)

@@ -19,11 +19,16 @@ namespace simple3d.Events
         {
             while (SDL.SDL_PollEvent(out var e) != 0)
             {
+                if (e.type == SDL.SDL_EventType.SDL_QUIT)
+                    ExitRequested = true;
+
                 foreach (var listener in listeners)
                 {
                     listener.HandleEvent(e);
                 }
             }
         }
+
+        public bool ExitRequested { get; private set; } = false;
     }
 }

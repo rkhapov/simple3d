@@ -5,5 +5,7 @@
         void AddListener(IEventsListener listener);
 
         void ProcessEvents();
+        
+        bool ExitRequested { get; }
     }
 }

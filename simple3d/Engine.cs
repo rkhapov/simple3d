@@ -55,7 +55,7 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant disable cursor: {SDL_GetError()}");
             }
 
-            var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth);
+            var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer);
         }
@@ -67,6 +67,9 @@ namespace simple3d
             previousTime = currentTime;
 
             eventsCycle.ProcessEvents();
+
+            if (eventsCycle.ExitRequested)
+                return false;
 
             if (lastMousePosition != controller.GetMousePositionX())
             {
