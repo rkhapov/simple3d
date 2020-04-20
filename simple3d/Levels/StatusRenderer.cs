@@ -4,15 +4,15 @@ using simple3d.Ui;
 
 namespace simple3d.Levels
 {
-    public class StatusBarRenderer : IStatusBarRenderer
+    public class StatusRenderer : IStatusBarRenderer
     {
         private readonly Sprite barSprite;
-        private readonly int height;
+        private readonly int statusBarHeight;
 
-        public StatusBarRenderer(Sprite barSprite, int height)
+        public StatusRenderer(Sprite barSprite, int statusBarHeight)
         {
             this.barSprite = barSprite;
-            this.height = height;
+            this.statusBarHeight = statusBarHeight;
         }
 
         public void Dispose()
@@ -22,14 +22,41 @@ namespace simple3d.Levels
 
         public void Render(IScreen screen, Scene scene)
         {
+            RenderWeapon(screen, scene);
+            RenderStatusBar(screen, scene);
+        }
+
+        private void RenderWeapon(IScreen screen, Scene scene)
+        {
+            var weapon = scene.Player.CurrentWeapon;
+            var sprite = weapon.Sprite;
+            var startY = screen.Height - sprite.Height - statusBarHeight;
+            var startX = screen.Width - sprite.Width;
+            var spriteWidth = sprite.Width;
+            var spriteHeight = sprite.Height;
+
+            for (var y = 0; y < spriteHeight; y++)
+            {
+                for (var x = 0; x < spriteWidth; x++)
+                {
+                    var pixel = sprite.GetPixel(y, x);
+                    if ((pixel & 0xFF000000) == 0)
+                        continue;
+                    screen.Draw(y + startY, x + startX, pixel);
+                }
+            }
+        }
+
+        private void RenderStatusBar(IScreen screen, Scene scene)
+        {
             DrawSprite(screen);
             DrawStatusLines(screen, scene.Player, screen.Width / 5);
         }
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
         {
-            var linesHeight = height / 6;
-            var barMiddle = screen.Height - height / 2;
+            var linesHeight = statusBarHeight / 6;
+            var barMiddle = screen.Height - statusBarHeight / 2;
             var xStart = screen.Width / 20;
 
             DrawStatusLine(
@@ -70,7 +97,7 @@ namespace simple3d.Levels
         {
             var screenHeight = screen.Height;
             var screenWidth = screen.Width;
-            var startY = screen.Height - height;
+            var startY = screen.Height - statusBarHeight;
 
             for (var y = startY; y < screenHeight; y++)
             {

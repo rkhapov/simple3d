@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using simple3d.Events;
+using simple3d.Levels;
 using simple3d.SDL2;
 
 namespace simple3d.Ui
@@ -39,6 +40,39 @@ namespace simple3d.Ui
                 case SDL.SDL_EventType.SDL_MOUSEMOTION:
                     mousePositionX = @event.motion.x;
                     break;
+            }
+        }
+
+        public IEnumerable<PlayerAction> GetCurrentPlayerActions()
+        {
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_LEFT))
+            {
+                yield return PlayerAction.LeftCameraTurn;
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_RIGHT))
+            {
+                yield return PlayerAction.RightCameraTurn;
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_w))
+            {
+                yield return PlayerAction.MoveForward;
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_s))
+            {
+                yield return PlayerAction.MoveBackward;
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_a))
+            {
+                yield return PlayerAction.MoveLeft;
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_d))
+            {
+                yield return PlayerAction.MoveRight;
             }
         }
     }

@@ -76,7 +76,7 @@ namespace playground
         {
             if (Endurance < MaxEndurance)
             {
-                Endurance += elapsedMilliseconds * 0.001f;
+                Endurance += elapsedMilliseconds * 0.005f;
                 Endurance = MathF.Min(Endurance, MaxEndurance);
             }
         }
@@ -94,6 +94,13 @@ namespace playground
         }
     }
 
+    internal class Sword : Weapon
+    {
+        public Sword(Animation staticAnimation, Animation attackAnimation, Animation movingAnimation) : base(staticAnimation, attackAnimation, movingAnimation)
+        {
+        }
+    }
+
     internal static class EntryPoint
     {
         private static unsafe void Main(string[] args)
@@ -105,7 +112,10 @@ namespace playground
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var greenLightTexture = Sprite.Load("./sprites/greenlight.png");
+            var swordAnimation = Animation.LoadFromDirectory("./animations/sword");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
+            var sword = new Sword(swordAnimation, swordAnimation, swordAnimation);
+            player.CurrentWeapon = sword;
             var objects = new IMapObject[]
             {
                 new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
