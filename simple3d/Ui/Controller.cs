@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using simple3d.Events;
+﻿using System.Collections.Generic;
 using simple3d.Levels;
 using simple3d.SDL2;
 
 namespace simple3d.Ui
 {
-    public class Controller : IController, IEventsListener
+    public class Controller : IController
     {
         private readonly Dictionary<SDL.SDL_Keycode, bool> keycodeToState;
-        private int mousePositionX;
 
         public Controller()
         {
             keycodeToState = new Dictionary<SDL.SDL_Keycode, bool>();
-            mousePositionX = -1;
-        }
-
-        public int GetMousePositionX()
-        {
-            return mousePositionX;
         }
 
         public bool IsKeyPressed(SDL.SDL_Keycode keycode)
@@ -36,9 +27,6 @@ namespace simple3d.Ui
                     break;
                 case SDL.SDL_EventType.SDL_KEYUP:
                     keycodeToState[@event.key.keysym.sym] = false;
-                    break;
-                case SDL.SDL_EventType.SDL_MOUSEMOTION:
-                    mousePositionX = @event.motion.x;
                     break;
             }
         }

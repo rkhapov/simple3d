@@ -50,28 +50,38 @@ namespace simple3d.Levels
         private void RenderStatusBar(IScreen screen, Scene scene)
         {
             DrawSprite(screen);
-            DrawStatusLines(screen, scene.Player, screen.Width / 5);
+            DrawStatusLines(screen, scene.Player, screen.Width / 4);
         }
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
         {
-            var linesHeight = statusBarHeight / 6;
-            var barMiddle = screen.Height - statusBarHeight / 2;
-            var xStart = screen.Width / 20;
+            var linesHeight = statusBarHeight / 5;
+            var boundSize = screen.Width / 20;
+
+            var partSize = statusBarHeight / 7;
 
             DrawStatusLine(
                 screen,
                 player.Health / player.MaxHealth,
-                barMiddle - linesHeight * 3 / 2,
-                xStart,
+                screen.Height - statusBarHeight + partSize,
+                boundSize,
                 linesHeight, linesWidth,
                 0xFF5349);
 
             DrawStatusLine(
                 screen,
+                player.SpellPoints / player.MaxSpellPoints,
+                screen.Height - statusBarHeight + partSize * 3,
+                boundSize,
+                linesHeight, linesWidth,
+                0x0000FF);
+
+
+            DrawStatusLine(
+                screen,
                 player.Endurance / player.MaxEndurance,
-                barMiddle + linesHeight * 3 / 2,
-                xStart,
+                screen.Height - statusBarHeight + partSize * 5,
+                boundSize,
                 linesHeight, linesWidth,
                 0x006400);
         }

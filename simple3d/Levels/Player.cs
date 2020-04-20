@@ -18,10 +18,12 @@ namespace simple3d.Levels
             Position = position;
             Size = size;
             DirectionAngle = directionAngle;
-            Health = 32;
             MaxHealth = 32;
+            Health = MaxHealth;
             MaxEndurance = 32;
             Endurance = MaxEndurance;
+            MaxSpellPoints = 32;
+            SpellPoints = MaxSpellPoints;
         }
 
         public Vector2 Position { get; set; }
@@ -33,6 +35,8 @@ namespace simple3d.Levels
         public int MaxHealth { get; set; }
         public float Endurance { get; set; }
         public int MaxEndurance { get; set; }
+        public float SpellPoints { get; set; }
+        public int MaxSpellPoints { get; set; }
         public Weapon CurrentWeapon { get; set; }
 
         public abstract void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
