@@ -33,7 +33,7 @@ namespace simple3d.Ui
             var window = SDL.SDL_CreateWindow(title,
                 SDL.SDL_WINDOWPOS_CENTERED,
                 SDL.SDL_WINDOWPOS_CENTERED,
-                height, width,
+                width, height,
                 flags
             );
 
