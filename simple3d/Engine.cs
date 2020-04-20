@@ -14,21 +14,31 @@ namespace simple3d
 {
     public class Engine : IEngine
     {
-        private readonly IController controller;
-        private readonly IEventsCycle eventsCycle;
-        private readonly IScreen screen;
         private readonly ISceneRenderer sceneRenderer;
+        private readonly IMiniMapRenderer miniMapRenderer;
+        private readonly IStatusBarRenderer statusBarRenderer;
         private ulong previousTime;
         private readonly float counterFrequency;
+        private IController Controller { get; }
+        private IScreen Screen { get; }
+        private IEventsCycle EventsCycle { get; }
 
         private int lastMousePosition;
 
-        private Engine(IScreen screen, IController controller, IEventsCycle eventsCycle, ISceneRenderer sceneRenderer)
+        private Engine(
+            IScreen screen,
+            IController controller,
+            IEventsCycle eventsCycle,
+            ISceneRenderer sceneRenderer,
+            IMiniMapRenderer miniMapRenderer,
+            IStatusBarRenderer statusBarRenderer)
         {
-            this.screen = screen;
-            this.controller = controller;
-            this.eventsCycle = eventsCycle;
+            Screen = screen;
+            Controller = controller;
+            EventsCycle = eventsCycle;
             this.sceneRenderer = sceneRenderer;
+            this.miniMapRenderer = miniMapRenderer;
+            this.statusBarRenderer = statusBarRenderer;
             lastMousePosition = -1;
 
             previousTime = SDL_GetPerformanceCounter();
@@ -36,6 +46,7 @@ namespace simple3d
 
             eventsCycle.AddListener(controller);
         }
+
 
         public static Engine Create(EngineOptions options, IController controller, IEventsCycle eventsCycle,
             ISceneRenderer sceneRenderer)
@@ -56,8 +67,10 @@ namespace simple3d
             }
 
             var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
+            var miniMapRenderer = new MiniMapRenderer();
+            var statusBarRenderer = new StatusBarRenderer();
 
-            return new Engine(screen, controller, eventsCycle, sceneRenderer);
+            return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer);
         }
 
         public bool Update(Scene scene)
@@ -66,31 +79,51 @@ namespace simple3d
             var elapsedMilliseconds = (currentTime - previousTime) / counterFrequency;
             previousTime = currentTime;
 
-            eventsCycle.ProcessEvents();
+            EventsCycle.ProcessEvents();
 
             if (eventsCycle.ExitRequested)
                 return false;
 
-            if (lastMousePosition != controller.GetMousePositionX())
+            if (lastMousePosition != Controller.GetMousePositionX())
             {
-                OnMouseMove(controller.GetMousePositionX(), scene.Player);
+                OnMouseMove(Controller.GetMousePositionX(), scene.Player);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_q))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_q))
                 return false;
 
+            UpdateWorld(scene, elapsedMilliseconds);
+
+            ProcessKeyboard(elapsedMilliseconds, scene);
+
+            Render(scene, elapsedMilliseconds);
+
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void UpdateWorld(Scene scene, float elapsedMilliseconds)
+        {
             foreach (var mapObject in scene.Objects)
             {
                 mapObject.OnWorldUpdate(scene, elapsedMilliseconds);
             }
+        }
 
-            screen.Clear();
-            ProcessKeyboard(elapsedMilliseconds, scene);
-            sceneRenderer.Render(screen, scene, elapsedMilliseconds, controller.IsKeyPressed(SDL_Keycode.SDLK_m));
-            screen.Update();
-            Console.WriteLine($"FPS: {1000 / elapsedMilliseconds}");
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Render(Scene scene, float elapsedMilliseconds)
+        {
+            Screen.Clear();
+            sceneRenderer.Render(Screen, scene, elapsedMilliseconds);
 
-            return true;
+            statusBarRenderer.Render(Screen, scene);
+
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_m))
+                miniMapRenderer.Render(Screen, scene);
+
+            statusBarRenderer.Render(Screen, scene);
+
+            Screen.Update();
         }
 
         private void OnMouseMove(int x, Player player)
@@ -132,17 +165,17 @@ namespace simple3d
         {
             var player = scene.Player;
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_LEFT))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_LEFT))
             {
                 DoLeftTurn(elapsedMs, player);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_RIGHT))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_RIGHT))
             {
                 DoRightTurn(elapsedMs, player);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_w))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_w))
             {
                 var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
@@ -150,7 +183,7 @@ namespace simple3d
                 TryMove(dx, dy, scene);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_s))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_s))
             {
                 var dx = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
@@ -158,7 +191,7 @@ namespace simple3d
                 TryMove(-dx, -dy, scene);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_a))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_a))
             {
                 var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
@@ -166,7 +199,7 @@ namespace simple3d
                 TryMove(-dx, dy, scene);
             }
 
-            if (controller.IsKeyPressed(SDL_Keycode.SDLK_d))
+            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_d))
             {
                 var dx = MathF.Cos(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
                 var dy = MathF.Sin(player.DirectionAngle) * player.MovingSpeed * elapsedMs;
@@ -234,7 +267,7 @@ namespace simple3d
         public void Dispose()
         {
             sceneRenderer.Dispose();
-            screen.Dispose();
+            Screen.Dispose();
             SDL_image.IMG_Quit();
             SDL_Quit();
         }
