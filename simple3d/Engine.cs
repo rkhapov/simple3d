@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Builder;
+using simple3d.Drawing;
 using simple3d.Events;
 using simple3d.Levels;
 using simple3d.MathUtils;
@@ -66,9 +67,12 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant disable cursor: {SDL_GetError()}");
             }
 
-            var screen = Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
+            var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();
-            var statusBarRenderer = new StatusBarRenderer();
+            var statusBarHeight = screen.Height / 8;
+            var statusBarWidth = screen.Width;
+            var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
+            var statusBarRenderer = new StatusBarRenderer(statusBarSprite, statusBarHeight);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer);
         }
@@ -81,7 +85,7 @@ namespace simple3d
 
             EventsCycle.ProcessEvents();
 
-            if (eventsCycle.ExitRequested)
+            if (EventsCycle.ExitRequested)
                 return false;
 
             if (lastMousePosition != Controller.GetMousePositionX())

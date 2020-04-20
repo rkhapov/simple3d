@@ -15,12 +15,17 @@ namespace simple3d.Levels
             Position = position;
             Size = size;
             DirectionAngle = directionAngle;
+            HealthPoints = 32;
+            MaxHealthPoints = 32;
         }
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
         public float DirectionAngle { get; set; }
         public Sprite Sprite => throw new InvalidOperationException("Player should not be drawn");
+
+        public int HealthPoints { get; set; }
+        public int MaxHealthPoints { get; set; }
 
         public abstract void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
     }
