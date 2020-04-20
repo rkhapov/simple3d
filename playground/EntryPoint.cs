@@ -74,7 +74,11 @@ namespace playground
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
-            //nothing
+            if (Endurance < MaxEndurance)
+            {
+                Endurance += elapsedMilliseconds * 0.001f;
+                Endurance = MathF.Min(Endurance, MaxEndurance);
+            }
         }
     }
 
@@ -94,7 +98,7 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 500, 500, false));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 500, 500, true));
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
@@ -107,6 +111,7 @@ namespace playground
                 new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
                 new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
             };
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture);
             var map = Map.FromStrings(new[]
             {
                 "###############################",
@@ -129,11 +134,34 @@ namespace playground
                 "#####.####..####.....#........#",
                 "#....................#........#",
                 "###############################"
-            }, wallTexture, floorTexture, ceilingTexture);
+            }, storage.GetCellByChar);
             var level = new Scene(player, map, objects);
             
             while (engine.Update(level))
             {
+            }
+        }
+
+        private class MapTextureStorage
+        {
+            private readonly Sprite ceilingTexture;
+            private readonly Sprite wallTexture;
+            private readonly Sprite floorTexture;
+
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture)
+            {
+                this.ceilingTexture = ceilingTexture;
+                this.wallTexture = wallTexture;
+                this.floorTexture = floorTexture;
+            }
+
+            public MapCell GetCellByChar(char c)
+            {
+                return c switch
+                {
+                    '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
+                    _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
+                };
             }
         }
     }

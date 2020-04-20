@@ -1,4 +1,5 @@
-﻿using simple3d.Drawing;
+﻿using System;
+using simple3d.Drawing;
 
 namespace simple3d.Levels
 {
@@ -16,7 +17,7 @@ namespace simple3d.Levels
             Width = width;
         }
 
-        public static Map FromStrings(string[] strings, Sprite wallSprite, Sprite floorTexture, Sprite ceilingTexture)
+        public static Map FromStrings(string[] strings, Func<char, MapCell> aaa)
         {
             var height = strings.Length;
             var width = strings[0].Length;
@@ -26,20 +27,11 @@ namespace simple3d.Levels
             {
                 for (var j = 0; j < width; j++)
                 {
-                    map[i * width + j] = GetCellByChar(strings[i][j], wallSprite, floorTexture, ceilingTexture);
+                    map[i * width + j] = aaa(strings[i][j]);
                 }
             }
 
             return new Map(map, height, width);
-        }
-
-        private static MapCell GetCellByChar(char c, Sprite wallTexture, Sprite floorTexture, Sprite ceilingTexture)
-        {
-            return c switch
-            {
-                '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
-                _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
-            };
         }
 
         public bool InBound(int y, int x)

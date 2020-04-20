@@ -2,84 +2,18 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using simple3d.Levels.Tools;
-using simple3d.MathUtils;
 using simple3d.Ui;
 
 namespace simple3d.Levels
 {
     public class Scene25DRenderer : ISceneRenderer
     {
-        private static readonly float[] depthBuffer = new float[2000];
+        private static readonly float[] ZBuffer = new float[4000];
 
-        public void Render(IScreen screen, Scene scene, float elapsedMilliseconds, bool renderMap)
+        public void Render(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
             RenderWorld(screen, scene);
             RenderObjects(screen, scene, elapsedMilliseconds);
-            if (renderMap)
-                RenderMap(screen, scene);
-        }
-
-        private void RenderMap(IScreen screen, Scene scene)
-        {
-            var mapHeight = scene.Map.Height;
-            var mapWidth = scene.Map.Width;
-            var screenWidth = screen.Width;
-            var screenHeight = screen.Height;
-            var pixelPerBlock = Math.Min(screenHeight / mapHeight, screenWidth / mapWidth);
-
-            (float y, float x) TranslateCords(float y, float x)
-            {
-                return (y * pixelPerBlock, x * pixelPerBlock);
-            }
-
-            void DrawPoint(float y, float x, bool f)
-            {
-                var (sy, sx) = TranslateCords(y, x);
-                for (var dx = -1; dx < 2; dx++)
-                {
-                    for (var dy = -1; dy < 2; dy++)
-                    {
-                        if (!f)
-                            screen.Draw((int) sy + dy, (int) sx + dx, 0, 255, 0);
-                        else
-                            screen.Draw((int) sy + dy, (int) sx + dx, 0x80, 0, 0x80);
-                    }
-                }
-            }
-
-            for (var i = 0; i < mapHeight; i++)
-            {
-                for (var j = 0; j < mapWidth; j++)
-                {
-                    var (sy, sx) = TranslateCords(i, j);
-                    var cell = scene.Map.At(i, j);
-                    if (cell.Type != MapCellType.Wall)
-                        continue;
-
-                    for (var k = 0; k < pixelPerBlock; k++)
-                    {
-                        for (var l = 0; l < pixelPerBlock; l++)
-                        {
-                            var ll = (int) sy + k;
-                            var kk = (int) sx + l;
-                            if (ll < 0 || ll >= screenHeight || kk < 0 || kk >= screenWidth)
-                                continue;
-                            screen.Draw(kk, ll, 255, 0, 0);
-                        }
-                    }
-                }
-            }
-
-            foreach (var obj in scene.Objects.Concat(new[] {scene.Player}))
-            {
-                DrawPoint(obj.Position.X, obj.Position.Y, true);
-                var rotatedVertices = obj.GetRotatedVertices();
-                Console.WriteLine($"{obj} {obj.GetDistanceToPlayerSquared(scene.Player)}");
-                foreach (var vertex in rotatedVertices)
-                {
-                    DrawPoint(vertex.X, vertex.Y, false);
-                }
-            }
         }
 
         private static void RenderWorld(IScreen screen, Scene scene)
@@ -103,7 +37,7 @@ namespace simple3d.Levels
                 var wallCeil = ceil < 0 ? 0 : ceil + 1;
                 var wallFloor = floor > screenHeight ? screenHeight : floor;
 
-                depthBuffer[x] = ray.Length;
+                ZBuffer[x] = ray.Length;
 
                 for (var y = wallFloor; y < screenHeight; y++)
                 {
@@ -311,7 +245,7 @@ namespace simple3d.Levels
                     sampleX += sampleXStep;
                     var column = (int) (middle + x - width2);
 
-                    if (depthBuffer[column] < distance)
+                    if (ZBuffer[column] < distance)
                         continue;
 
                     var sampleY = startSampleX;

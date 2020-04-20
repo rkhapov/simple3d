@@ -36,6 +36,11 @@ namespace simple3d.Drawing
             }
         }
 
+        public static Sprite FromBuffer(int[] buffer, int height, int width)
+        {
+            return new Sprite(buffer, height, width);
+        }
+        
         public static Sprite Load(string path)
         {
             var surface = SDL_image.IMG_Load(path);

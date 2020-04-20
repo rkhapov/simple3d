@@ -5,6 +5,6 @@ namespace simple3d.Levels
 {
     public interface ISceneRenderer: IDisposable
     {
-        void Render(IScreen screen, Scene scene, float elapsedMilliseconds, bool renderMap);
+        void Render(IScreen screen, Scene scene, float elapsedMilliseconds);
     }
 }
