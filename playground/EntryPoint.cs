@@ -79,6 +79,8 @@ namespace playground
                 Endurance += elapsedMilliseconds * 0.005f;
                 Endurance = MathF.Min(Endurance, MaxEndurance);
             }
+            
+            CurrentWeapon.UpdateAnimation(elapsedMilliseconds);
         }
     }
 
@@ -96,7 +98,10 @@ namespace playground
 
     internal class Sword : Weapon
     {
-        public Sword(Animation staticAnimation, Animation attackAnimation, Animation movingAnimation) : base(staticAnimation, attackAnimation, movingAnimation)
+        public Sword(Animation staticAnimation, Animation attackLeftAnimation, Animation attackRightAnimation,
+            Animation blockLeftAnimation, Animation blockRightAnimation, Animation movingAnimation) : base(
+            staticAnimation, attackLeftAnimation, attackRightAnimation, blockLeftAnimation, blockRightAnimation,
+            movingAnimation)
         {
         }
     }
@@ -112,9 +117,14 @@ namespace playground
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var greenLightTexture = Sprite.Load("./sprites/greenlight.png");
-            var swordAnimation = Animation.LoadFromDirectory("./animations/sword");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
-            var sword = new Sword(swordAnimation, swordAnimation, swordAnimation);
+            var sword = new Sword(
+                Animation.LoadFromDirectory("./animations/sword_static"),
+                Animation.LoadFromDirectory("./animations/sword_static"),
+                Animation.LoadFromDirectory("./animations/sword_static"),
+                Animation.LoadFromDirectory("./animations/sword_left_block"),
+                Animation.LoadFromDirectory("./animations/sword_right_block"),
+                Animation.LoadFromDirectory("./animations/sword_static"));
             player.CurrentWeapon = sword;
             var objects = new IMapObject[]
             {

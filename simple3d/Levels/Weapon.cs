@@ -6,8 +6,11 @@ namespace simple3d.Levels
     public abstract class Weapon
     {
         private readonly Animation staticAnimation;
-        private readonly Animation attackAnimation;
+        private readonly Animation attackLeftAnimation;
+        private readonly Animation attackRightAnimation;
         private readonly Animation movingAnimation;
+        private readonly Animation blockLeftAnimation;
+        private readonly Animation blockRightAnimation;
 
         private WeaponAnimationState weaponAnimationState;
 
@@ -16,19 +19,33 @@ namespace simple3d.Levels
             get => weaponAnimationState;
             set
             {
+                if (weaponAnimationState == value)
+                    return;
+
                 staticAnimation.Reset();
-                attackAnimation.Reset();
+                attackLeftAnimation.Reset();
                 movingAnimation.Reset();
+                attackRightAnimation.Reset();
+                blockLeftAnimation.Reset();
+                blockRightAnimation.Reset();
 
                 weaponAnimationState = value;
             }
         }
 
-        protected Weapon(Animation staticAnimation, Animation attackAnimation, Animation movingAnimation)
+        protected Weapon(Animation staticAnimation,
+            Animation attackLeftAnimation,
+            Animation attackRightAnimation,
+            Animation blockLeftAnimation,
+            Animation blockRightAnimation,
+            Animation movingAnimation)
         {
             this.staticAnimation = staticAnimation;
-            this.attackAnimation = attackAnimation;
+            this.attackLeftAnimation = attackLeftAnimation;
             this.movingAnimation = movingAnimation;
+            this.blockLeftAnimation = blockLeftAnimation;
+            this.blockRightAnimation = blockRightAnimation;
+            this.attackRightAnimation = attackRightAnimation;
             weaponAnimationState = WeaponAnimationState.Static;
         }
 
@@ -45,7 +62,10 @@ namespace simple3d.Levels
             {
                 WeaponAnimationState.Static => staticAnimation,
                 WeaponAnimationState.Moving => movingAnimation,
-                WeaponAnimationState.Attack => attackAnimation,
+                WeaponAnimationState.AttackLeft => attackLeftAnimation,
+                WeaponAnimationState.AttackRight => attackRightAnimation,
+                WeaponAnimationState.BlockLeft => blockLeftAnimation,
+                WeaponAnimationState.BlockRight => blockRightAnimation,
                 _ => throw new NotImplementedException($"Animation for {AnimationState} are not implemented")
             };
         }

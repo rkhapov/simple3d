@@ -4,6 +4,9 @@
     {
         Static,
         Moving,
-        Attack
+        AttackLeft,
+        AttackRight,
+        BlockLeft,
+        BlockRight
     }
 }

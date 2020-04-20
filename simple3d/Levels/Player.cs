@@ -43,126 +43,150 @@ namespace simple3d.Levels
 
         public void ProcessAction(PlayerAction action, Scene scene, float elapsedMilliseconds)
         {
-            switch (action)
+            switch (action.Type)
             {
-                case PlayerAction.LeftCameraTurn:
-                    DoLeftTurn(scene, elapsedMilliseconds);
+                case PlayerActionType.LeftCameraTurn:
+                    DoLeftTurn(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.RightCameraTurn:
-                    DoRightTurn(scene, elapsedMilliseconds);
+                case PlayerActionType.RightCameraTurn:
+                    DoRightTurn(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MoveForward:
-                    DoMoveForward(scene, elapsedMilliseconds);
+                case PlayerActionType.MoveForward:
+                    DoMoveForward(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MoveBackward:
-                    DoMoveBackward(scene, elapsedMilliseconds);
+                case PlayerActionType.MoveBackward:
+                    DoMoveBackward(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MoveLeft:
-                    DoMoveLeft(scene, elapsedMilliseconds);
+                case PlayerActionType.MoveLeft:
+                    DoMoveLeft(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MoveRight:
-                    DoMoveRight(scene, elapsedMilliseconds);
+                case PlayerActionType.MoveRight:
+                    DoMoveRight(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MeleeLeftAttack:
-                    DoMeleeLeftAttack(scene, elapsedMilliseconds);
+                case PlayerActionType.MeleeLeftAttack:
+                    DoMeleeLeftAttack(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MeleeRightAttack:
-                    DoMeleeRightAttack(scene, elapsedMilliseconds);
+                case PlayerActionType.MeleeRightAttack:
+                    DoMeleeRightAttack(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.Interact:
-                    DoInteract(scene, elapsedMilliseconds);
+                case PlayerActionType.Interact:
+                    DoInteract(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.Magic:
-                    DoMagic(scene, elapsedMilliseconds);
+                case PlayerActionType.Magic:
+                    DoMagic(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.Sprint:
-                    DoSprint(scene, elapsedMilliseconds);
+                case PlayerActionType.Sprint:
+                    DoSprint(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MeleeLeftBlock:
-                    DoMeleeLeftBlock(scene, elapsedMilliseconds);
+                case PlayerActionType.MeleeLeftBlock:
+                    DoMeleeLeftBlock(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerAction.MeleeRightBlock:
-                    DoMeleeRightBlock(scene, elapsedMilliseconds);
+                case PlayerActionType.MeleeRightBlock:
+                    DoMeleeRightBlock(action, scene, elapsedMilliseconds);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+                    throw new ArgumentOutOfRangeException(nameof(action.Type), action.Type, null);
             }
         }
 
-        protected virtual void DoMeleeRightBlock(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMeleeRightBlock(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        {
+            if (action.Enabled)
+                CurrentWeapon.AnimationState = WeaponAnimationState.BlockRight;
+            else
+                CurrentWeapon.AnimationState = WeaponAnimationState.Static;
+        }
+
+        protected virtual void DoMeleeLeftBlock(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        {
+            if (action.Enabled)
+                CurrentWeapon.AnimationState = WeaponAnimationState.BlockLeft;
+            else
+                CurrentWeapon.AnimationState = WeaponAnimationState.Static;
+        }
+
+        protected virtual void DoSprint(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual void DoMeleeLeftBlock(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual void DoSprint(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoInteract(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual void DoMagic(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMeleeRightAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Melee right attack");
         }
 
-        protected virtual void DoInteract(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMeleeLeftAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Melee left attack");
         }
 
-        protected virtual void DoMeleeRightAttack(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMoveRight(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            throw new NotImplementedException();
-        }
+            if (!action.Enabled)
+                return;
 
-        protected virtual void DoMeleeLeftAttack(Scene scene, in float elapsedMilliseconds)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected virtual void DoMoveRight(Scene scene, in float elapsedMilliseconds)
-        {
             var dx = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
             TryMove(dx, -dy, scene, elapsedMilliseconds);
         }
 
-        protected virtual void DoMoveLeft(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMoveLeft(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
             var dx = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
             TryMove(-dx, dy, scene, elapsedMilliseconds);
         }
 
-        protected virtual void DoMoveBackward(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMoveBackward(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
             var dx = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
             TryMove(-dx, -dy, scene, elapsedMilliseconds);
         }
 
-        protected virtual void DoMoveForward(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoMoveForward(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
             var dx = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
             TryMove(dx, dy, scene, elapsedMilliseconds);
         }
 
-        protected virtual void DoRightTurn(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoRightTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
             DirectionAngle += 0.003f * elapsedMilliseconds;
         }
 
-        protected virtual void DoLeftTurn(Scene scene, in float elapsedMilliseconds)
+        protected virtual void DoLeftTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
             DirectionAngle -= 0.003f * elapsedMilliseconds;
         }
         

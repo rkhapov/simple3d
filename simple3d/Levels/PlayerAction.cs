@@ -1,19 +1,14 @@
 ﻿namespace simple3d.Levels
 {
-    public enum PlayerAction
+    public struct PlayerAction
     {
-        LeftCameraTurn,
-        RightCameraTurn,
-        MoveForward,
-        MoveBackward,
-        MoveLeft,
-        MoveRight,
-        MeleeLeftAttack,
-        MeleeRightAttack,
-        Interact,
-        Magic,
-        Sprint,
-        MeleeLeftBlock,
-        MeleeRightBlock
+        public PlayerAction(bool enabled, PlayerActionType type)
+        {
+            Enabled = enabled;
+            Type = type;
+        }
+
+        public bool Enabled { get; }
+        public PlayerActionType Type { get; }
     }
 }
