@@ -28,7 +28,7 @@ namespace simple3d.Levels
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
         {
-            var linesHeight = height / 8;
+            var linesHeight = height / 6;
             var barMiddle = screen.Height - height / 2;
             var xStart = screen.Width / 20;
 

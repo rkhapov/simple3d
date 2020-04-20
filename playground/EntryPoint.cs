@@ -111,6 +111,7 @@ namespace playground
                 new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
                 new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
             };
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture);
             var map = Map.FromStrings(new[]
             {
                 "###############################",
@@ -133,11 +134,34 @@ namespace playground
                 "#####.####..####.....#........#",
                 "#....................#........#",
                 "###############################"
-            }, wallTexture, floorTexture, ceilingTexture);
+            }, storage.GetCellByChar);
             var level = new Scene(player, map, objects);
             
             while (engine.Update(level))
             {
+            }
+        }
+
+        private class MapTextureStorage
+        {
+            private readonly Sprite ceilingTexture;
+            private readonly Sprite wallTexture;
+            private readonly Sprite floorTexture;
+
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture)
+            {
+                this.ceilingTexture = ceilingTexture;
+                this.wallTexture = wallTexture;
+                this.floorTexture = floorTexture;
+            }
+
+            public MapCell GetCellByChar(char c)
+            {
+                return c switch
+                {
+                    '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
+                    _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
+                };
             }
         }
     }
