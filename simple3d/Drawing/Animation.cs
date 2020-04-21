@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 namespace simple3d.Drawing
@@ -27,6 +26,12 @@ namespace simple3d.Drawing
                 currentFrame = (currentFrame + 1) % frames.Length;
                 currentTime = 0.0f;
             }
+        }
+
+        public void Reset()
+        {
+            currentTime = 0.0f;
+            currentFrame = 0;
         }
 
         public Sprite CurrentFrame => frames[currentFrame];

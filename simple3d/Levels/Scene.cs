@@ -16,6 +16,16 @@ namespace simple3d.Levels
 
         public Player Player { get; }
         public Map Map { get; }
-        public IEnumerable<IMapObject> Objects => mapObjects;
+        public IEnumerable<IMapObject> Objects => mapObjects.ToArray();
+
+        public void RemoveObject(IMapObject obj)
+        {
+            mapObjects.Remove(obj);
+        }
+
+        public void AddObject(IMapObject obj)
+        {
+            mapObjects.Add(obj);
+        }
     }
 }
