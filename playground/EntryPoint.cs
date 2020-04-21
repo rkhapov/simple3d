@@ -231,11 +231,12 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 500, 500, false));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 1024, 1920, false));
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
+            var windowTexture = Sprite.Load("./sprites/window.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var greenLightTexture = Sprite.Load("./sprites/greenlight.png");
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
@@ -257,16 +258,16 @@ namespace playground
                 new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
                 new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
             };
-            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture);
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture);
             var map = Map.FromStrings(new[]
             {
                 "###############################",
                 "#.........#...................#",
                 "#..#..........#...............#",
                 "#.........############........#",
-                "#.........#..........#........#",
-                "#.........#..........###......#",
-                "#.........#..........#........#",
+                "#.........o..........#........#",
+                "#.........o..........###......#",
+                "#.....o...o..........#........#",
                 "####......##########.#........#",
                 "##...................#......###",
                 "#........####........#........#",
@@ -293,12 +294,14 @@ namespace playground
             private readonly Sprite ceilingTexture;
             private readonly Sprite wallTexture;
             private readonly Sprite floorTexture;
+            private readonly Sprite windowTexture;
 
-            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture)
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite windowTexture)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
                 this.floorTexture = floorTexture;
+                this.windowTexture = windowTexture;
             }
 
             public MapCell GetCellByChar(char c)
@@ -306,6 +309,7 @@ namespace playground
                 return c switch
                 {
                     '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
+                    'o' => new MapCell(MapCellType.Window, windowTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
                 };
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -40,35 +41,45 @@ namespace simple3d.Levels
                     var yRayUnit = MathF.Cos(rayAngle);
                     var ray = ComputeRay(rayAngle, player, scene.Map, xRayUnit, yRayUnit);
                     var cosinePerspectiveCorrection = MathF.Cos(directionAngle - ray.Angle);
-                    var ceil =
-                        (int) (screenHeight / 2.0 - screenHeight / (ray.Length * cosinePerspectiveCorrection));
-                    var floor = screenHeight - ceil;
-                    var wallHeight = (float) floor - ceil;
-                    var wallCeil = ceil < 0 ? 0 : ceil + 1;
-                    var wallFloor = floor > screenHeight ? screenHeight : floor;
-
-                    ZBuffer[x] = ray.Length;
-
-                    for (var y = wallFloor; y < screenHeight; y++)
+                    ZBuffer[x] = ray.Targets.Peek().Length;
+              
+                    while (ray.Targets.Count != 0)
                     {
-                        RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection,
-                            xRayUnit, yRayUnit, x);
-                    }
+                        var target = ray.Targets.Pop();
+                        var ceil =
+                            (int)(screenHeight / 2.0 - screenHeight / (target.Length * cosinePerspectiveCorrection));
+                        var floor = screenHeight - ceil;
+                        var wallHeight = (float)floor - ceil;
+                        var wallCeil = ceil < 0 ? 0 : ceil + 1;
+                        var wallFloor = floor > screenHeight ? screenHeight : floor;
 
-                    for (var y = wallCeil; y < wallFloor; y++)
-                    {
-                        RenderWallAt(screen, ray, viewDistance, y, ceil, wallHeight, x);
+                       
+
+                        for (var y = wallFloor; y < screenHeight; y++)
+                        {
+                            RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection,
+                                xRayUnit, yRayUnit, x);
+                        }
+
+                        for (var y = wallCeil; y < wallFloor; y++)
+                        {
+                            RenderWallAt(screen, target, viewDistance, y, ceil, wallHeight, x);
+                        }
                     }
                 }))).Wait();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void RenderWallAt(IScreen screen, Ray ray, float viewDistance, int y, int ceil, float wallHeight, int x)
+        private static void RenderWallAt(IScreen screen, Ray.Target ray, float viewDistance, int y, int ceil, float wallHeight, int x)
         {
             if (ray.Length < viewDistance)
             {
                 var sampleY = (y - ceil) / wallHeight;
                 var pixel = ray.MapCell.Sprite.GetSample(sampleY, ray.SampleX);
+                if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
+                {
+                    return;
+                }
                 screen.Draw(y, x, pixel);
             }
             else
@@ -100,22 +111,36 @@ namespace simple3d.Levels
 
         private struct Ray
         {
-            public Ray(float length, float angle, float sampleX, int wallX, int wallY, MapCell mapCell)
+            public Ray(float angle)
             {
-                Length = length;
                 Angle = angle;
-                SampleX = sampleX;
-                WallX = wallX;
-                WallY = wallY;
-                MapCell = mapCell;
+                Targets = new Stack<Target>();
             }
 
-            public float Length { get; }
+
             public float Angle { get; }
-            public float SampleX { get; }
-            public int WallX { get; }
-            public int WallY { get; }
-            public MapCell MapCell { get; }
+
+            public Stack<Target> Targets { get; }
+
+
+
+            public struct Target
+            {
+                public Target(float length, float sampleX, int wallX, int wallY, MapCell mapCell)
+                {
+                    Length = length;
+                    SampleX = sampleX;
+                    WallX = wallX;
+                    WallY = wallY;
+                    MapCell = mapCell;
+                }
+                public float Length { get; }
+                public float SampleX { get; }
+                public int WallX { get; }
+                public int WallY { get; }
+                public MapCell MapCell { get; }
+            }
+
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,6 +165,7 @@ namespace simple3d.Levels
             var currentY = playerY;
             var currentXStep = xRayUnit * rayStep;
             var currentYStep = yRayUnit * rayStep;
+            var ray = new Ray(rayAngle);
 
             while (!hit && rayLength < viewDistance)
             {
@@ -153,10 +179,17 @@ namespace simple3d.Levels
                 {
                     cell = map.At(testY, testX);
 
-                    if (cell.Type != MapCellType.Wall)
+                    if (cell.Type == MapCellType.Empty)//mb
                         continue;
 
-                    hit = true;
+                    if (cell.Type == MapCellType.Wall)
+                        hit = true;
+
+             
+                    if (cell.Type == MapCellType.Window && ray.Targets.Count != 0 && ray.Targets.Peek().MapCell.Type == MapCellType.Window)
+                        continue;
+
+                   
                     var blockMiddleX = testX + 0.5f;
                     var blockMiddleY = testY + 0.5f;
                     var angle = MathF.Atan2(currentY - blockMiddleY, currentX - blockMiddleX);
@@ -179,6 +212,7 @@ namespace simple3d.Levels
                     {
                         sampleX = 1 - (currentY - testY);
                     }
+                    ray.Targets.Push(new Ray.Target(rayLength, sampleX, testX, testY, cell));
                 }
                 else
                 {
@@ -187,7 +221,7 @@ namespace simple3d.Levels
                 }
             }
 
-            return new Ray(rayLength, rayAngle, sampleX, testX, testY, cell);
+            return ray;
         }
 
         private static void RenderObjectsOneThread(IScreen screen, Scene scene, float elapsedMilliseconds)
