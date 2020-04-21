@@ -29,6 +29,7 @@ namespace simple3d.Levels
         private void RenderWeapon(IScreen screen, Scene scene)
         {
             var weapon = scene.Player.Weapon;
+            if (weapon == null) return;
             var sprite = weapon.Sprite;
             var startY = screen.Height - sprite.Height - statusBarHeight;
             var startX = screen.Width - sprite.Width;

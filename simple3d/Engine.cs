@@ -133,6 +133,7 @@ namespace simple3d
             statusBarRenderer.Render(Screen, scene);
 
             Screen.Update();
+            Console.WriteLine($"FPS: {1000/elapsedMilliseconds}");
         }
 
         public void Dispose()
