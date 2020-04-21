@@ -9,7 +9,7 @@ namespace simple3d.Drawing
     {
         private readonly int[] buffer;
 
-        private Sprite(int[] buffer, int height, int width)
+        public Sprite(int[] buffer, int height, int width)
         {
             Height = height;
             Width = width;

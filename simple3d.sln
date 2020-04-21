@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "simple3d", "simple3d\simple
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "playground", "playground\playground.csproj", "{7833136B-DE4B-40D3-B1C1-24DF32AA974F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "menu", "menu\menu.csproj", "{AEA66687-2DC1-4B24-B27B-399242C3A12B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7833136B-DE4B-40D3-B1C1-24DF32AA974F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEA66687-2DC1-4B24-B27B-399242C3A12B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEA66687-2DC1-4B24-B27B-399242C3A12B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEA66687-2DC1-4B24-B27B-399242C3A12B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEA66687-2DC1-4B24-B27B-399242C3A12B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
