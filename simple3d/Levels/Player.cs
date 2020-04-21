@@ -210,7 +210,7 @@ namespace simple3d.Levels
 
             TryMove(scene, newPosition, map);
 
-            var dEndurance = (oldPosition - player.Position).Length() * elapsedMilliseconds * 0.03f;
+            var dEndurance = (oldPosition - player.Position).Length() * 0.03f;
             if (player.Endurance > dEndurance)
             {
                 player.Endurance -= dEndurance;
@@ -232,7 +232,7 @@ namespace simple3d.Levels
                 var testX = (int) vertex.X;
                 var testY = (int) vertex.Y;
 
-                if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall)
+                if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall || map.At(testY, testX).Type == MapCellType.Window)
                 {
                     return;
                 }

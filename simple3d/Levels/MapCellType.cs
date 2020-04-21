@@ -3,6 +3,7 @@
     public enum MapCellType
     {
         Empty,
+        Window,
         Wall
     }
 }
