@@ -1,6 +1,6 @@
 ﻿namespace simple3d.Levels
 {
-    public enum WeaponAnimationState
+    public enum MeleeWeaponState
     {
         Static,
         Moving,

@@ -84,6 +84,8 @@ namespace simple3d
 
             Render(scene, elapsedMilliseconds);
 
+            // Console.WriteLine($"FPS = {1000 / elapsedMilliseconds}");
+
             return true;
         }
 

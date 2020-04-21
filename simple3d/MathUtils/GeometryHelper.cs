@@ -20,6 +20,13 @@ namespace simple3d.MathUtils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPointAtRectangle(Vector2 point, Vector2[] rectangle)
+        {
+            return point.InTriangle(rectangle[0], rectangle[1], rectangle[2])
+                   && point.InTriangle(rectangle[3], rectangle[1], rectangle[2]);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsLineIntersects(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
         {
             var o1 = GetOrientation(p1, q1, p2);

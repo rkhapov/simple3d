@@ -25,5 +25,45 @@ namespace simple3d.MathUtils
             return min.X < vector.X && vector.X < max.X &&
                    min.Y < vector.Y && vector.Y < max.Y;
         }
+
+        public static PointToLinePosition GetPositionToLine(this Vector2 point, Vector2 p0, Vector2 p1)
+        {
+            var a = p1 - p0;
+            var b = point - p0;
+            var sa = a.X * b.Y - b.X * a.Y;
+
+            if (sa < -1e-6f)
+            {
+                return PointToLinePosition.Right;
+            }
+
+            if (sa > 1e-6f)
+            {
+                return PointToLinePosition.Left;
+            }
+
+            if ((a.X * b.X < 0.0) || (a.Y * b.Y < 0.0))
+                return PointToLinePosition.Behind;
+
+            if (a.LengthSquared() < b.LengthSquared())
+                return PointToLinePosition.Beyond;
+
+            //TODO: fix comparison
+            if (p0 == point)
+                return PointToLinePosition.Origin;
+
+            if (p1 == point)
+                return PointToLinePosition.Destination;
+
+            return PointToLinePosition.Between;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InTriangle(this Vector2 point, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return point.GetPositionToLine(a, b) != PointToLinePosition.Left
+                   && point.GetPositionToLine(b, c) != PointToLinePosition.Left
+                   && point.GetPositionToLine(c, a) != PointToLinePosition.Left;
+        }
     }
 }

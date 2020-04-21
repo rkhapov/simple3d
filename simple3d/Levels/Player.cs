@@ -11,7 +11,9 @@ namespace simple3d.Levels
     {
         public readonly float FieldOfView = MathF.PI / 3;
         public readonly float ViewDistance = 30.0f;
-        public readonly float MovingSpeed = 0.005f;
+        public const float WalkMovingSpeed = 0.003f;
+        public const float SprintMovingSpeed = 0.005f;
+        public float MovingSpeed { get; private set; } = WalkMovingSpeed;
 
         protected Player(Vector2 position, Vector2 size, float directionAngle)
         {
@@ -37,18 +39,16 @@ namespace simple3d.Levels
         public int MaxEndurance { get; set; }
         public float SpellPoints { get; set; }
         public int MaxSpellPoints { get; set; }
-        public Weapon CurrentWeapon { get; set; }
-
-        public abstract void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
+        public Weapon Weapon { get; set; }
 
         public void ProcessAction(PlayerAction action, Scene scene, float elapsedMilliseconds)
         {
             switch (action.Type)
             {
-                case PlayerActionType.LeftCameraTurn:
+                case PlayerActionType.CameraTurnLeft:
                     DoLeftTurn(action, scene, elapsedMilliseconds);
                     break;
-                case PlayerActionType.RightCameraTurn:
+                case PlayerActionType.CameraTurnRight:
                     DoRightTurn(action, scene, elapsedMilliseconds);
                     break;
                 case PlayerActionType.MoveForward:
@@ -84,30 +84,50 @@ namespace simple3d.Levels
                 case PlayerActionType.MeleeRightBlock:
                     DoMeleeRightBlock(action, scene, elapsedMilliseconds);
                     break;
+                case PlayerActionType.Shoot:
+                    DoShoot(action, scene, elapsedMilliseconds);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(action.Type), action.Type, null);
             }
         }
 
+        private void DoShoot(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        {
+            if (!action.Enabled)
+                return;
+
+            if (!(Weapon is ShootingWeapon shootingWeapon))
+                return;
+
+            shootingWeapon.MakeShoot(scene);
+        }
+
         protected virtual void DoMeleeRightBlock(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!(Weapon is MeleeWeapon meleeWeapon))
+                return;
+
             if (action.Enabled)
-                CurrentWeapon.AnimationState = WeaponAnimationState.BlockRight;
+                meleeWeapon.State = MeleeWeaponState.BlockRight;
             else
-                CurrentWeapon.AnimationState = WeaponAnimationState.Static;
+                meleeWeapon.State = MeleeWeaponState.Static;
         }
 
         protected virtual void DoMeleeLeftBlock(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!(Weapon is MeleeWeapon meleeWeapon))
+                return;
+
             if (action.Enabled)
-                CurrentWeapon.AnimationState = WeaponAnimationState.BlockLeft;
+                meleeWeapon.State = MeleeWeaponState.BlockLeft;
             else
-                CurrentWeapon.AnimationState = WeaponAnimationState.Static;
+                meleeWeapon.State = MeleeWeaponState.Static;
         }
 
         protected virtual void DoSprint(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            throw new NotImplementedException();
+            MovingSpeed = action.Enabled ? SprintMovingSpeed : WalkMovingSpeed;
         }
 
         protected virtual void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
@@ -132,9 +152,6 @@ namespace simple3d.Levels
 
         protected virtual void DoMoveRight(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!action.Enabled)
-                return;
-
             var dx = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
@@ -143,9 +160,6 @@ namespace simple3d.Levels
 
         protected virtual void DoMoveLeft(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!action.Enabled)
-                return;
-
             var dx = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
@@ -154,9 +168,6 @@ namespace simple3d.Levels
 
         protected virtual void DoMoveBackward(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!action.Enabled)
-                return;
-
             var dx = MathF.Sin(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
             var dy = MathF.Cos(DirectionAngle) * MovingSpeed * elapsedMilliseconds;
 
@@ -176,20 +187,14 @@ namespace simple3d.Levels
 
         protected virtual void DoRightTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!action.Enabled)
-                return;
-
             DirectionAngle += 0.003f * elapsedMilliseconds;
         }
 
         protected virtual void DoLeftTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!action.Enabled)
-                return;
-
             DirectionAngle -= 0.003f * elapsedMilliseconds;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void TryMove(float dx, float dy, Scene scene, float elapsedMilliseconds)
         {
@@ -244,5 +249,15 @@ namespace simple3d.Levels
 
             Position = newPosition;
         }
+
+        public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
+        {
+        }
+
+        public abstract void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon);
+
+        public abstract void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon);
+
+        public abstract void OnShoot(Scene scene, ShootingWeapon weapon);
     }
 }

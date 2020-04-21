@@ -2,8 +2,8 @@
 {
     public enum PlayerActionType
     {
-        LeftCameraTurn,
-        RightCameraTurn,
+        CameraTurnLeft,
+        CameraTurnRight,
         MoveForward,
         MoveBackward,
         MoveLeft,
@@ -14,6 +14,7 @@
         Magic,
         Sprint,
         MeleeLeftBlock,
-        MeleeRightBlock
+        MeleeRightBlock,
+        Shoot
     }
 }

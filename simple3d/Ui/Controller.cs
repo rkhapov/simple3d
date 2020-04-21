@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using simple3d.Levels;
 using simple3d.SDL2;
 
@@ -42,34 +41,9 @@ namespace simple3d.Ui
             {
                 var (keycode, isPressed) = eventsQueue.Dequeue();
 
-                if (keycode == SDL.SDL_Keycode.SDLK_LEFT)
+                if (keycode == SDL.SDL_Keycode.SDLK_LSHIFT)
                 {
-                    yield return new PlayerAction(isPressed, PlayerActionType.LeftCameraTurn);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_RIGHT)
-                {
-                    yield return new PlayerAction(isPressed, PlayerActionType.RightCameraTurn);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_w)
-                {
-                    yield return new PlayerAction(isPressed, PlayerActionType.MoveForward);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_s)
-                {
-                    yield return new PlayerAction(isPressed, PlayerActionType.MoveBackward);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_a)
-                {
-                    yield return new PlayerAction(isPressed, PlayerActionType.MoveLeft);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_d)
-                {
-                    yield return new PlayerAction(isPressed, PlayerActionType.MoveRight);
+                    yield return new PlayerAction(isPressed, PlayerActionType.Sprint);
                 }
 
                 if (keycode == SDL.SDL_Keycode.SDLK_v)
@@ -85,6 +59,51 @@ namespace simple3d.Ui
                         ? new PlayerAction(isPressed, PlayerActionType.MeleeRightBlock)
                         : new PlayerAction(isPressed, PlayerActionType.MeleeRightAttack);
                 }
+
+                if (keycode == SDL.SDL_Keycode.SDLK_RSHIFT)
+                {
+                    if (IsKeyPressed(SDL.SDL_Keycode.SDLK_b))
+                        yield return new PlayerAction(isPressed, PlayerActionType.MeleeRightBlock);
+                    else if (IsKeyPressed(SDL.SDL_Keycode.SDLK_v))
+                        yield return new PlayerAction(isPressed, PlayerActionType.MeleeLeftBlock);
+                    else
+                        yield return new PlayerAction(false, PlayerActionType.MeleeLeftBlock);
+                }
+
+                if (keycode == SDL.SDL_Keycode.SDLK_SPACE)
+                {
+                    yield return new PlayerAction(isPressed, PlayerActionType.Shoot);
+                }
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_LEFT))
+            {
+                yield return new PlayerAction(true, PlayerActionType.CameraTurnLeft);
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_RIGHT))
+            {
+                yield return new PlayerAction(true, PlayerActionType.CameraTurnRight);
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_w))
+            {
+                yield return new PlayerAction(true, PlayerActionType.MoveForward);
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_s))
+            {
+                yield return new PlayerAction(true, PlayerActionType.MoveBackward);
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_a))
+            {
+                yield return new PlayerAction(true, PlayerActionType.MoveLeft);
+            }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_d))
+            {
+                yield return new PlayerAction(true, PlayerActionType.MoveRight);
             }
         }
     }

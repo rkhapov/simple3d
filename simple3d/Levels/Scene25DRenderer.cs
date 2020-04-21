@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using simple3d.Levels.Tools;
 using simple3d.Ui;
 
@@ -13,10 +14,15 @@ namespace simple3d.Levels
         public void Render(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
             RenderWorld(screen, scene);
-            RenderObjects(screen, scene, elapsedMilliseconds);
+            RenderObjectsOneThread(screen, scene, elapsedMilliseconds);
         }
 
         private static void RenderWorld(IScreen screen, Scene scene)
+        {
+            RenderWorldParallel(screen, scene);
+        }
+
+        private static void RenderWorldParallel(IScreen screen, Scene scene)
         {
             var screenWidth = screen.Width;
             var screenHeight = screen.Height;
@@ -24,31 +30,36 @@ namespace simple3d.Levels
             var directionAngle = player.DirectionAngle;
             var viewDistance = player.ViewDistance;
 
-            for (var x = 0; x < screenWidth; x++)
-            {
-                var rayAngle = directionAngle - player.FieldOfView / 2 + ((float) x / screen.Width) * player.FieldOfView;
-                var xRayUnit = MathF.Sin(rayAngle);
-                var yRayUnit = MathF.Cos(rayAngle);
-                var ray = ComputeRay(rayAngle, player, scene.Map, xRayUnit, yRayUnit);
-                var cosinePerspectiveCorrection = MathF.Cos(directionAngle - ray.Angle);
-                var ceil = (int) (screenHeight / 2.0 - screenHeight / (ray.Length * cosinePerspectiveCorrection));
-                var floor = screenHeight - ceil;
-                var wallHeight = (float) floor - ceil;
-                var wallCeil = ceil < 0 ? 0 : ceil + 1;
-                var wallFloor = floor > screenHeight ? screenHeight : floor;
-
-                ZBuffer[x] = ray.Length;
-
-                for (var y = wallFloor; y < screenHeight; y++)
+            Task.WhenAll(Enumerable
+                .Range(0, screenWidth)
+                .Select(x => Task.Run(() =>
                 {
-                    RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection, xRayUnit, yRayUnit, x);
-                }
+                    var rayAngle = directionAngle - player.FieldOfView / 2 +
+                                   ((float) x / screen.Width) * player.FieldOfView;
+                    var xRayUnit = MathF.Sin(rayAngle);
+                    var yRayUnit = MathF.Cos(rayAngle);
+                    var ray = ComputeRay(rayAngle, player, scene.Map, xRayUnit, yRayUnit);
+                    var cosinePerspectiveCorrection = MathF.Cos(directionAngle - ray.Angle);
+                    var ceil =
+                        (int) (screenHeight / 2.0 - screenHeight / (ray.Length * cosinePerspectiveCorrection));
+                    var floor = screenHeight - ceil;
+                    var wallHeight = (float) floor - ceil;
+                    var wallCeil = ceil < 0 ? 0 : ceil + 1;
+                    var wallFloor = floor > screenHeight ? screenHeight : floor;
 
-                for (var y = wallCeil; y < wallFloor; y++)
-                {
-                    RenderWallAt(screen, ray, viewDistance, y, ceil, wallHeight, x);
-                }
-            }
+                    ZBuffer[x] = ray.Length;
+
+                    for (var y = wallFloor; y < screenHeight; y++)
+                    {
+                        RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection,
+                            xRayUnit, yRayUnit, x);
+                    }
+
+                    for (var y = wallCeil; y < wallFloor; y++)
+                    {
+                        RenderWallAt(screen, ray, viewDistance, y, ceil, wallHeight, x);
+                    }
+                }))).Wait();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -124,14 +135,15 @@ namespace simple3d.Levels
             var testX = -1;
             var testY = -1;
             MapCell cell = default;
+            var rayStep = 0.01f;
             var currentX = playerX;
             var currentY = playerY;
-            var currentXStep = xRayUnit / 100.0f;
-            var currentYStep = yRayUnit / 100.0f;
+            var currentXStep = xRayUnit * rayStep;
+            var currentYStep = yRayUnit * rayStep;
 
             while (!hit && rayLength < viewDistance)
             {
-                rayLength += 0.01f;
+                rayLength += rayStep;
                 currentX += currentXStep;
                 currentY += currentYStep;
                 testX = (int) currentX;
@@ -178,7 +190,7 @@ namespace simple3d.Levels
             return new Ray(rayLength, rayAngle, sampleX, testX, testY, cell);
         }
 
-        private static void RenderObjects(IScreen screen, Scene scene, float elapsedMilliseconds)
+        private static void RenderObjectsOneThread(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
             var player = scene.Player;
             var directionAngle = player.DirectionAngle;
@@ -262,7 +274,6 @@ namespace simple3d.Levels
                 }
             }
         }
-
         public void Dispose()
         {
             //empty
