@@ -66,10 +66,7 @@ namespace playground
         {
         }
 
-        public void OnShoot(Scene scene, ShootingWeapon weapon)
-        {
-            Console.WriteLine($"{this} has been hit");
-        }
+        public abstract void OnShoot(Scene scene, ShootingWeapon weapon);
     }
     
     internal class Skeleton : BaseStaticMapObject
@@ -88,6 +85,12 @@ namespace playground
     {
         public Ghost(Vector2 position, Vector2 size, float directionAngle, Animation animation) : base(position, size, directionAngle, animation)
         {
+        }
+
+        public override void OnShoot(Scene scene, ShootingWeapon weapon)
+        {
+            Console.WriteLine($"{this} has been hit");
+            scene.RemoveObject(this);
         }
     }
 
