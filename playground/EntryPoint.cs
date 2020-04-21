@@ -180,7 +180,7 @@ namespace playground
             var vertices = this.GetRotatedVertices();
             foreach (var obj in scene.Objects)
             {
-                if (obj == this)
+                if (obj is Arrow)
                     continue;
 
                 if (GeometryHelper.IsRectanglesIntersects(vertices, obj.GetRotatedVertices()))
@@ -231,7 +231,7 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 1024, 1920, false));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, true));
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
