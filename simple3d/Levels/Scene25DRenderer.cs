@@ -169,7 +169,7 @@ namespace simple3d.Levels
                     }
                     else if (angle > oneFourthOfPi && angle < threeFourthOfPi)
                     {
-                        sampleX = currentX - testX;
+                        sampleX = 1 - (currentX - testX);
                     }
                     else if (angle < -oneFourthOfPi && angle > -threeFourthOfPi)
                     {
@@ -177,7 +177,7 @@ namespace simple3d.Levels
                     }
                     else
                     {
-                        sampleX = currentY - testY;
+                        sampleX = 1 - (currentY - testY);
                     }
                 }
                 else

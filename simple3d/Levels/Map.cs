@@ -17,7 +17,7 @@ namespace simple3d.Levels
             Width = width;
         }
 
-        public static Map FromStrings(string[] strings, Func<char, MapCell> aaa)
+        public static Map FromStrings(string[] strings, Func<char, MapCell> getCellByChar)
         {
             var height = strings.Length;
             var width = strings[0].Length;
@@ -27,7 +27,7 @@ namespace simple3d.Levels
             {
                 for (var j = 0; j < width; j++)
                 {
-                    map[i * width + j] = aaa(strings[i][j]);
+                    map[i * width + j] = getCellByChar(strings[i][j]);
                 }
             }
 
