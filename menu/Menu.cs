@@ -238,7 +238,7 @@ namespace menu
         private static void Main(string[] args)
         {
             using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false));
-            var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
+            var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
@@ -247,6 +247,8 @@ namespace menu
             var exitButton = Sprite.Load("./sprites/exitbutton_v1.png");
             var controlsText = Sprite.Load("./sprites/controls_v4.png");
             var scoreboard = Sprite.Load("./sprites/scoreboard.png");
+            var statusBarInfo = Sprite.Load("./sprites/statusbarinfo.png");
+            var tutorialEnd = Sprite.Load("./sprites/tutorialend.png");
             var ghost = Animation.LoadFromDirectory("./animations/ghost");
             
             var sword = new Sword(
@@ -263,7 +265,8 @@ namespace menu
                 Sprite.Load("./sprites/arrow.png"));
             player.Weapon = bow;
             
-            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, startButtonTexture, exitButton, scoreboard);
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
+                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd);
             var objects = new IMapObject[]
             {
                 new GreenLight(new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0, greenLightTexture),
@@ -273,12 +276,12 @@ namespace menu
             };
             var map = Map.FromStrings(new[]
             {
-                "##############",
-                "#....c####...#",
+                "##c###########",
+                "#....#l###...#",
                 "#..#.#.......e",
                 "#..#.#.#.....#",
                 "#..#...#.....s",
-                "#..####......#",
+                "#..#i##......#",
                 "#..#.........r",
                 "#..#.........#",
                 "##############"
@@ -299,8 +302,11 @@ namespace menu
             private readonly Sprite startButton;
             private readonly Sprite exitButton;
             private readonly Sprite scoreboard;
+            private readonly Sprite statusBarInfo;
+            private readonly Sprite tutorialEnd;
 
-            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite controls, Sprite startButton, Sprite exitButton, Sprite scoreboard)
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite controls,
+                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
@@ -309,6 +315,8 @@ namespace menu
                 this.startButton = startButton;
                 this.exitButton = exitButton;
                 this.scoreboard = scoreboard;
+                this.statusBarInfo = statusBarInfo;
+                this.tutorialEnd = tutorialEnd;
             }
 
             public MapCell GetCellByChar(char c)
@@ -320,6 +328,8 @@ namespace menu
                     's' => new MapCell(MapCellType.Wall, startButton, ceilingTexture),
                     'e' => new MapCell(MapCellType.Wall, exitButton, ceilingTexture),
                     'r' => new MapCell(MapCellType.Wall, scoreboard, ceilingTexture),
+                    'i' => new MapCell(MapCellType.Wall, statusBarInfo, ceilingTexture),
+                    'l' => new MapCell(MapCellType.Wall, tutorialEnd, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
                 };
             }
