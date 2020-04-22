@@ -252,7 +252,7 @@ namespace playground
                 Animation.LoadFromDirectory("./animations/bow_moving"),
                 Animation.LoadFromDirectory("./animations/bow_shoot"),
                 Sprite.Load("./sprites/arrow.png"));
-            player.Weapon = bow;
+            player.Weapon = sword;
             var objects = new IMapObject[]
             {
                 new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
