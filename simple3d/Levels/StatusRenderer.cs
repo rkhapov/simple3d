@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using simple3d.Drawing;
 using simple3d.Ui;
 
@@ -22,8 +23,10 @@ namespace simple3d.Levels
 
         public void Render(IScreen screen, Scene scene)
         {
-            RenderWeapon(screen, scene);
-            RenderStatusBar(screen, scene);
+            var task1 = Task.Run(() => RenderWeapon(screen, scene));
+            var task2 = Task.Run(() => RenderStatusBar(screen, scene));
+            
+            Task.WhenAll(task1, task2).Wait();
         }
 
         private void RenderWeapon(IScreen screen, Scene scene)
@@ -31,20 +34,27 @@ namespace simple3d.Levels
             var weapon = scene.Player.Weapon;
             if (weapon == null) return;
             var sprite = weapon.Sprite;
-            var startY = screen.Height - sprite.Height - statusBarHeight;
-            var startX = screen.Width - sprite.Width;
-            var spriteWidth = sprite.Width;
-            var spriteHeight = sprite.Height;
+            var height = screen.Height / 2;
+            var width = (int) (height / sprite.AspectRatio);
+            var startY = screen.Height - height - statusBarHeight;
+            var startX = screen.Width - width;
+            var yStep = 1.0f / height;
+            var xStep = 1.0f / width;
+            var currentY = 0.0f;
 
-            for (var y = 0; y < spriteHeight; y++)
+            for (var y = 0; y < height; y++)
             {
-                for (var x = 0; x < spriteWidth; x++)
+                var currentX = 0.0f;
+                for (var x = 0; x < width; x++)
                 {
-                    var pixel = sprite.GetPixel(y, x);
+                    var pixel = sprite.GetSample(currentY, currentX);
+                    currentX += xStep;
                     if ((pixel & 0xFF000000) == 0)
                         continue;
                     screen.Draw(y + startY, x + startX, pixel);
                 }
+
+                currentY += yStep;
             }
         }
 
