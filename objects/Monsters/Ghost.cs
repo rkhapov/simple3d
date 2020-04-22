@@ -21,6 +21,13 @@ namespace objects.Monsters
         public override void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
         {
             scene.RemoveObject(this);
+            base.OnLeftMeleeAttack(scene, weapon);
+        }
+
+        public override void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
+        {
+            scene.RemoveObject(this);
+            base.OnRightMeleeAttack(scene, weapon);
         }
 
         public static Ghost Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)

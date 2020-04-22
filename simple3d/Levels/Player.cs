@@ -143,7 +143,10 @@ namespace simple3d.Levels
 
         protected virtual void DoMeleeRightAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            Console.WriteLine("Melee right attack");
+            if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State == MeleeWeaponState.AttackRight)
+                return;
+
+            meleeWeapon.DoRightAttack(scene);
         }
 
         protected virtual void DoMeleeLeftAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
