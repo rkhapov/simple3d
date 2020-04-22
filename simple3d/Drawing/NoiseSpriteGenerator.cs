@@ -18,7 +18,7 @@ namespace simple3d.Drawing
                 for (var x = 0; x < width; x++)
                 {
                     var b = (int) Turbulence(noise, x, y0, turbulenceCounter, width, height);
-                    var color = b << 16 | b << 8 | b;
+                    var color = 255 << 24 | b << 16 | b << 8 | b;
                     buffer[y + x] = color;
                 }
             }

@@ -116,17 +116,7 @@ namespace simple3d.Levels
 
         private void DrawSprite(IScreen screen)
         {
-            var screenHeight = screen.Height;
-            var screenWidth = screen.Width;
-            var startY = screen.Height - statusBarHeight;
-
-            for (var y = startY; y < screenHeight; y++)
-            {
-                for (var x = 0; x < screenWidth; x++)
-                {
-                    screen.Draw(y, x, barSprite.GetPixel(y - startY, x));
-                }
-            }
+            screen.DrawSprite(barSprite, screen.Height - statusBarHeight, 0);
         }
     }
 }

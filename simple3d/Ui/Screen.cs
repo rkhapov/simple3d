@@ -1,5 +1,7 @@
 ﻿using System;
+using simple3d.Drawing;
 using simple3d.SDL2;
+using simple3d.Tools;
 
 namespace simple3d.Ui
 {
@@ -83,6 +85,40 @@ namespace simple3d.Ui
             fixed (int* p = buffer)
             {
                 p[y * Width + x] = v;
+            }
+        }
+
+        public unsafe void DrawSprite(Sprite sprite, int y, int x)
+        {
+            var spriteHeight = sprite.Height;
+            var spriteWidth = sprite.Width;
+            var spriteBuffer = sprite.GetRawBuffer();
+            var size = spriteHeight * spriteWidth;
+            var lineStep = Width - spriteWidth;
+
+            fixed (int* k = spriteBuffer)
+            fixed (int* p = buffer)
+            {
+                var i = 0;
+                var screen = p + y * Width + x;
+                var spritePointer = k;
+
+                while (i < size)
+                {
+                    var pixel = *spritePointer++;
+                    if (pixel.IsTransparentColor())
+                    {
+                        pixel = *screen;
+                    }
+
+                    *screen++ = pixel;
+                    i++;
+
+                    if (i % spriteWidth == 0)
+                    {
+                        screen += lineStep;
+                    }
+                }
             }
         }
 
