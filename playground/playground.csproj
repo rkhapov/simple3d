@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\maps\maps.csproj" />
       <ProjectReference Include="..\objects\objects.csproj" />
       <ProjectReference Include="..\simple3d\simple3d.csproj" />
     </ItemGroup>
