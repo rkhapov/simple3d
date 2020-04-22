@@ -53,8 +53,6 @@ namespace simple3d.Levels
                         var wallCeil = ceil < 0 ? 0 : ceil + 1;
                         var wallFloor = floor > screenHeight ? screenHeight : floor;
 
-                       
-
                         for (var y = wallFloor; y < screenHeight; y++)
                         {
                             RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection,
@@ -75,7 +73,7 @@ namespace simple3d.Levels
             if (ray.Length < viewDistance)
             {
                 var sampleY = (y - ceil) / wallHeight;
-                var pixel = ray.MapCell.Sprite.GetSample(sampleY, ray.SampleX);
+                var pixel = ray.MapCell.WallSprite.GetSample(sampleY, ray.SampleX);
                 if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
                 {
                     return;
@@ -104,7 +102,7 @@ namespace simple3d.Levels
             if (scene.Map.InBound(testY, testX))
             {
                 var cell = scene.Map.At(testY, testX);
-                screen.Draw(y, x, cell.Sprite.GetSample(sampleY, sampleX));
+                screen.Draw(y, x, cell.FloorSprite.GetSample(sampleY, sampleX));
                 screen.Draw(screenHeight - y, x, cell.CeilingSprite.GetSample(sampleY, sampleX));
             }
         }
