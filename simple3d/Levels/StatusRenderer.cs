@@ -37,7 +37,7 @@ namespace simple3d.Levels
             var height = screen.Height / 2;
             var width = (int) (height / sprite.AspectRatio);
             var startY = screen.Height - height - statusBarHeight;
-            var startX = screen.Width - width;
+            var startX = screen.Width / 2 + width / 2;
             var yStep = 1.0f / height;
             var xStep = 1.0f / width;
             var currentY = 0.0f;

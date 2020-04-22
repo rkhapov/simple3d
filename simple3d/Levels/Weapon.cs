@@ -6,5 +6,7 @@ namespace simple3d.Levels
     {
         public abstract Sprite Sprite { get; }
         public abstract void UpdateAnimation(float elapsedMilliseconds);
+        public abstract bool AnimationIsOver { get; }
+        public abstract void GoStatic();
     }
 }

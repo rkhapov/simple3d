@@ -291,7 +291,7 @@ namespace simple3d.Levels
                     sampleX += sampleXStep;
                     var column = (int) (middle + x - width2);
 
-                    if (ZBuffer[column] < distance)
+                    if (column < 0 || ZBuffer[column] < distance)
                         continue;
 
                     var sampleY = startSampleX;

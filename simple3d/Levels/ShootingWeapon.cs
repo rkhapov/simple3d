@@ -59,6 +59,13 @@ namespace simple3d.Levels
             GetCurrentAnimation().UpdateFrame(elapsedMilliseconds);
         }
 
+        public override bool AnimationIsOver => GetCurrentAnimation().IsOver;
+
+        public override void GoStatic()
+        {
+            State = ShootingWeaponState.Static;
+        }
+
         public virtual void MakeShoot(Scene scene)
         {
             throw new NotImplementedException("default shooting are not implemented");

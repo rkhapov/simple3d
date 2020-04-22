@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Drawing;
@@ -147,7 +148,10 @@ namespace simple3d.Levels
 
         protected virtual void DoMeleeLeftAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            Console.WriteLine("Melee left attack");
+            if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State == MeleeWeaponState.AttackLeft)
+                return;
+
+            meleeWeapon.DoLeftAttack(scene);
         }
 
         protected virtual void DoMoveRight(PlayerAction action, Scene scene, in float elapsedMilliseconds)
@@ -252,6 +256,15 @@ namespace simple3d.Levels
 
         public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
+            if (Weapon == null)
+                return;
+
+            Weapon.UpdateAnimation(elapsedMilliseconds);
+
+            if (Weapon.AnimationIsOver)
+            {
+                Weapon.GoStatic();
+            }
         }
 
         public abstract void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon);

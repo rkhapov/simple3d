@@ -58,11 +58,11 @@ namespace playground
             animation.UpdateFrame(elapsedMilliseconds);
         }
 
-        public void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public virtual void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
         {
         }
 
-        public void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public virtual void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
         {
         }
 
@@ -92,6 +92,11 @@ namespace playground
             Console.WriteLine($"{this} has been hit");
             scene.RemoveObject(this);
         }
+
+        public override void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
+        {
+            scene.RemoveObject(this);
+        }
     }
 
     internal class MyPlayer : Player
@@ -107,8 +112,8 @@ namespace playground
                 Endurance += elapsedMilliseconds * 0.005f;
                 Endurance = MathF.Min(Endurance, MaxEndurance);
             }
-            
-            Weapon.UpdateAnimation(elapsedMilliseconds);
+
+            base.OnWorldUpdate(scene, elapsedMilliseconds);
         }
 
         public override void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
@@ -231,7 +236,7 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, true));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false));
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
@@ -242,8 +247,8 @@ namespace playground
             var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
             var sword = new Sword(
                 Animation.LoadFromDirectory("./animations/sword_static"),
-                Animation.LoadFromDirectory("./animations/sword_static"),
-                Animation.LoadFromDirectory("./animations/sword_static"),
+                Animation.LoadFromDirectory("./animations/sword_left_attack"),
+                Animation.LoadFromDirectory("./animations/sword_right_attack"),
                 Animation.LoadFromDirectory("./animations/sword_left_block"),
                 Animation.LoadFromDirectory("./animations/sword_right_block"),
                 Animation.LoadFromDirectory("./animations/sword_static"));

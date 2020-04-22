@@ -70,14 +70,30 @@ namespace simple3d.Levels
             };
         }
 
-        public IMapObject DoLeftAttack(Scene scene)
+        public void DoLeftAttack(Scene scene)
+        {
+            State = MeleeWeaponState.AttackLeft;
+            var player = scene.Player;
+
+            foreach (var obj in scene.Objects)
+            {
+                if ((obj.Position - player.Position).Length() < 1)
+                {
+                    obj.OnLeftMeleeAttack(scene, this);
+                }
+            }
+        }
+
+        public void DoRightAttack(Scene scene)
         {
             throw new NotImplementedException();
         }
 
-        public IMapObject DoRightAttack(Scene scene)
+        public override bool AnimationIsOver => GetCurrentAnimation().IsOver;
+        
+        public override void GoStatic()
         {
-            throw new NotImplementedException();
+            State = MeleeWeaponState.Static;
         }
     }
 }
