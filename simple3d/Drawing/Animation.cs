@@ -53,7 +53,7 @@ namespace simple3d.Drawing
             var directoryInfo = new DirectoryInfo(directoryPath);
             var frames = directoryInfo
                 .GetFiles("*.png")
-                .OrderBy(f => f.Name)
+                .OrderBy(f => int.Parse(f.Name.Split('.')[0]))
                 .Select(f => Sprite.Load(f.FullName))
                 .ToArray();
             var durations = LoadDurations(directoryInfo, frames.Length);

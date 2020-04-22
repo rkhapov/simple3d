@@ -17,6 +17,13 @@ namespace simple3d.Levels
             Width = width;
         }
 
+        public void UpdateMap(float time)
+        {
+            foreach (MapCell cell in map)
+            {
+                cell.SpriteUpdate(time);
+            }
+        }
         public static Map FromStrings(string[] strings, Func<char, MapCell> cellFactory)
         {
             var height = strings.Length;

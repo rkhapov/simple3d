@@ -24,13 +24,14 @@ namespace playground
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var sword = Sword.Create(resourceLoader);
             var bow = Bow.Create(resourceLoader);
+            var doorAnimation = resourceLoader.GetAnimation("./animations/door");
             player.Weapon = sword;
             var objects = new IMapObject[]
             {
                 Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
-            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture);
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, doorAnimation);
             var map = Map.FromStrings(new[]
             {
                 "###############################",
@@ -38,7 +39,7 @@ namespace playground
                 "#..#..........#...............#",
                 "#.........############........#",
                 "#.........o..........#........#",
-                "#.........o..........###......#",
+                "#.........d..........###......#",
                 "#.....o...o..........#........#",
                 "####......##########.#........#",
                 "##...................#......###",
@@ -67,19 +68,22 @@ namespace playground
             private readonly Sprite wallTexture;
             private readonly Sprite floorTexture;
             private readonly Sprite windowTexture;
+            private readonly Animation doorAnimation;
 
-            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite windowTexture)
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite windowTexture, Animation doorAnimation)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
                 this.floorTexture = floorTexture;
                 this.windowTexture = windowTexture;
+                this.doorAnimation = doorAnimation;
             }
 
             public MapCell GetCellByChar(char c)
             {
                 return c switch
                 {
+                    'd' => new MapCell(MapCellType.Window, doorAnimation, wallTexture, ceilingTexture, "door1"),
                     '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
                     'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)

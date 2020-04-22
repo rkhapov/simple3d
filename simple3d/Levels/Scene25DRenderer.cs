@@ -14,12 +14,14 @@ namespace simple3d.Levels
 
         public void Render(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
-            RenderWorld(screen, scene);
+            scene.Map.UpdateMap(elapsedMilliseconds);
+            RenderWorld(screen, scene, elapsedMilliseconds);
             RenderObjectsOneThread(screen, scene, elapsedMilliseconds);
         }
 
-        private static void RenderWorld(IScreen screen, Scene scene)
+        private static void RenderWorld(IScreen screen, Scene scene, float elapsedMilliseconds)
         {
+            
             RenderWorldParallel(screen, scene);
         }
 
@@ -52,7 +54,7 @@ namespace simple3d.Levels
                         var wallHeight = (float)floor - ceil;
                         var wallCeil = ceil < 0 ? 0 : ceil + 1;
                         var wallFloor = floor > screenHeight ? screenHeight : floor;
-
+                        
                         for (var y = wallFloor; y < screenHeight; y++)
                         {
                             RenderFloorAndCeilAt(screen, scene, screenHeight, y, player, cosinePerspectiveCorrection,
