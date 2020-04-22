@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using simple3d.Levels.Tools;
+using simple3d.Tools;
 using simple3d.Ui;
 
 namespace simple3d.Levels
@@ -76,7 +77,7 @@ namespace simple3d.Levels
             {
                 var sampleY = (y - ceil) / wallHeight;
                 var pixel = ray.MapCell.WallSprite.GetSample(sampleY, ray.SampleX);
-                if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
+                if (pixel.IsTransparentColor()) //TODO: fix alpha channels at screen?
                 {
                     return;
                 }
@@ -299,7 +300,7 @@ namespace simple3d.Levels
                     {
                         sampleY += sampleYStep;
                         var pixel = sprite.GetSample(sampleY, sampleX);
-                        if ((pixel & 0xFF000000) == 0) //TODO: fix alpha channels at screen?
+                        if (pixel.IsTransparentColor())
                         {
                             continue;
                         }
