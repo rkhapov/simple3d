@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
 
@@ -20,6 +21,13 @@ namespace objects.Monsters
         public override void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
         {
             scene.RemoveObject(this);
+        }
+
+        public static Ghost Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)
+        {
+            var animation = loader.GetAnimation("./animations/ghost");
+
+            return new Ghost(position, size, directionAngle, animation);
         }
     }
 }

@@ -323,14 +323,14 @@ namespace menu
             {
                 return c switch
                 {
-                    '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
-                    'c' => new MapCell(MapCellType.Wall, controls, ceilingTexture),
-                    's' => new MapCell(MapCellType.Wall, startButton, ceilingTexture),
-                    'e' => new MapCell(MapCellType.Wall, exitButton, ceilingTexture),
-                    'r' => new MapCell(MapCellType.Wall, scoreboard, ceilingTexture),
-                    'i' => new MapCell(MapCellType.Wall, statusBarInfo, ceilingTexture),
-                    'l' => new MapCell(MapCellType.Wall, tutorialEnd, ceilingTexture),
-                    _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
+                    '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
+                    'c' => new MapCell(MapCellType.Wall, controls, controls, ceilingTexture),
+                    's' => new MapCell(MapCellType.Wall, startButton, startButton, ceilingTexture),
+                    'e' => new MapCell(MapCellType.Wall, exitButton, exitButton, ceilingTexture),
+                    'r' => new MapCell(MapCellType.Wall, scoreboard, scoreboard, ceilingTexture),
+                    'i' => new MapCell(MapCellType.Wall, statusBarInfo, statusBarInfo, ceilingTexture),
+                    'l' => new MapCell(MapCellType.Wall, tutorialEnd, tutorialEnd, ceilingTexture),
+                    _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }
         }

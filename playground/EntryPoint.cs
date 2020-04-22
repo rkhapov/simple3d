@@ -7,6 +7,7 @@ using objects;
 using objects.Environment;
 using objects.Monsters;
 using objects.Weapons;
+using simple3d;
 
 namespace playground
 {
@@ -15,31 +16,19 @@ namespace playground
         private static unsafe void Main(string[] args)
         {
             using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false));
+            var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
-            var skeletonSprite = Sprite.Load("./sprites/skeleton.png");
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var windowTexture = Sprite.Load("./sprites/window.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
-            var greenLightTexture = Sprite.Load("./sprites/greenlight.png");
-            var ghostAnimation = Animation.LoadFromDirectory("./animations/ghost");
-            var sword = new Sword(
-                Animation.LoadFromDirectory("./animations/sword_static"),
-                Animation.LoadFromDirectory("./animations/sword_left_attack"),
-                Animation.LoadFromDirectory("./animations/sword_right_attack"),
-                Animation.LoadFromDirectory("./animations/sword_left_block"),
-                Animation.LoadFromDirectory("./animations/sword_right_block"),
-                Animation.LoadFromDirectory("./animations/sword_static"));
-            var bow = new Bow(
-                Animation.LoadFromDirectory("./animations/bow_static"),
-                Animation.LoadFromDirectory("./animations/bow_moving"),
-                Animation.LoadFromDirectory("./animations/bow_shoot"),
-                Sprite.Load("./sprites/arrow.png"));
+            var sword = Sword.Create(resourceLoader);
+            var bow = Bow.Create(resourceLoader);
             player.Weapon = sword;
             var objects = new IMapObject[]
             {
-                new Ghost(new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f, ghostAnimation),
-                new GreenLight(new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0, greenLightTexture),
+                Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),
+                GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture);
             var map = Map.FromStrings(new[]
@@ -91,9 +80,9 @@ namespace playground
             {
                 return c switch
                 {
-                    '#' => new MapCell(MapCellType.Wall, wallTexture, ceilingTexture),
-                    'o' => new MapCell(MapCellType.Window, windowTexture, ceilingTexture),
-                    _ => new MapCell(MapCellType.Empty, floorTexture, ceilingTexture)
+                    '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
+                    'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
+                    _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }
         }
