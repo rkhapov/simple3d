@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?if $(var.Platform)=x64?>
+  <?define ProductCode = "{0BA85041-1F9E-4729-A928-7900CE904C56}" ?>
+  <?else?>
+  <?define ProductCode = "{CB93B7CD-5B03-45E7-9E1E-C5CF660803E7}" ?>
+  <?endif?>
+
+  <?define BuildVersion = 0.0.0.1 ?>
+  <?define UpgradeCode = "{93160D0A-8946-4E03-8391-CE2C941D470F}" ?>
+
+  <Product Id="$(var.ProductCode)"
+           Name="!(loc.GameName_$(var.Platform))"
+           Language="!(loc.Language)"
+           Version="$(var.BuildVersion)"
+           Manufacturer="!(loc.CompanyName)"
+           UpgradeCode="$(var.UpgradeCode)">
+
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="$(var.Platform)"
+             Manufacturer="!(loc.CompanyName)"
+             Description="scientia praeteritum: game for igraton 2020" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of !(loc.GameName_$(var.Platform)) is already installed." />
+
+    <MediaTemplate
+      EmbedCab="yes" />
+
+    <UIRef Id="WixUI_Minimal"/>
+
+    <Feature Id="ProductFeature" Title="installer" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+</Wix>
