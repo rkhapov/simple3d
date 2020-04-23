@@ -14,7 +14,7 @@ namespace objects.Monsters
         {
         }
 
-        private const float MoveSpeed = 0.002f;
+        private const float MoveSpeed = 0.001f;
 
         public override void OnShoot(Scene scene, ShootingWeapon weapon)
         {
