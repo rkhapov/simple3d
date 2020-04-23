@@ -16,9 +16,9 @@ namespace objects
             this.animation = animation;
         }
 
-        public Vector2 Position { get; }
+        public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public float DirectionAngle { get; }
+        public float DirectionAngle { get; set; }
         public Sprite Sprite => animation.CurrentFrame;
 
         public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
