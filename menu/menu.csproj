@@ -6,11 +6,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\objects\objects.csproj" />
       <ProjectReference Include="..\simple3d\simple3d.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="sprites\*.*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="fonts\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="animations\*\*.*">
@@ -19,28 +23,13 @@
         <None Update="sprites\greystone.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="animations\ghost\1.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="animations\ghost\2.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="animations\bow_static\1.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="animations\sword_left_block\1.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="animations\sword_static\1.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="animations\bow_moving\1.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="animations\bow_shoot\1.png">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="animations\sword_right_block\1.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="sprites\arrow.png">
