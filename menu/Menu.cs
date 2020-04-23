@@ -11,18 +11,6 @@ using simple3d.Levels;
 
 namespace menu
 {
-    internal class Invisible : BaseStaticMapObject
-    {
-        public Invisible(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
-        {
-        }
-
-        public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
-        {
-            // throw new NotImplementedException();
-        }
-    }
-
     internal static class Menu
     {
         private static void Main(string[] args)

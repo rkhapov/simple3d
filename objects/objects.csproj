@@ -18,7 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="animations" />
+        <Folder Include="animations\skeleton\guard" />
+        <Folder Include="animations\skeleton\left_attack" />
+        <Folder Include="animations\skeleton\right_attack" />
     </ItemGroup>
 
 </Project>
