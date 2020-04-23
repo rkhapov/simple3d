@@ -40,7 +40,17 @@ namespace simple3d.Levels
         public int MaxEndurance { get; set; }
         public float SpellPoints { get; set; }
         public int MaxSpellPoints { get; set; }
-        public Weapon Weapon { get; set; }
+        public Weapon Weapon => Weapons[WeaponIndex];
+        public Weapon[] Weapons { get; set; }
+        public int WeaponIndex { get; set; }
+
+        public void SetWeaponToNext()
+        {
+            WeaponIndex++;
+
+            if (WeaponIndex == Weapons.Length)
+                WeaponIndex = 0;
+        }
 
         public void ProcessAction(PlayerAction action, Scene scene, float elapsedMilliseconds)
         {
@@ -88,12 +98,23 @@ namespace simple3d.Levels
                 case PlayerActionType.Shoot:
                     DoShoot(action, scene, elapsedMilliseconds);
                     break;
+                case PlayerActionType.SetWeapon:
+                    DoSetWeapon(action, scene, elapsedMilliseconds);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(action.Type), action.Type, null);
             }
         }
 
-        private void DoShoot(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        public virtual void DoSetWeapon(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        {
+            if (!action.Enabled)
+                return;
+
+            SetWeaponToNext();
+        }
+
+        public virtual void DoShoot(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             if (!action.Enabled)
                 return;
@@ -217,7 +238,7 @@ namespace simple3d.Levels
 
             TryMove(scene, newPosition, map);
 
-            var dEndurance = (oldPosition - player.Position).Length() * 0.03f;
+            var dEndurance = (oldPosition - player.Position).Length() * 0.3f;
             if (player.Endurance > dEndurance)
             {
                 player.Endurance -= dEndurance;

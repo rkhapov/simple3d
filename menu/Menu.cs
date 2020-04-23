@@ -263,8 +263,8 @@ namespace menu
                 Animation.LoadFromDirectory("./animations/bow_moving"),
                 Animation.LoadFromDirectory("./animations/bow_shoot"),
                 Sprite.Load("./sprites/arrow.png"));
-            player.Weapon = bow;
-            
+            player.Weapons = new Weapon[] {bow, sword};
+
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
                 startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd);
             var objects = new IMapObject[]

@@ -26,7 +26,7 @@ namespace playground
             var sword = Sword.Create(resourceLoader);
             var bow = Bow.Create(resourceLoader);
             var doorAnimation = resourceLoader.GetAnimation("./animations/door");
-            player.Weapon = sword;
+            player.Weapons = new Weapon[] {sword, bow};
             var objects = new IMapObject[]
             {
                 Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),

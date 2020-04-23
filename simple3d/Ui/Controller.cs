@@ -70,6 +70,11 @@ namespace simple3d.Ui
                         yield return new PlayerAction(false, PlayerActionType.MeleeLeftBlock);
                 }
 
+                if (keycode == SDL.SDL_Keycode.SDLK_RETURN)
+                {
+                    yield return new PlayerAction(isPressed, PlayerActionType.SetWeapon);
+                }
+
                 if (keycode == SDL.SDL_Keycode.SDLK_SPACE)
                 {
                     yield return new PlayerAction(isPressed, PlayerActionType.Shoot);

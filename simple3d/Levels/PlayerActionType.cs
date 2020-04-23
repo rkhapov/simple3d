@@ -15,6 +15,7 @@
         Sprint,
         MeleeLeftBlock,
         MeleeRightBlock,
-        Shoot
+        Shoot,
+        SetWeapon
     }
 }
