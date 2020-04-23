@@ -35,5 +35,27 @@ namespace simple3d.MathUtils
         {
             return GeometryHelper.IsPointAtRectangle(point, mapObject.GetRotatedVertices());
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetAngleToPlayer(this IMapObject mapObject, Player player)
+        {
+            const float pi2 = MathF.PI * 0.5f;
+            var fromObjectToPlayer = mapObject.Position - player.Position;
+            var playerAngle = MathF.Atan2(MathF.Cos(player.DirectionAngle), MathF.Sin(player.DirectionAngle));
+
+            var angle = playerAngle - MathF.Atan2(fromObjectToPlayer.Y, fromObjectToPlayer.X);
+
+            if (angle < -MathF.PI)
+            {
+                angle += pi2;
+            }
+
+            if (angle > MathF.PI)
+            {
+                angle -= pi2;
+            }
+
+            return angle;
+        }
     }
 }
