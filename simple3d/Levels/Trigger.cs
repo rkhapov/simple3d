@@ -7,7 +7,7 @@ namespace simple3d.Levels
 {
     public class Trigger
     {
-        static Dictionary<Vector2, Trigger> allTriggers = new Dictionary<Vector2, Trigger>();
+        static Dictionary<Vector2, Trigger> allTriggers = new Dictionary<Vector2, Trigger>(); // 
 
         public static void AddTrigger(Vector2 position, Action action, bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
         {
@@ -23,7 +23,7 @@ namespace simple3d.Levels
 
         public static void CheckAndDo(Vector2 position)
         {
-            position = new Vector2((int)position.X, (int)position.Y);// извините но это минус фпс
+            position = new Vector2((int)position.X, (int)position.Y);
             if (allTriggers.ContainsKey(position))
             {
                 allTriggers[position].DoIt();
