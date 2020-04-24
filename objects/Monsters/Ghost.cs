@@ -56,7 +56,7 @@ namespace objects.Monsters
                 var testX = (int) vertex.X;
                 var testY = (int) vertex.Y;
 
-                if (!map.InBound(testY, testX) || !CellTypes.walkable.Contains(map.At(testY, testX).Type))
+                if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall || map.At(testY, testX).Type == MapCellType.Window)
                 {
                     return;
                 }
@@ -112,7 +112,7 @@ namespace objects.Monsters
                 var testY = (int) currentY;
                 var cell = map.At(testY, testX);
 
-                if (!CellTypes.walkable.Contains(cell.Type))
+                if (cell.Type == MapCellType.Wall)
                     hitWall = true;
             }
 
