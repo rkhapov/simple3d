@@ -47,7 +47,7 @@ namespace objects.Weapons
                 if (GeometryHelper.IsRectanglesIntersects(vertices, obj.GetRotatedVertices()))
                 {
                     Console.WriteLine($"hit {obj} at {newPosition}");
-                    obj.OnShoot(scene, null);
+                    obj.OnShoot(scene, 42);
                     scene.RemoveObject(this);
                     return;
                 }
@@ -56,15 +56,15 @@ namespace objects.Weapons
             Position = newPosition;
         }
 
-        public void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public void OnLeftMeleeAttack(Scene scene, int damage)
         {
         }
 
-        public void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public void OnRightMeleeAttack(Scene scene, int damage)
         {
         }
 
-        public void OnShoot(Scene scene, ShootingWeapon weapon)
+        public void OnShoot(Scene scene, int damage)
         {
         }
     }
