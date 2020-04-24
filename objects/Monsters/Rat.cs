@@ -3,7 +3,6 @@ using System.Numerics;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
-using simple3d.MathUtils;
 
 namespace objects.Monsters
 {
@@ -41,7 +40,7 @@ namespace objects.Monsters
         {
             var staticAnimation = loader.GetAnimation("./animations/rat/static");
             var playerFollowerAnimation = loader.GetAnimation("./animations/rat/moving");
-            var attackAnimation = loader.GetAnimation("./animation/rat/attack");
+            var attackAnimation = loader.GetAnimation("./animations/rat/attack");
 
             return new Rat(
                 staticAnimation,
@@ -73,33 +72,44 @@ namespace objects.Monsters
             if (state == RatState.Attack && GetCurrentAnimation().IsOver)
             {
                 SetState(RatState.Static);
-                return;
-            }
-
-            if (state == RatState.Attack)
-            {
+                DoLeftMeleeAttackOnPlayer(scene, 42);
                 return;
             }
 
             if (state == RatState.Static)
             {
-                if (HaveWallOnStraightWayToPlayer(scene))
-                    return;
-
-                if ((Position - scene.Player.Position).LengthSquared() < AttackDistanceSquared)
+                if (PlayerInAttackDistance(scene))
                 {
                     SetState(RatState.Attack);
                     return;
                 }
 
-                DirectionAngle = this.GetAngleToPlayer(scene.Player);
+                if (HaveWallOnStraightWayToPlayer(scene))
+                {
+                    return;
+                }
+
                 SetState(RatState.PlayerFollowing);
             }
 
             if (state == RatState.PlayerFollowing)
             {
-                MoveOnDirection(scene, elapsedMilliseconds);
+                if (PlayerInAttackDistance(scene))
+                    SetState(RatState.Attack);
+                else if (HaveWallOnStraightWayToPlayer(scene))
+                    SetState(RatState.Static);
+                else
+                {
+                    var fromPlayerToUs = scene.Player.Position - Position;
+                    DirectionAngle = MathF.Atan2(fromPlayerToUs.Y, fromPlayerToUs.X);
+                    MoveOnDirection(scene, elapsedMilliseconds);
+                }
             }
+        }
+
+        private bool PlayerInAttackDistance(Scene scene)
+        {
+            return (Position - scene.Player.Position).LengthSquared() < AttackDistanceSquared;
         }
 
         private void SetState(RatState newState)
@@ -113,19 +123,28 @@ namespace objects.Monsters
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
             ReceiveDamage(damage);
+
+            if (!IsAlive)
+                scene.RemoveObject(this);
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
             ReceiveDamage(damage);
+            
+            if (!IsAlive)
+                scene.RemoveObject(this);
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
             ReceiveDamage(damage);
+
+            if (!IsAlive)
+                scene.RemoveObject(this);
         }
 
-        protected override int ViewDistance => 5;
+        protected override int ViewDistance => 15;
         protected override float MoveSpeed => 0.003f;
     }
 }

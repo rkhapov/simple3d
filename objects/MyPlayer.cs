@@ -23,14 +23,17 @@ namespace objects
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
+            Health -= damage;
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
+            Health -= damage;
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
+            Health -= damage;
         }
     }
 }

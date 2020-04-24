@@ -52,8 +52,8 @@ namespace objects.Monsters
         {
             var map = scene.Map;
             var player = scene.Player;
-            var fromUsToPlayer = Position - player.Position;
-            var lengthSquared = fromUsToPlayer.LengthSquared();
+            var fromPlayerToUs = player.Position - Position;
+            var lengthSquared = fromPlayerToUs.LengthSquared();
 
             if (lengthSquared > ViewDistance * ViewDistance)
                 return true;
@@ -61,7 +61,7 @@ namespace objects.Monsters
             var distance = MathF.Sqrt(lengthSquared);
 
             var hitWall = false;
-            var angle = MathF.Atan2(player.Position.Y - Position.Y, player.Position.X - Position.X);
+            var angle = MathF.Atan2(fromPlayerToUs.Y, fromPlayerToUs.X);
             var xRayUnit = MathF.Cos(angle);
             var yRayUnit = MathF.Sin(angle);
             var rayStep = 0.01f;
@@ -85,6 +85,35 @@ namespace objects.Monsters
             }
 
             return hitWall;
+            
+            /*
+            var map = scene.Map;
+            var player = scene.Player;
+            var distance = Vector2.Distance(Position, player.Position);
+            var hitWall = false;
+            var angle = Math.Atan2(player.Position.Y - Position.Y, player.Position.X - Position.X);
+            var xRayUnit = (float) Math.Cos(angle);
+            var yRayUnit = (float) Math.Sin(angle);
+            var rayStep = 0.01f;
+            var xStep = xRayUnit * rayStep;
+            var yStep = yRayUnit * rayStep;
+            var currentX = Position.X;
+            var currentY = Position.Y;
+            var rayLength = 0.0f;
+            while (!hitWall && rayLength <= distance)
+            {
+                rayLength += rayStep;
+                currentX += xStep;
+                currentY += yStep;
+                var testX = (int) currentX;
+                var testY = (int) currentY;
+                var cell = map.At(testY, testX);
+
+                if (cell.Type == MapCellType.Wall)
+                    hitWall = true;
+            }
+
+            return hitWall;*/
         }
 
         protected void MoveOnDirection(Scene scene, float elapsedTime)
@@ -103,10 +132,10 @@ namespace objects.Monsters
         
         private void TryMove(Scene scene, Vector2 newPosition, Map map)
         {
-            var ghostNewVertices = GeometryHelper.GetRotatedVertices(newPosition, Size, DirectionAngle);
+            var newVertices = GeometryHelper.GetRotatedVertices(newPosition, Size, DirectionAngle);
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var vertex in ghostNewVertices)
+            foreach (var vertex in newVertices)
             {
                 var testX = (int) vertex.X;
                 var testY = (int) vertex.Y;
@@ -123,13 +152,13 @@ namespace objects.Monsters
                 .Where(obj => obj != this)
                 .Select(o => o.GetRotatedVertices()))
             {
-                if (GeometryHelper.IsRectanglesIntersects(ghostNewVertices, objectVertices))
+                if (GeometryHelper.IsRectanglesIntersects(newVertices, objectVertices))
                 {
                     return;
                 }
             }
 
-            if (GeometryHelper.IsRectanglesIntersects(ghostNewVertices, scene.Player.GetRotatedVertices()))
+            if (GeometryHelper.IsRectanglesIntersects(newVertices, scene.Player.GetRotatedVertices()))
                 return;
 
             Position = newPosition;
