@@ -17,9 +17,14 @@ namespace objects.Weapons
             this.arrowSprite = arrowSprite;
         }
 
-        public override void MakeShoot(Scene scene)
+        public override void SpawnArrow(Scene scene)
         {
             scene.AddObject(new Arrow(scene.Player.Position, arrowSprite, scene.Player.DirectionAngle));
+        }
+
+        public override void MakeShoot(Scene scene)
+        {
+            State = ShootingWeaponState.Shooting;
         }
 
         public static Bow Create(ResourceCachedLoader loader)

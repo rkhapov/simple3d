@@ -7,11 +7,13 @@
             int screenHeight,
             int screenWidth,
             bool fullScreen,
-            string fontPath = null)
+            string fontPath = null,
+            string crossSpritePath = null)
         {
             ScreenHeight = screenHeight;
             ScreenWidth = screenWidth;
             FullScreen = fullScreen;
+            CrossSpritePath = crossSpritePath;
             FontPath = fontPath;
             WindowTitle = windowTitle;
         }
@@ -21,5 +23,6 @@
         public string WindowTitle { get; }
         public bool FullScreen { get; }
         public string FontPath { get; }
+        public string CrossSpritePath { get; }
     }
 }

@@ -287,6 +287,11 @@ namespace simple3d.Levels
 
             if (Weapon.AnimationIsOver)
             {
+                if (Weapon is ShootingWeapon shootingWeapon && shootingWeapon.State == ShootingWeaponState.Shooting)
+                {
+                    shootingWeapon.SpawnArrow(scene);
+                }
+
                 Weapon.GoStatic();
             }
         }

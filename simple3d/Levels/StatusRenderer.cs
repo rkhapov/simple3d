@@ -8,11 +8,13 @@ namespace simple3d.Levels
     public class StatusRenderer : IStatusBarRenderer
     {
         private readonly Sprite barSprite;
+        private readonly Sprite crossSprite;
         private readonly int statusBarHeight;
 
-        public StatusRenderer(Sprite barSprite, int statusBarHeight)
+        public StatusRenderer(Sprite barSprite, Sprite crossSprite, int statusBarHeight)
         {
             this.barSprite = barSprite;
+            this.crossSprite = crossSprite;
             this.statusBarHeight = statusBarHeight;
         }
 
@@ -25,8 +27,20 @@ namespace simple3d.Levels
         {
             var task1 = Task.Run(() => RenderWeapon(screen, scene));
             var task2 = Task.Run(() => RenderStatusBar(screen, scene));
+            var task3 = Task.Run(() => RenderCross(screen));
             
             Task.WhenAll(task1, task2).Wait();
+        }
+
+        private void RenderCross(IScreen screen)
+        {
+            if (crossSprite == null)
+                return;
+
+            screen.DrawSprite(
+                crossSprite,
+                screen.Height / 2 - crossSprite.Height / 2,
+                screen.Width / 2 - crossSprite.Width / 2);
         }
 
         private void RenderWeapon(IScreen screen, Scene scene)
