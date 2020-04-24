@@ -70,6 +70,22 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant disable cursor: {SDL_GetError()}");
             }
 
+            if (SDL_mixer.Mix_Init(
+                SDL_mixer.MIX_InitFlags.MIX_INIT_MP3
+                | SDL_mixer.MIX_InitFlags.MIX_INIT_MID
+                | SDL_mixer.MIX_InitFlags.MIX_INIT_MOD
+                | SDL_mixer.MIX_InitFlags.MIX_INIT_OGG
+                | SDL_mixer.MIX_InitFlags.MIX_INIT_FLAC
+                | SDL_mixer.MIX_InitFlags.MIX_INIT_OPUS) < 0)
+            {
+                throw new InvalidOperationException($"MixInit: {SDL_GetError()}");
+            }
+
+            if (SDL_mixer.Mix_OpenAudio(22050, SDL_mixer.MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+            {
+                throw new InvalidOperationException($"OpenAudio: {SDL_GetError()}");
+            }
+
             var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();
             var statusBarHeight = screen.Height / 8;
@@ -152,6 +168,8 @@ namespace simple3d
         {
             sceneRenderer.Dispose();
             Screen.Dispose();
+            SDL_mixer.Mix_CloseAudio();
+            SDL_mixer.Mix_Quit();
             SDL_ttf.TTF_Quit();
             SDL_image.IMG_Quit();
             SDL_Quit();
