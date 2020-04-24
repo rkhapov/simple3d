@@ -21,12 +21,15 @@ namespace simple3d.Levels
             }
         }
 
-        public static void CheckAndDo(Vector2 position)
+        public static void CheckAndDo(Vector2 position, Player player)
         {
-            position = new Vector2((int)position.X, (int)position.Y);
-            if (allTriggers.ContainsKey(position))
+            if (player.interactMod)
             {
-                allTriggers[position].DoIt();
+                position = new Vector2((int)position.X, (int)position.Y);
+                if (allTriggers.ContainsKey(position))
+                {
+                    allTriggers[position].DoIt();
+                }
             }
         }
 
