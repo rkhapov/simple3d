@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using simple3d.Drawing;
 
 namespace simple3d.Levels
@@ -6,7 +7,7 @@ namespace simple3d.Levels
     public class Map
     {
         private readonly MapCell[] map;
-
+        private static Dictionary<string, MapCell> taggedCells = new Dictionary<string, MapCell>();
         public int Height { get; }
         public int Width { get; }
 
@@ -51,6 +52,26 @@ namespace simple3d.Levels
             //TODO: speed up this shit, we will assume that before every
             //cell acessing user will call InBound
             return map[y * Width + x];
+        }
+
+
+        public static void AddTaggedCall(string tag, MapCell cell)
+        {
+            if (Map.taggedCells.ContainsKey(tag))
+            {
+                throw new Exception("НЕ ЮЗАТЬ ОДИНАКОВЫЕ ТЕГИ!  - " + tag);
+            }
+            Map.taggedCells.Add(tag, cell);
+        }
+
+        public static MapCell GetCellByTag(string tag)
+        {
+            if (!Map.taggedCells.ContainsKey(tag))
+            {
+                throw new Exception("Такого тега нет - " + tag);
+            }
+
+            return Map.taggedCells[tag];
         }
     }
 }

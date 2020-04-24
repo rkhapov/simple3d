@@ -12,41 +12,62 @@ namespace simple3d.Levels
             CeilingSprite = ceilingSprite;
             FloorSprite = floorSprite;
             isAnimation = false;
-            tag = "Cell";
-            animation = null;
+    
         }
 
         public MapCell(MapCellType type, Animation animation, Sprite floorSprite, Sprite ceilingSprite, string tag)
         {
             this.animation = animation;
             isAnimation = true;
-            this.tag = tag;
             Type = type;
             WallSprite = animation.CurrentFrame;
             CeilingSprite = ceilingSprite;
             FloorSprite = floorSprite;
+
+            Map.AddTaggedCall(tag, this);
         }
 
-
-        public void SpriteUpdate(float time)
+        public void StartAnimatiom()
         {
             if (isAnimation)
             {
-                if (animation.IsOver)
-                {
-                    isAnimation = false;
-                    Type = MapCellType.Empty;
-                }
+                animation.Reset();
+                isStart = true;
+
+            }
+        }
+        public void StartAnimatiom(Action invoking)
+        {
+            if (isAnimation)
+            {
+                animation.Reset();
+                isStart = true;
+                this.invoking = invoking;
+            }
+        }
+
+        public void SpriteUpdate(float time)
+        {
+            if (isAnimation && isStart)
+            {
                 animation.UpdateFrame(time);
                 WallSprite = animation.CurrentFrame;
+                if (animation.IsOver)
+                {
+                    isStart = false;
+                    invoking();
+                }
+                
                 
             }
         }
 
+        private Action invoking = () => { };
+        private bool isStart;
         private Animation animation;
-        public string tag;
-        private bool isAnimation;
-        public MapCellType Type { get; private set; }
+       
+        private readonly bool isAnimation;
+        public MapCellType Type { get;  set; }
         public Sprite WallSprite { get; private set; }
         public Sprite FloorSprite { get; }
         public Sprite CeilingSprite { get;  }

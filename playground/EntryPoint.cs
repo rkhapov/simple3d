@@ -30,6 +30,7 @@ namespace playground
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var windowTexture = Sprite.Load("./sprites/window.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
+            var bedTexture = Sprite.Load("./sprites/bed.png");
             var sword = Sword.Create(resourceLoader);
             var bow = Bow.Create(resourceLoader);
             var doorAnimation = resourceLoader.GetAnimation("./animations/door");
@@ -37,20 +38,20 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),
+               // Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
             backGroundMusic.Play(-1);
-            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, doorAnimation);
+            var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, bedTexture, doorAnimation);
             var map = Map.FromStrings(new[]
             {
                 "###############################",
                 "#.........#...................#",
                 "#..#..........#...............#",
                 "#.........############........#",
-                "#.........o..........#........#",
-                "#.........d..........###......#",
-                "#.........o..........#........#",
+                "##........o..........#........#",
+                "#b........d..........###......#",
+                "#b........o..........#........#",
                 "####......##########.#........#",
                 "##...................#......###",
                 "#........####........#........#",
@@ -66,7 +67,12 @@ namespace playground
                 "###############################"
             }, storage.GetCellByChar);
             var level = new Scene(player, map, objects);
-            
+
+            Trigger.AddTrigger(new Vector2(8f, 5f), () => {
+                Console.WriteLine("OPPEEEN THE DOOOOR");
+                Map.GetCellByTag("door1").StartAnimatiom(() => { Map.GetCellByTag("door1").Type = MapCellType.Empty; });
+            });
+
             while (engine.Update(level))
             {
             }
@@ -79,23 +85,26 @@ namespace playground
             private readonly Sprite floorTexture;
             private readonly Sprite windowTexture;
             private readonly Animation doorAnimation;
+            private readonly Sprite bedTexture;
 
-            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite windowTexture, Animation doorAnimation)
+            public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite windowTexture, Sprite bad, Animation doorAnimation)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
                 this.floorTexture = floorTexture;
                 this.windowTexture = windowTexture;
                 this.doorAnimation = doorAnimation;
+                this.bedTexture = bad;
             }
 
             public MapCell GetCellByChar(char c)
             {
                 return c switch
                 {
-                    'd' => new MapCell(MapCellType.Window, doorAnimation, wallTexture, ceilingTexture, "door1"),
+                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
                     '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
                     'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
+                    'b' => new MapCell(MapCellType.TransparentObj, bedTexture, floorTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }
