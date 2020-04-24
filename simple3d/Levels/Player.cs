@@ -46,6 +46,8 @@ namespace simple3d.Levels
 
         public void SetWeaponToNext()
         {
+            Weapon.GoStatic();
+
             WeaponIndex++;
 
             if (WeaponIndex == Weapons.Length)
