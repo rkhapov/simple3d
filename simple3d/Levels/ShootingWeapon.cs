@@ -25,6 +25,8 @@ namespace simple3d.Levels
             state = ShootingWeaponState.Static;
         }
 
+        public abstract void SpawnArrow(Scene scene);
+
         public ShootingWeaponState State
         {
             get => state;

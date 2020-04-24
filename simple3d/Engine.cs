@@ -75,7 +75,8 @@ namespace simple3d
             var statusBarHeight = screen.Height / 8;
             var statusBarWidth = screen.Width;
             var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
-            var statusBarRenderer = new StatusRenderer(statusBarSprite, statusBarHeight);
+            var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
+            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer, textRenderer);

@@ -8,6 +8,7 @@ using objects.Environment;
 using objects.Monsters;
 using objects.Weapons;
 using simple3d;
+using ui;
 
 namespace playground
 {
@@ -15,7 +16,12 @@ namespace playground
     {
         private static unsafe void Main(string[] args)
         {
-            var options = new EngineOptions("simple 3d game", 720, 1280, true, "./fonts/PressStart2P.ttf");
+            var options = new EngineOptions(
+                "simple 3d game",
+                720, 1280,
+                false,
+                UiResourcesHelper.PressStart2PFontPath,
+                UiResourcesHelper.CrossSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);
             var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
