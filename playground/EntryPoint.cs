@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using musics;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
@@ -33,11 +34,13 @@ namespace playground
             var bow = Bow.Create(resourceLoader);
             var doorAnimation = resourceLoader.GetAnimation("./animations/door");
             player.Weapons = new Weapon[] {sword, bow};
+            var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
                 Ghost.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.5f, 0.5f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
+            backGroundMusic.Play(-1);
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, doorAnimation);
             var map = Map.FromStrings(new[]
             {
