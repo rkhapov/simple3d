@@ -62,7 +62,7 @@ namespace objects.Monsters
             };
         }
 
-        private const float AttackDistance = 0.3f;
+        private const float AttackDistance = 2f;
         private const float AttackDistanceSquared = AttackDistance * AttackDistance;
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
