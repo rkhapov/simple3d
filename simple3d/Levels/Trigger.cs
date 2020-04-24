@@ -23,7 +23,7 @@ namespace simple3d.Levels
 
         public static void CheckAndDo(Vector2 position)
         {
-            position = new Vector2((float)Math.Round(position.X), (float)Math.Round(position.Y));// извините но это минус фпс
+            position = new Vector2((int)position.X, (int)position.Y);// извините но это минус фпс
             if (allTriggers.ContainsKey(position))
             {
                 allTriggers[position].DoIt();
