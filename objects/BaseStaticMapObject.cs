@@ -20,15 +20,15 @@ namespace objects
         public Sprite Sprite { get; }
 
         public abstract void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
-        public void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public void OnLeftMeleeAttack(Scene scene, int damage)
         {
         }
 
-        public void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public void OnRightMeleeAttack(Scene scene, int damage)
         {
         }
 
-        public void OnShoot(Scene scene, ShootingWeapon weapon)
+        public void OnShoot(Scene scene, int damage)
         {
         }
     }

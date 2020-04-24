@@ -21,16 +21,19 @@ namespace objects
             base.OnWorldUpdate(scene, elapsedMilliseconds);
         }
 
-        public override void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
+            Health -= damage;
         }
 
-        public override void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon)
+        public override void OnRightMeleeAttack(Scene scene, int damage)
         {
+            Health -= damage;
         }
 
-        public override void OnShoot(Scene scene, ShootingWeapon weapon)
+        public override void OnShoot(Scene scene, int damage)
         {
+            Health -= damage;
         }
     }
 }

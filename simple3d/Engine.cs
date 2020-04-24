@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Events;
@@ -86,7 +88,8 @@ namespace simple3d
                 throw new InvalidOperationException($"OpenAudio: {SDL_GetError()}");
             }
 
-            var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth, options.FullScreen);
+            var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth,
+                options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();
             var statusBarHeight = screen.Height / 8;
             var statusBarWidth = screen.Width;
@@ -95,7 +98,8 @@ namespace simple3d
             var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
-            return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer, textRenderer);
+            return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,
+                textRenderer);
         }
 
         public bool Update(Scene scene)
@@ -136,11 +140,9 @@ namespace simple3d
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void UpdateWorld(Scene scene, float elapsedMilliseconds)
         {
-            foreach (var mapObject in scene.Objects)
-            {
-                mapObject.OnWorldUpdate(scene, elapsedMilliseconds);
-            }
-
+            Task.WhenAll(scene
+                .Objects
+                .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
             scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
         }
 
@@ -158,7 +160,7 @@ namespace simple3d
             statusBarRenderer.Render(Screen, scene);
 
             var fps = (int) (1000 / elapsedMilliseconds);
-            var white = new SDL_Color { a = 0, b = 255, g = 255, r = 255 };
+            var white = new SDL_Color {a = 0, b = 255, g = 255, r = 255};
             textRenderer.RenderText($"FPS: {fps}", white, Screen, 0, 0);
 
             Screen.Update();

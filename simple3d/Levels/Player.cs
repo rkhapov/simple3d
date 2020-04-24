@@ -299,10 +299,10 @@ namespace simple3d.Levels
             }
         }
 
-        public abstract void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon);
+        public abstract void OnLeftMeleeAttack(Scene scene, int damage);
 
-        public abstract void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon);
+        public abstract void OnRightMeleeAttack(Scene scene, int damage);
 
-        public abstract void OnShoot(Scene scene, ShootingWeapon weapon);
+        public abstract void OnShoot(Scene scene, int damage);
     }
 }

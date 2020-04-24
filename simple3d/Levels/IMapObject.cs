@@ -10,8 +10,8 @@ namespace simple3d.Levels
         float DirectionAngle { get; }
         Sprite Sprite { get; }
         void OnWorldUpdate(Scene scene, float elapsedMilliseconds);
-        void OnLeftMeleeAttack(Scene scene, MeleeWeapon weapon);
-        void OnRightMeleeAttack(Scene scene, MeleeWeapon weapon);
-        void OnShoot(Scene scene, ShootingWeapon weapon);
+        void OnLeftMeleeAttack(Scene scene, int damage);
+        void OnRightMeleeAttack(Scene scene, int damage);
+        void OnShoot(Scene scene, int damage);
     }
 }

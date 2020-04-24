@@ -97,7 +97,7 @@ namespace simple3d.Levels
 
                 if (inFov && dv.Length() < 1)
                 {
-                    obj.OnLeftMeleeAttack(scene, this);
+                    obj.OnLeftMeleeAttack(scene, 42);
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace simple3d.Levels
 
                 if (inFov && dv.Length() < 1)
                 {
-                    obj.OnRightMeleeAttack(scene, this);
+                    obj.OnRightMeleeAttack(scene, 42);
                 }
             }
         }
