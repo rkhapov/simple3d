@@ -85,35 +85,6 @@ namespace objects.Monsters
             }
 
             return hitWall;
-            
-            /*
-            var map = scene.Map;
-            var player = scene.Player;
-            var distance = Vector2.Distance(Position, player.Position);
-            var hitWall = false;
-            var angle = Math.Atan2(player.Position.Y - Position.Y, player.Position.X - Position.X);
-            var xRayUnit = (float) Math.Cos(angle);
-            var yRayUnit = (float) Math.Sin(angle);
-            var rayStep = 0.01f;
-            var xStep = xRayUnit * rayStep;
-            var yStep = yRayUnit * rayStep;
-            var currentX = Position.X;
-            var currentY = Position.Y;
-            var rayLength = 0.0f;
-            while (!hitWall && rayLength <= distance)
-            {
-                rayLength += rayStep;
-                currentX += xStep;
-                currentY += yStep;
-                var testX = (int) currentX;
-                var testY = (int) currentY;
-                var cell = map.At(testY, testX);
-
-                if (cell.Type == MapCellType.Wall)
-                    hitWall = true;
-            }
-
-            return hitWall;*/
         }
 
         protected void MoveOnDirection(Scene scene, float elapsedTime)
