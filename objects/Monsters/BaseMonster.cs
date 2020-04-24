@@ -26,7 +26,7 @@ namespace objects.Monsters
         }
 
         public Vector2 Position { get; protected set; }
-        public Vector2 Size { get; }
+        public Vector2 Size { get; protected set; }
         public float DirectionAngle { get; protected set; }
         public abstract Sprite Sprite { get; }
 
