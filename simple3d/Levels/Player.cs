@@ -260,7 +260,7 @@ namespace simple3d.Levels
                 var testX = (int) vertex.X;
                 var testY = (int) vertex.Y;
 
-                if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall || map.At(testY, testX).Type == MapCellType.Window)
+                if (!map.InBound(testY, testX) || !CellTypes.walkable.Contains(map.At(testY, testX).Type))
                 {
                     return;
                 }
@@ -276,6 +276,7 @@ namespace simple3d.Levels
             }
 
             Position = newPosition;
+            Trigger.CheckAndDo(Position);
         }
 
         public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)

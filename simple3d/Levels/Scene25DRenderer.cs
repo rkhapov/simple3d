@@ -183,11 +183,11 @@ namespace simple3d.Levels
                     if (cell.Type == MapCellType.Empty)//mb
                         continue;
 
-                    if (cell.Type == MapCellType.Wall)
+                    if (!CellTypes.transparents.Contains(cell.Type))
                         hit = true;
 
              
-                    if (cell.Type == MapCellType.Window && ray.Targets.Count != 0 && ray.Targets.Peek().MapCell.Type == MapCellType.Window)
+                    if (CellTypes.transparents.Contains(cell.Type ) && ray.Targets.Count != 0 && ray.Targets.Peek().MapCell.Type == cell.Type)
                         continue;
 
                    
