@@ -88,6 +88,11 @@ namespace simple3d
                 throw new InvalidOperationException($"OpenAudio: {SDL_GetError()}");
             }
 
+            if (SDL_mixer.Mix_AllocateChannels(16) < 0)
+            {
+                throw new InvalidOperationException($"Cant allocate channels: {SDL_GetError()}");
+            }
+
             var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth,
                 options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();

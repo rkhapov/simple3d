@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using objects.Monsters.Algorithms;
+using objects.Weapons;
 using simple3d.Drawing;
 using simple3d.Levels;
 using simple3d.MathUtils;
@@ -82,8 +83,8 @@ namespace objects.Monsters
         [Flags]
         protected enum MovingFlags
         {
-            Standard,
-            IgnoreObjects
+            Standard = 1,
+            IgnoreObjects = 2
         }
 
         protected void MoveOnDirection(Scene scene, float elapsedTime, MovingFlags flags = MovingFlags.Standard)

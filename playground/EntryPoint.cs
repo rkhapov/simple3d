@@ -24,7 +24,7 @@ namespace playground
                 UiResourcesHelper.PressStart2PFontPath,
                 UiResourcesHelper.CrossSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);
-            var resourceLoader = new ResourceCachedLoader();
+            var resourceLoader = ResourceCachedLoader.Instance;
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
@@ -38,7 +38,7 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                Rat.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.6f, 0.6f), 0.0f),
+                Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
             backGroundMusic.Play(-1);
