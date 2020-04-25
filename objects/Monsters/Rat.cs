@@ -189,15 +189,17 @@ namespace objects.Monsters
             staticAnimation.Reset();
         }
 
+        private void DoReceiveDamage(int damage)
+        {
+            if (!IsAlive)
+                return;
+            ReceiveDamage(damage);
+            PlayHitSound();
+        }
+
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
             DoReceiveDamage(damage);
-        }
-
-        private void DoReceiveDamage(int damage)
-        {
-            ReceiveDamage(damage);
-            PlayHitSound();
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)

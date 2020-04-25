@@ -42,7 +42,7 @@ namespace simple3d.MathUtils
             var eyeY = MathF.Cos(player.DirectionAngle);
             var playerAngle = MathF.Atan2(eyeY, eyeX);
             const float pi2 = MathF.PI * 0.5f;
-            var dv = player.Position - mapObject.Position;
+            var dv = mapObject.Position - player.Position;
             var angle = playerAngle - MathF.Atan2(dv.Y, dv.X);
             
             if (angle < -MathF.PI)
