@@ -8,17 +8,17 @@ namespace objects.Weapons
 {
     public class FireBall : AnimatedObject
     {
-        private float lifeTime;
+        private float lifeTimeMilliseconds;
 
         public FireBall(
             Vector2 position,
             Vector2 size,
             float directionAngle,
-            float lifeTime,
+            float lifeTimeMilliseconds,
             Animation animation,
             IMapObject target) : base(position, size, directionAngle)
         {
-            this.lifeTime = lifeTime;
+            this.lifeTimeMilliseconds = lifeTimeMilliseconds;
             CurrentAnimation = animation;
             Target = target;
         }
@@ -28,6 +28,14 @@ namespace objects.Weapons
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
+
+            lifeTimeMilliseconds -= elapsedMilliseconds;
+
+            if (lifeTimeMilliseconds < 0)
+            {
+                scene.RemoveObject(this);
+                return;
+            }
 
             if (!TryGetDirectionToTarget(scene, out var angle))
             {

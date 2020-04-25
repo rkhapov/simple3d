@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using objects.Monsters.Algorithms;
+using objects.Weapons;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
@@ -23,17 +24,19 @@ namespace objects.Monsters
         private readonly Animation deadAnimation;
         private readonly Animation shootingAnimation;
         private readonly Animation runningAnimation;
+        private readonly Animation fireballAnimation;
 
         private LichState state;
 
         public Lich(Vector2 position, Vector2 size, float directionAngle, Animation staticAnimation,
-            Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation) : base(position, size,
+            Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation) : base(position, size,
             directionAngle, 42)
         {
             this.staticAnimation = staticAnimation;
             this.deadAnimation = deadAnimation;
             this.shootingAnimation = shootingAnimation;
             this.runningAnimation = runningAnimation;
+            this.fireballAnimation = fireballAnimation;
             this.state = LichState.Static;
         }
 
@@ -43,13 +46,15 @@ namespace objects.Monsters
             var deadAnimation = loader.GetAnimation("./animations/lich/dead");
             var shootingAnimation = loader.GetAnimation("./animations/lich/shooting");
             var runningAnimation = loader.GetAnimation("./animations/lich/running");
+            var fireBallAnimation = loader.GetAnimation("./animations/fireball/moving");
             
             return new Lich(
                 position, size, direction,
                 staticAnimation,
                 deadAnimation,
                 shootingAnimation,
-                runningAnimation);
+                runningAnimation,
+                fireBallAnimation);
         }
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
@@ -68,6 +73,7 @@ namespace objects.Monsters
 
             if (state == LichState.Shooting && GetCurrentAnimation().IsOver)
             {
+                scene.AddObject(new FireBall(Position, new Vector2(0.1f, 0.1f), 0, 3000, fireballAnimation, scene.Player));
                 SetState(LichState.RunningFromPlayer);
                 return;
             }
