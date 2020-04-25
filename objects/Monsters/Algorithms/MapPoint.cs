@@ -1,6 +1,8 @@
-﻿namespace objects.Monsters.Algorithms
+﻿using System.Numerics;
+
+namespace objects.Monsters.Algorithms
 {
-    public struct MapPoint
+    public class MapPoint
     {
         public MapPoint(int y, int x)
         {
@@ -8,12 +10,32 @@
             X = x;
         }
         
-        public int X;
-        public int Y;
+        public readonly int X;
+        public readonly int Y;
 
-        // public override int GetHashCode()
-        // {
-        //     return 
-        // }
+        public static MapPoint FromVector2(Vector2 source)
+        {
+            return new MapPoint((int) source.Y, (int) source.X);
+        }
+
+        public override int GetHashCode()
+        {
+            return unchecked(X * 31337 ^ Y);
+        }
+
+        public override string ToString()
+        {
+            return $"({Y}; {X})";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj switch
+            {
+                null => false,
+                MapPoint other => (X == other.X && Y == other.Y),
+                _ => false
+            };
+        }
     }
 }

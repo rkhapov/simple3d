@@ -217,12 +217,12 @@ namespace simple3d.Levels
 
         protected virtual void DoRightTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            DirectionAngle += 0.003f * elapsedMilliseconds;
+            DirectionAngle += 0.0025f * elapsedMilliseconds;
         }
 
         protected virtual void DoLeftTurn(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            DirectionAngle -= 0.003f * elapsedMilliseconds;
+            DirectionAngle -= 0.0025f * elapsedMilliseconds;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

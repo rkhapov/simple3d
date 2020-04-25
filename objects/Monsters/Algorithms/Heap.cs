@@ -19,14 +19,14 @@ namespace objects.Monsters.Algorithms
 
         public int Capacity => capacity;
 
-        protected Comparer<T> Comparer { get; private set; }
+        protected IComparer<T> Comparer { get; private set; }
         protected abstract bool Dominates(T x, T y);
 
         protected Heap() : this(Comparer<T>.Default)
         {
         }
 
-        protected Heap(Comparer<T> comparer) : this(Enumerable.Empty<T>(), comparer)
+        protected Heap(IComparer<T> comparer) : this(Enumerable.Empty<T>(), comparer)
         {
         }
 
@@ -35,7 +35,7 @@ namespace objects.Monsters.Algorithms
         {
         }
 
-        protected Heap(IEnumerable<T> collection, Comparer<T> comparer)
+        protected Heap(IEnumerable<T> collection, IComparer<T> comparer)
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
