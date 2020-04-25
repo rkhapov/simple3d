@@ -6,7 +6,7 @@ using simple3d.Levels;
 
 namespace objects.Monsters
 {
-    public class Skeleton : AnimatedMonster
+    public class Skeleton : BaseMonster
     {
         private enum SkeletonState
         {
@@ -107,7 +107,7 @@ namespace objects.Monsters
                     return;
                 }
 
-                if (HaveWallOnStraightWayToPlayer(scene))
+                if (CanSeePlayer(scene))
                 {
                     return;
                 }
@@ -120,7 +120,7 @@ namespace objects.Monsters
                 if (PlayerInAttackDistance(scene))
                     SetState(IsRightAttack(0.5f) ? SkeletonState.AttackRight : SkeletonState.AttackLeft);
                 
-                else if (HaveWallOnStraightWayToPlayer(scene))
+                else if (CanSeePlayer(scene))
                     SetState(SkeletonState.Static);
                 
                 else
