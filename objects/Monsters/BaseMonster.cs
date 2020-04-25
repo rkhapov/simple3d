@@ -26,7 +26,7 @@ namespace objects.Monsters
         }
 
         public Vector2 Position { get; protected set; }
-        public Vector2 Size { get; }
+        public Vector2 Size { get; protected set; }
         public float DirectionAngle { get; protected set; }
         public abstract Sprite Sprite { get; }
 
@@ -94,14 +94,16 @@ namespace objects.Monsters
             var dy = MathF.Sin(DirectionAngle) * MoveSpeed * elapsedTime;
             var newPosition = Position + new Vector2(dx, 0);
 
-            TryMove(scene, newPosition, map);
+            if (CanMove(scene, newPosition, map))
+                Position = newPosition;
 
             newPosition = Position + new Vector2(0, dy);
 
-            TryMove(scene, newPosition, map);
+            if (CanMove(scene, newPosition, map))
+                Position = newPosition;
         }
-        
-        private void TryMove(Scene scene, Vector2 newPosition, Map map)
+
+        private bool CanMove(Scene scene, Vector2 newPosition, Map map)
         {
             var newVertices = GeometryHelper.GetRotatedVertices(newPosition, Size, DirectionAngle);
 
@@ -113,7 +115,7 @@ namespace objects.Monsters
 
                 if (!map.InBound(testY, testX) || map.At(testY, testX).Type == MapCellType.Wall || map.At(testY, testX).Type == MapCellType.Window)
                 {
-                    return;
+                    return false;
                 }
             }
 
@@ -125,14 +127,14 @@ namespace objects.Monsters
             {
                 if (GeometryHelper.IsRectanglesIntersects(newVertices, objectVertices))
                 {
-                    return;
+                    return false;
                 }
             }
 
             if (GeometryHelper.IsRectanglesIntersects(newVertices, scene.Player.GetRotatedVertices()))
-                return;
+                return false;
 
-            Position = newPosition;
+            return true;
         }
     }
 }

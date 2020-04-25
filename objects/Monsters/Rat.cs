@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Numerics;
+using musics;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
+using simple3d.Sounds;
 
 namespace objects.Monsters
 {
@@ -12,7 +14,8 @@ namespace objects.Monsters
         {
             Static,
             PlayerFollowing,
-            Attack
+            Attack,
+            Dead
         }
 
         public override Animation CurrentAnimation => GetCurrentAnimation();
@@ -20,6 +23,11 @@ namespace objects.Monsters
         private readonly Animation staticAnimation;
         private readonly Animation playerFollowing;
         private readonly Animation attackAnimation;
+        private readonly Animation deadAnimation;
+
+        private readonly ISound deathSound;
+        private readonly ISound attackSound;
+        private readonly ISound hitSound;
 
         private RatState state;
 
@@ -27,11 +35,16 @@ namespace objects.Monsters
             Animation staticAnimation,
             Animation playerFollowing,
             Animation attackAnimation,
-            Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, 84)
+            Vector2 position, Vector2 size, float directionAngle, ISound deathSound, Animation deadAnimation, ISound attackSound, ISound hitSound) : base(
+            position, size, directionAngle, 84)
         {
             this.staticAnimation = staticAnimation;
             this.playerFollowing = playerFollowing;
             this.attackAnimation = attackAnimation;
+            this.deathSound = deathSound;
+            this.deadAnimation = deadAnimation;
+            this.attackSound = attackSound;
+            this.hitSound = hitSound;
 
             state = RatState.Static;
         }
@@ -41,6 +54,10 @@ namespace objects.Monsters
             var staticAnimation = loader.GetAnimation("./animations/rat/static");
             var playerFollowerAnimation = loader.GetAnimation("./animations/rat/moving");
             var attackAnimation = loader.GetAnimation("./animations/rat/attack");
+            var deathSound = loader.GetSound(MusicResourceHelper.RatDeathSoundPath);
+            var deadAnimation = loader.GetAnimation("./animations/rat/dead");
+            var attackSound = loader.GetSound(MusicResourceHelper.RatAttackPath);
+            var hitSound = loader.GetSound(MusicResourceHelper.RatHitPath);
 
             return new Rat(
                 staticAnimation,
@@ -48,7 +65,11 @@ namespace objects.Monsters
                 attackAnimation,
                 position,
                 size,
-                directionAngle);
+                directionAngle,
+                deathSound,
+                deadAnimation,
+                attackSound,
+                hitSound);
         }
 
         private Animation GetCurrentAnimation()
@@ -58,6 +79,7 @@ namespace objects.Monsters
                 RatState.Static => staticAnimation,
                 RatState.PlayerFollowing => playerFollowing,
                 RatState.Attack => attackAnimation,
+                RatState.Dead => deadAnimation,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -69,11 +91,21 @@ namespace objects.Monsters
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
 
+            if (state == RatState.Dead)
+            {
+                return;
+            }
+
+            if (!IsAlive)
+            {
+                SetState(RatState.Dead);
+                Size = Vector2.Zero;
+                return;
+            }
+
             if (state == RatState.Attack && GetCurrentAnimation().IsOver)
             {
                 SetState(RatState.Static);
-                if (PlayerInAttackDistance(scene))
-                    DoLeftMeleeAttackOnPlayer(scene, 5);
                 return;
             }
 
@@ -82,6 +114,7 @@ namespace objects.Monsters
                 if (PlayerInAttackDistance(scene))
                 {
                     SetState(RatState.Attack);
+                    DoLeftMeleeAttackOnPlayer(scene, 5);
                     return;
                 }
 
@@ -96,7 +129,10 @@ namespace objects.Monsters
             if (state == RatState.PlayerFollowing)
             {
                 if (PlayerInAttackDistance(scene))
+                {
                     SetState(RatState.Attack);
+                    DoLeftMeleeAttackOnPlayer(scene, 5);
+                }
                 else if (HaveWallOnStraightWayToPlayer(scene))
                     SetState(RatState.Static);
                 else
@@ -116,6 +152,12 @@ namespace objects.Monsters
         private void SetState(RatState newState)
         {
             state = newState;
+
+            if (state == RatState.Attack)
+            {
+                attackSound.Play(0);
+            }
+
             attackAnimation.Reset();
             playerFollowing.Reset();
             staticAnimation.Reset();
@@ -123,26 +165,35 @@ namespace objects.Monsters
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
+            DoReceiveDamage(damage);
+        }
 
-            if (!IsAlive)
-                scene.RemoveObject(this);
+        private void DoReceiveDamage(int damage)
+        {
+            ReceiveDamage(damage);
+            PlayHitSound();
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
-            
-            if (!IsAlive)
-                scene.RemoveObject(this);
+            DoReceiveDamage(damage);
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
+            DoReceiveDamage(damage);
+        }
 
+        private void PlayHitSound()
+        {
             if (!IsAlive)
-                scene.RemoveObject(this);
+            {
+                deathSound.Play(0);
+            }
+            else
+            {
+                hitSound.Play(0);
+            }
         }
 
         protected override int ViewDistance => 15;

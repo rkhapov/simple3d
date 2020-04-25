@@ -31,7 +31,7 @@ namespace simple3d.Sounds
                 throw new NotImplementedException($"Cant play chunk: {SDL.SDL_GetError()}");
             }
         }
-        
+
         public void Dispose()
         {
             SDL_mixer.Mix_FreeChunk(chunk);
