@@ -9,7 +9,7 @@ using simple3d.Levels;
 
 namespace objects.Monsters
 {
-    public class Lich : AnimatedMonster
+    public class Lich : BaseMonster
     {
         private enum LichState
         {

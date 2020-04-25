@@ -9,7 +9,7 @@ using simple3d.Sounds;
 
 namespace objects.Monsters
 {
-    public class Rat : AnimatedMonster
+    public class Rat : BaseMonster
     {
         private enum RatState
         {
