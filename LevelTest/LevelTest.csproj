@@ -12,6 +12,13 @@
 
   <ItemGroup>
     <Folder Include="sprites\" />
+   
+    <None Update="fonts\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sprites\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

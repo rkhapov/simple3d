@@ -16,13 +16,13 @@ namespace LevelTest
     {
         private static void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false, "./fonts/PressStart2P.ttf"));
             var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
             var loader = new ResourceCachedLoader();
-            var wallTexture = Sprite.Load("./sprites/wall.png");
-            var floorTexture = Sprite.Load("./sprites/floor.png");
-            var ceilingTexture = Sprite.Load("./sprites/ceiling.png");
+            var wallTexture = Sprite.Load("./sprites/wall1.png");
+            var floorTexture = Sprite.Load("./sprites/floor1.png");
+            var ceilingTexture = Sprite.Load("./sprites/ceiling1.png");
          
 
             var sword = Sword.Create(loader);
@@ -34,7 +34,7 @@ namespace LevelTest
             {
                 GreenLight.Create(loader, new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0),
                 GreenLight.Create(loader, new Vector2(6.0f, 4.0f), new Vector2(0, 0), 0),
-                new BaseAnimatedMapObj(new Vector2(2f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./sprites/lamp")),
+                new BaseAnimatedMapObj(new Vector2(2f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
                 Rat.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
             };
             var map = Map.FromStrings(new[]
