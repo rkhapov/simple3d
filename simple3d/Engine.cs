@@ -140,9 +140,14 @@ namespace simple3d
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void UpdateWorld(Scene scene, float elapsedMilliseconds)
         {
-            Task.WhenAll(scene
-                .Objects
-                .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
+            // Task.WhenAll(scene
+            //     .Objects
+            //     .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
+
+            foreach (var obj in scene.Objects)
+            {
+                obj.OnWorldUpdate(scene, elapsedMilliseconds);
+            }
             scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
         }
 

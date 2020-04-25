@@ -37,5 +37,19 @@ namespace objects.Monsters.Algorithms
                 _ => false
             };
         }
+
+        public int GetManhattanDistanceTo(MapPoint goal)
+        {
+            //manhettan
+            var dx = X - goal.X;
+            if (dx < 0)
+                dx = -dx;
+
+            var dy = Y - goal.Y;
+            if (dy < 0)
+                dy = -dy;
+
+            return dx + dy;
+        }
     }
 }

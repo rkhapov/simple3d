@@ -9,7 +9,7 @@ using simple3d.Sounds;
 
 namespace objects.Monsters
 {
-    public class Rat : AnimatedMonster
+    public class Rat : BaseMonster
     {
         private enum RatState
         {
@@ -119,7 +119,7 @@ namespace objects.Monsters
                     return;
                 }
 
-                if (HaveWallOnStraightWayToPlayer(scene))
+                if (!CanSeePlayer(scene))
                 {
                     return;
                 }
@@ -161,13 +161,6 @@ namespace objects.Monsters
             angle = GetAngleToPoint(path[1]);
 
             return true;
-        }
-
-        private float GetAngleToPoint(MapPoint point)
-        {
-            return MathF.Atan2(
-                point.Y + 0.5f - Position.Y,
-                point.X + 0.5f - Position.X);
         }
 
         private bool PlayerInAttackDistance(Scene scene)

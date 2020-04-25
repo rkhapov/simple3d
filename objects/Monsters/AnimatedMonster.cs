@@ -4,9 +4,9 @@ using simple3d.Levels;
 
 namespace objects.Monsters
 {
-    public abstract class AnimatedMonster : BaseMonster
+    public abstract class AnimatedObject : BaseObject
     {
-        protected AnimatedMonster(Vector2 position, Vector2 size, float directionAngle, int health) : base(position, size, directionAngle, health)
+        protected AnimatedObject(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle)
         {
         }
 
