@@ -17,6 +17,7 @@ namespace LevelTest
         private static void Main(string[] args)
         {
             using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false));
+            var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
             var loader = new ResourceCachedLoader();
             var wallTexture = Sprite.Load("./sprites/wall.png");
@@ -33,7 +34,7 @@ namespace LevelTest
             {
                 GreenLight.Create(loader, new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0),
                 GreenLight.Create(loader, new Vector2(6.0f, 4.0f), new Vector2(0, 0), 0),
-                
+                new BaseAnimatedMapObj(new Vector2(2f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./sprites/lamp")),
                 Rat.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
             };
             var map = Map.FromStrings(new[]

@@ -26,7 +26,7 @@ namespace playground
             using var engine = EngineBuilder.BuildEngine25D(options);
             var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
-            var wallTexture = Sprite.Load("./sprites/greystone.png");
+            var wallTexture = Sprite.Load("./sprites/wall.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var windowTexture = Sprite.Load("./sprites/window.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
