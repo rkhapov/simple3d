@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using objects.Monsters.Algorithms;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
@@ -14,7 +15,8 @@ namespace objects.Monsters
             FollowingAndBlocking,
             AttackLeft,
             AttackRight,
-            BLock
+            BLockRight,
+            BlockLeft
         }
         protected override int ViewDistance => 20;
         protected override float MoveSpeed => 0.003f;
@@ -24,7 +26,8 @@ namespace objects.Monsters
         private readonly Animation followingAndBlockingAnimation;
         private readonly Animation attackRightAnimation;
         private readonly Animation attackLeftAnimation;
-        private readonly Animation blockAnimation;
+        private readonly Animation blockRightAnimation;
+        private readonly Animation blockLeftAnimation;
 
         private SkeletonState state;
 
@@ -33,32 +36,36 @@ namespace objects.Monsters
             Animation followingAndBlockingAnimation,
             Animation attackRightAnimation,
             Animation attackLeftAnimation,
-            Animation blockAnimation,
+            Animation blockRightAnimation,
+            Animation blockLeftAnimation,
             Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, 84)
         {
             this.staticAnimation = staticAnimation;
             this.followingAndBlockingAnimation = followingAndBlockingAnimation;
             this.attackRightAnimation = attackRightAnimation;
             this.attackLeftAnimation = attackLeftAnimation;
-            this.blockAnimation = blockAnimation;
+            this.blockRightAnimation = blockRightAnimation;
+            this.blockLeftAnimation = blockLeftAnimation;
 
             state = SkeletonState.Static;
         }
 
         public static Skeleton Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)
         {
-            var staticAnimation = loader.GetAnimation("./animations/skeleton/guard");
-            var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/guard");
+            var staticAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
+            var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
             var attackRightAnimation = loader.GetAnimation("./animations/skeleton/right_attack");
             var attackLeftAnimation = loader.GetAnimation("./animations/skeleton/left_attack");
-            var blockAnimation = loader.GetAnimation("./animations/skeleton/guard");
+            var blockRightAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
+            var blockLeftAnimation = loader.GetAnimation("./animations/skeleton/guard_left");
 
             return new Skeleton(
                 staticAnimation,
                 followingAndBlockingAnimation,
                 attackRightAnimation,
                 attackLeftAnimation,
-                blockAnimation,
+                blockRightAnimation,
+                blockLeftAnimation,
                 position,
                 size,
                 directionAngle);
@@ -72,7 +79,8 @@ namespace objects.Monsters
                 SkeletonState.FollowingAndBlocking => followingAndBlockingAnimation,
                 SkeletonState.AttackRight => attackRightAnimation,
                 SkeletonState.AttackLeft => attackLeftAnimation,
-                SkeletonState.BLock => blockAnimation,
+                SkeletonState.BLockRight => blockRightAnimation,
+                SkeletonState.BlockLeft => blockLeftAnimation,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -88,14 +96,20 @@ namespace objects.Monsters
             if (state == SkeletonState.AttackLeft && GetCurrentAnimation().IsOver)
             {
                 SetState(SkeletonState.Static);
-                DoLeftMeleeAttackOnPlayer(scene, 42);
+                DoLeftMeleeAttackOnPlayer(scene, 2);
                 return;
             }
             
             if (state == SkeletonState.AttackRight && GetCurrentAnimation().IsOver)
             {
                 SetState(SkeletonState.Static);
-                DoRightMeleeAttackOnPlayer(scene, 42);
+                DoRightMeleeAttackOnPlayer(scene, 2);
+                return;
+            }
+
+            if ((state == SkeletonState.BLockRight || state ==SkeletonState.BlockLeft) && GetCurrentAnimation().IsOver)
+            {
+                SetState(IsRightAttack(0.5f) ? SkeletonState.AttackRight : SkeletonState.AttackLeft);
                 return;
             }
 
@@ -107,7 +121,7 @@ namespace objects.Monsters
                     return;
                 }
 
-                if (CanSeePlayer(scene))
+                if (!CanSeePlayer(scene))
                 {
                     return;
                 }
@@ -119,17 +133,33 @@ namespace objects.Monsters
             {
                 if (PlayerInAttackDistance(scene))
                     SetState(IsRightAttack(0.5f) ? SkeletonState.AttackRight : SkeletonState.AttackLeft);
-                
-                else if (CanSeePlayer(scene))
-                    SetState(SkeletonState.Static);
-                
                 else
                 {
-                    var fromPlayerToUs = scene.Player.Position - Position;
-                    DirectionAngle = MathF.Atan2(fromPlayerToUs.Y, fromPlayerToUs.X);
-                    MoveOnDirection(scene, elapsedMilliseconds);
+                    if (TryGetDirectionToPlayer(scene, out var directionAngle))
+                    {
+                        DirectionAngle = directionAngle;
+                        MoveOnDirection(scene, elapsedMilliseconds);
+                    }
+                    else
+                        SetState(SkeletonState.Static);
                 }
             }
+        }
+        
+        private bool TryGetDirectionToPlayer(Scene scene, out float angle)
+        {
+            angle = 0.0f;
+
+            var myPoint = MapPoint.FromVector2(Position);
+            var playerPoint = MapPoint.FromVector2(scene.Player.Position);
+            var path = PathFinder.FindPath(scene.Map, playerPoint, myPoint);
+
+            if (path == null)
+                return false;
+
+            angle = GetAngleToPoint(path[1]);
+
+            return true;
         }
 
         private bool PlayerInAttackDistance(Scene scene)
@@ -159,13 +189,14 @@ namespace objects.Monsters
             attackRightAnimation.Reset();
             attackLeftAnimation.Reset();
             followingAndBlockingAnimation.Reset();
-            blockAnimation.Reset();
+            blockRightAnimation.Reset();
+            blockLeftAnimation.Reset();
             staticAnimation.Reset();
         }
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            SetState(SkeletonState.BLock);
+            SetState(SkeletonState.BlockLeft);
             Console.WriteLine("Blocking");
             if (!IsBlockSuccessful(BlockingChance))
             {
@@ -179,7 +210,7 @@ namespace objects.Monsters
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            SetState(SkeletonState.BLock);
+            SetState(SkeletonState.BLockRight);
             if(!IsBlockSuccessful(BlockingChance))
                 ReceiveDamage(damage);
 
