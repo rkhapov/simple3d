@@ -13,6 +13,9 @@
         <None Update="sprites\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="sprites\*\*.*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="animations\*\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

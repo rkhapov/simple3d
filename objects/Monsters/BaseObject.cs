@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using objects.Collectables;
 using objects.Monsters.Algorithms;
 using objects.Weapons;
 using simple3d.Drawing;
@@ -124,7 +125,7 @@ namespace objects.Monsters
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var objectVertices in scene
                     .Objects
-                    .Where(obj => obj != this)
+                    .Where(obj => obj != this && !(obj is BaseCollectable))
                     .Select(o => o.GetRotatedVertices()))
                 {
                     if (GeometryHelper.IsRectanglesIntersects(newVertices, objectVertices))

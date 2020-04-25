@@ -11,5 +11,6 @@
         public const string ShockBlowPath = "./weapons/shock_blow.wav";
         public const string LichEvilLaughPath = "./monsters/lich_laugh.mp3";
         public const string LichDeadPath = "./monsters/lich_dead.wav";
+        public const string CollectionSoundPath = "./environment/collect.wav";
     }
 }

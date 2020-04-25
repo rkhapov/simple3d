@@ -100,7 +100,8 @@ namespace simple3d
             var statusBarWidth = screen.Width;
             var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
-            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight);
+            var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
+            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, logTextRenderer);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,
@@ -145,15 +146,13 @@ namespace simple3d
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void UpdateWorld(Scene scene, float elapsedMilliseconds)
         {
-            // Task.WhenAll(scene
-            //     .Objects
-            //     .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
+            Task.WhenAll(scene
+                .Objects
+                .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
 
-            foreach (var obj in scene.Objects)
-            {
-                obj.OnWorldUpdate(scene, elapsedMilliseconds);
-            }
             scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
+
+            scene.EventsLogger.Update(elapsedMilliseconds);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,10 +167,6 @@ namespace simple3d
                 miniMapRenderer.Render(Screen, scene);
 
             statusBarRenderer.Render(Screen, scene);
-
-            var fps = (int) (1000 / elapsedMilliseconds);
-            var white = new SDL_Color {a = 0, b = 255, g = 255, r = 255};
-            textRenderer.RenderText($"FPS: {fps}", white, Screen, 0, 0);
 
             Screen.Update();
         }

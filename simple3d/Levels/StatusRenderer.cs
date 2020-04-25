@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using simple3d.Drawing;
+using simple3d.SDL2;
+using simple3d.Tools;
 using simple3d.Ui;
 
 namespace simple3d.Levels
@@ -9,13 +12,19 @@ namespace simple3d.Levels
     {
         private readonly Sprite barSprite;
         private readonly Sprite crossSprite;
+        private readonly ITextRenderer logTextRenderer;
         private readonly int statusBarHeight;
 
-        public StatusRenderer(Sprite barSprite, Sprite crossSprite, int statusBarHeight)
+        public StatusRenderer(
+            Sprite barSprite,
+            Sprite crossSprite,
+            int statusBarHeight,
+            ITextRenderer logTextRenderer)
         {
             this.barSprite = barSprite;
             this.crossSprite = crossSprite;
             this.statusBarHeight = statusBarHeight;
+            this.logTextRenderer = logTextRenderer;
         }
 
         public void Dispose()
@@ -28,8 +37,24 @@ namespace simple3d.Levels
             var task1 = Task.Run(() => RenderWeapon(screen, scene));
             var task2 = Task.Run(() => RenderStatusBar(screen, scene));
             var task3 = Task.Run(() => RenderCross(screen));
-            
-            Task.WhenAll(task1, task2).Wait();
+            var task4 = Task.Run(() => RenderLog(screen, scene));
+
+            Task.WhenAll(task1, task2, task3, task4).Wait();
+        }
+
+        private void RenderLog(IScreen screen, Scene scene)
+        {
+            var currentY = 0;
+
+            foreach (var msg in scene.EventsLogger.GetMessages())
+            {
+                var textSprite = logTextRenderer.RenderText(msg,
+                    new SDL.SDL_Color {a = 0, b = 255, g = 255, r = 255});
+
+                screen.DrawSprite(textSprite, currentY, 0);
+
+                currentY += textSprite.Height;
+            }
         }
 
         private void RenderCross(IScreen screen)
