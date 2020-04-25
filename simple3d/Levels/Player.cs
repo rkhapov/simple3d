@@ -56,6 +56,22 @@ namespace simple3d.Levels
                 WeaponIndex = 0;
         }
 
+        public enum PlayerState
+        {
+            Normal,
+            TextReading
+        }
+
+        public PlayerState State { get; private set; } = PlayerState.Normal;
+
+        public string LastNoteText { get; private set; }
+
+        public void DoReadText(string text)
+        {
+            State = PlayerState.TextReading;
+            LastNoteText = text;
+        }
+
         public void ProcessAction(PlayerAction action, Scene scene, float elapsedMilliseconds)
         {
             switch (action.Type)
@@ -104,6 +120,9 @@ namespace simple3d.Levels
                     break;
                 case PlayerActionType.SetWeapon:
                     DoSetWeapon(action, scene, elapsedMilliseconds);
+                    break;
+                case PlayerActionType.Cancel:
+                    State = PlayerState.Normal;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(action.Type), action.Type, null);

@@ -23,7 +23,8 @@ namespace playground
                 720, 1280,
                 false,
                 UiResourcesHelper.PressStart2PFontPath,
-                UiResourcesHelper.CrossSpritePath);
+                UiResourcesHelper.CrossSpritePath,
+                UiResourcesHelper.ScrollSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);
             var resourceLoader = ResourceCachedLoader.Instance;
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
@@ -43,7 +44,7 @@ namespace playground
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
                 HealingPotion.Create(new Vector2(6f, 6f)),
                 ArrowPack.Create(new Vector2(7f, 7f)),
-                Note.Create(new Vector2(5f, 5f))
+                Note.Create(new Vector2(5f, 5f), "о, привет!")
             };
             backGroundMusic.Play(-1);
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, bedTexture, doorAnimation);
