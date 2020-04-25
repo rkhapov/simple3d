@@ -8,15 +8,14 @@
   <ItemGroup>
     <ProjectReference Include="..\objects\objects.csproj" />
     <ProjectReference Include="..\simple3d\simple3d.csproj" />
+    <ProjectReference Include="..\ui\ui.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="sprites\" />
-   
-    <None Update="fonts\*.*">
+    <None Update="sprites\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="sprites\*.*">
+    <None Update="sprites\*\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

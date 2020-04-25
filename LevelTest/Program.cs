@@ -8,6 +8,7 @@ using simple3d;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
+using ui;
 
 
 namespace LevelTest
@@ -16,7 +17,7 @@ namespace LevelTest
     {
         private static void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false, "./fonts/PressStart2P.ttf"));
+            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false, UiResourcesHelper.PressStart2PFontPath));
             var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
             var loader = new ResourceCachedLoader();
