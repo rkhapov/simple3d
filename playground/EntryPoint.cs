@@ -20,7 +20,7 @@ namespace playground
             var options = new EngineOptions(
                 "simple 3d game",
                 720, 1280,
-                false,
+                true,
                 UiResourcesHelper.PressStart2PFontPath,
                 UiResourcesHelper.CrossSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);

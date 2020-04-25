@@ -69,4 +69,8 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ui\ui.csproj" />
+    </ItemGroup>
+
 </Project>
