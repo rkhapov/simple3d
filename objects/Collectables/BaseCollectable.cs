@@ -14,16 +14,14 @@ namespace objects.Collectables
 
         protected BaseCollectable(
             Vector2 position,
-            Vector2 size, 
-            float directionAngle,
             Animation animation,
-            ISound collectionSound) : base(position, size, directionAngle)
+            ISound collectionSound) : base(position, Vector2.Zero, 0)
         {
             CurrentAnimation = animation;
             this.collectionSound = collectionSound;
         }
 
-        private const float CollectionRadius = 1f;
+        private const float CollectionRadius = 1.3f;
         private const float CollectionRadiusSquared = CollectionRadius * CollectionRadius;
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
@@ -33,6 +31,7 @@ namespace objects.Collectables
             if ((scene.Player.Position - Position).LengthSquared() < CollectionRadiusSquared)
             {
                 OnCollect(scene);
+                scene.EventsLogger.AddCollectOfItem(Name);
                 collectionSound.Play(0);
                 scene.RemoveObject(this);
             }

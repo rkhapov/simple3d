@@ -53,6 +53,11 @@ namespace simple3d.Drawing
             return new Animation(frames, durationOfFrame, path);
         }
 
+        public static Animation FromSingleSprite(Sprite sprite)
+        {
+            return new Animation(new[] {sprite}, new[] {500}, "<FROM MEMORY>");
+        }
+
         public static Animation LoadFromDirectory(string directoryPath)
         {
             var directoryInfo = new DirectoryInfo(directoryPath);
