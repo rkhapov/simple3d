@@ -110,6 +110,11 @@ namespace simple3d.Ui
             {
                 yield return new PlayerAction(true, PlayerActionType.MoveRight);
             }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_e))
+            {
+                yield return new PlayerAction(true, PlayerActionType.Interact);
+            }
         }
     }
 }

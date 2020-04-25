@@ -30,6 +30,8 @@ namespace simple3d.Levels
         }
 
         public Vector2 Position { get; set; }
+        private Vector2 oldEPosition = new Vector2(-1, -1);
+        public bool interactMod;
         public Vector2 Size { get; }
         public float DirectionAngle { get; set; }
         public Sprite Sprite => throw new InvalidOperationException("Player should not be drawn");
@@ -161,7 +163,8 @@ namespace simple3d.Levels
 
         protected virtual void DoInteract(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            throw new NotImplementedException();
+            interactMod = true;
+            oldEPosition = new Vector2((int)Position.X, (int)Position.Y);
         }
 
         protected virtual void DoMeleeRightAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
@@ -278,7 +281,7 @@ namespace simple3d.Levels
             }
 
             Position = newPosition;
-            Trigger.CheckAndDo(Position);
+            Trigger.CheckAndDo(Position, this);
         }
 
         public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
@@ -296,6 +299,11 @@ namespace simple3d.Levels
                 }
 
                 Weapon.GoStatic();
+            }
+
+            if ((int)Position.X != oldEPosition.X || (int)Position.Y != oldEPosition.Y)
+            {
+                interactMod = false;
             }
         }
 
