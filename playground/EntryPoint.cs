@@ -38,7 +38,7 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                Lich.Create(resourceLoader, new Vector2(7.0f, 7.0f), new Vector2(0.6f, 0.6f), 0.0f),
+                Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
             };
             backGroundMusic.Play(-1);

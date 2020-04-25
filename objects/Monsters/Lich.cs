@@ -31,11 +31,13 @@ namespace objects.Monsters
         private readonly Animation fireballAnimation;
         private readonly Animation fireballBlowing;
         private readonly ISound fireballBlowSound;
+        private readonly ISound evilLaugh;
+        private readonly ISound deathSound;
 
         private LichState state;
 
         public Lich(Vector2 position, Vector2 size, float directionAngle, Animation staticAnimation,
-            Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation, Animation fireballBlowing, ISound fireballBlowSound) : base(position, size,
+            Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation, Animation fireballBlowing, ISound fireballBlowSound, ISound evilLaugh, ISound deathSound) : base(position, size,
             directionAngle, 42)
         {
             this.staticAnimation = staticAnimation;
@@ -45,6 +47,8 @@ namespace objects.Monsters
             this.fireballAnimation = fireballAnimation;
             this.fireballBlowing = fireballBlowing;
             this.fireballBlowSound = fireballBlowSound;
+            this.evilLaugh = evilLaugh;
+            this.deathSound = deathSound;
             this.state = LichState.Static;
         }
 
@@ -57,6 +61,8 @@ namespace objects.Monsters
             var fireBallAnimation = loader.GetAnimation("./animations/fireball/moving");
             var fireBallBlowing = loader.GetAnimation("./animations/fireball/blow");
             var fireBallBlowSound = loader.GetSound(MusicResourceHelper.FireBallBlowPath);
+            var laugh = loader.GetSound(MusicResourceHelper.LichEvilLaughPath);
+            var deathSound = loader.GetSound(MusicResourceHelper.LichDeadPath);
 
             return new Lich(
                 position, size, direction,
@@ -66,7 +72,9 @@ namespace objects.Monsters
                 runningAnimation,
                 fireBallAnimation,
                 fireBallBlowing,
-                fireBallBlowSound);
+                fireBallBlowSound,
+                laugh,
+                deathSound);
         }
 
         private static readonly Random random = new Random();
@@ -82,12 +90,13 @@ namespace objects.Monsters
             {
                 SetState(LichState.Dead);
                 Size = Vector2.Zero;
+                deathSound.Play(0);
                 return;
             }
 
             if (state == LichState.Shooting && GetCurrentAnimation().IsOver)
             {
-                var fireBallProbability = CanSeePlayer(scene) ? 0.4 : 1;
+                var fireBallProbability = CanSeePlayer(scene) ? 0.2 : 1;
 
                 if (random.NextDouble() < fireBallProbability)
                 {
@@ -106,6 +115,7 @@ namespace objects.Monsters
             {
                 if (CanSeePlayer(scene))
                 {
+                    evilLaugh.Play(0);
                     SetState(LichState.RunningFromPlayer);
                 }
             }

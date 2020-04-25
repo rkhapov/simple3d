@@ -18,7 +18,7 @@ namespace simple3d.Sounds
 
             if (chunk == IntPtr.Zero)
             {
-                throw new InvalidOperationException($"Cant load wav: {SDL.SDL_GetError()}");
+                throw new InvalidOperationException($"Cant load wav '{path}': {SDL.SDL_GetError()}");
             }
 
             return new Sound(chunk);
