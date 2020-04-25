@@ -17,6 +17,7 @@ namespace simple3d.Levels
         public Player Player { get; }
         public Map Map { get; }
         public IEnumerable<IMapObject> Objects => mapObjects.ToArray();
+        public GameEventsLogger EventsLogger { get; } = new GameEventsLogger();
 
         public void RemoveObject(IMapObject obj)
         {
