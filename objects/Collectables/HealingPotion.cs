@@ -13,7 +13,7 @@ namespace objects.Collectables
         {
         }
 
-        public override string Name => "Healing Potion";
+        public override string Name => "Исцеляющее зелье";
         protected override void OnCollect(Scene scene)
         {
         }
