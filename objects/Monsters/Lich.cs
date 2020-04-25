@@ -147,7 +147,7 @@ namespace objects.Monsters
         }
 
         protected override int ViewDistance => 15;
-        protected override float MoveSpeed => 0.003f;
+        protected override float MoveSpeed => 0.001f;
         public override Animation CurrentAnimation => GetCurrentAnimation();
 
         private void SetState(LichState newState)
