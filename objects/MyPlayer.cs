@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection.Metadata;
 using simple3d.Levels;
 
 namespace objects
@@ -23,12 +24,16 @@ namespace objects
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            Health -= damage;
+            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
+            if (meleeWeapon.State != MeleeWeaponState.BlockLeft)
+                Health -= damage;
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            Health -= damage;
+            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
+            if (meleeWeapon.State != MeleeWeaponState.BlockRight)
+                Health -= damage;
         }
 
         public override void OnShoot(Scene scene, int damage)

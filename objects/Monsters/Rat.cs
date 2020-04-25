@@ -106,7 +106,9 @@ namespace objects.Monsters
 
             if (state == RatState.Attack && GetCurrentAnimation().IsOver)
             {
-                SetState(RatState.PlayerFollowing);
+                SetState(RatState.Static);
+                if(PlayerInAttackDistance(scene))
+                    DoLeftMeleeAttackOnPlayer(scene, 2);
                 return;
             }
 
@@ -115,7 +117,6 @@ namespace objects.Monsters
                 if (PlayerInAttackDistance(scene))
                 {
                     SetState(RatState.Attack);
-                    DoLeftMeleeAttackOnPlayer(scene, 5);
                     return;
                 }
 
@@ -132,7 +133,6 @@ namespace objects.Monsters
                 if (PlayerInAttackDistance(scene))
                 {
                     SetState(RatState.Attack);
-                    DoLeftMeleeAttackOnPlayer(scene, 5);
                 }
                 else
                 {

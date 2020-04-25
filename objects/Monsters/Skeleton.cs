@@ -96,14 +96,16 @@ namespace objects.Monsters
             if (state == SkeletonState.AttackLeft && GetCurrentAnimation().IsOver)
             {
                 SetState(SkeletonState.Static);
-                DoLeftMeleeAttackOnPlayer(scene, 2);
+                if(PlayerInAttackDistance(scene))
+                    DoLeftMeleeAttackOnPlayer(scene, 2);
                 return;
             }
             
             if (state == SkeletonState.AttackRight && GetCurrentAnimation().IsOver)
             {
                 SetState(SkeletonState.Static);
-                DoRightMeleeAttackOnPlayer(scene, 2);
+                if(PlayerInAttackDistance(scene))
+                    DoRightMeleeAttackOnPlayer(scene, 2);
                 return;
             }
 
