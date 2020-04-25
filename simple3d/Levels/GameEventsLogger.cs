@@ -18,7 +18,7 @@ namespace simple3d.Levels
 
         public void AddCollectOfItem(string itemName)
         {
-            var message = new Message {Text = $"Collect {itemName}", LifeTime = MessageLifeTime};
+            var message = new Message {Text = $"Собрано {itemName}", LifeTime = MessageLifeTime};
 
             messages.Enqueue(message);
 

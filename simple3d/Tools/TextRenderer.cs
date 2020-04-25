@@ -26,7 +26,7 @@ namespace simple3d.Tools
         
         public Sprite RenderText(string text, SDL.SDL_Color color)
         {
-            var surface = SDL_ttf.TTF_RenderText_Blended(font, text, color);
+            var surface = SDL_ttf.TTF_RenderUTF8_Blended(font, text, color);
             var sprite = DrawingHelper.GetSpriteFromSdlSurface(surface);
 
             SDL.SDL_FreeSurface(surface);
