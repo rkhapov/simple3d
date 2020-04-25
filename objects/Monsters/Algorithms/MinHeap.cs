@@ -9,7 +9,7 @@ namespace objects.Monsters.Algorithms
         {
         }
 
-        public MinHeap(Comparer<T> comparer)
+        public MinHeap(IComparer<T> comparer)
             : base(comparer)
         {
         }
@@ -18,7 +18,7 @@ namespace objects.Monsters.Algorithms
         {
         }
 
-        public MinHeap(IEnumerable<T> collection, Comparer<T> comparer)
+        public MinHeap(IEnumerable<T> collection, IComparer<T> comparer)
             : base(collection, comparer)
         {
         }
