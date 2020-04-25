@@ -43,7 +43,7 @@ namespace playground
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
                 HealingPotion.Create(new Vector2(6f, 6f)),
                 ArrowPack.Create(new Vector2(7f, 7f)),
-                HealingPotion.Create(new Vector2(5f, 7f))
+                Note.Create(new Vector2(5f, 5f))
             };
             backGroundMusic.Play(-1);
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, bedTexture, doorAnimation);
