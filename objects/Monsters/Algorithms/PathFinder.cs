@@ -42,7 +42,6 @@ namespace objects.Monsters.Algorithms
                 }
             }
 
-            Console.WriteLine(iterationsCounter);
             if (!previous.ContainsKey(goal))
                 return null;
             

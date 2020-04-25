@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using musics;
+using objects.Monsters.Algorithms;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
@@ -91,6 +92,8 @@ namespace objects.Monsters
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
 
+            Console.WriteLine($"{state}");
+            
             if (state == RatState.Dead)
             {
                 return;
@@ -105,7 +108,7 @@ namespace objects.Monsters
 
             if (state == RatState.Attack && GetCurrentAnimation().IsOver)
             {
-                SetState(RatState.Static);
+                SetState(RatState.PlayerFollowing);
                 return;
             }
 
@@ -133,15 +136,40 @@ namespace objects.Monsters
                     SetState(RatState.Attack);
                     DoLeftMeleeAttackOnPlayer(scene, 5);
                 }
-                else if (HaveWallOnStraightWayToPlayer(scene))
-                    SetState(RatState.Static);
                 else
                 {
-                    var fromPlayerToUs = scene.Player.Position - Position;
-                    DirectionAngle = MathF.Atan2(fromPlayerToUs.Y, fromPlayerToUs.X);
-                    MoveOnDirection(scene, elapsedMilliseconds);
+                    if (TryGetDirectionToPlayer(scene, out var directionAngle))
+                    {
+                        DirectionAngle = directionAngle;
+                        MoveOnDirection(scene, elapsedMilliseconds);
+                    }
+                    else
+                        SetState(RatState.Static);
                 }
             }
+        }
+
+        private bool TryGetDirectionToPlayer(Scene scene, out float angle)
+        {
+            angle = 0.0f;
+
+            var myPoint = MapPoint.FromVector2(Position);
+            var playerPoint = MapPoint.FromVector2(scene.Player.Position);
+            var path = PathFinder.FindPath(scene.Map, playerPoint, myPoint);
+
+            if (path == null)
+                return false;
+
+            angle = GetAngleToPoint(path[1]);
+
+            return true;
+        }
+
+        private float GetAngleToPoint(MapPoint point)
+        {
+            return MathF.Atan2(
+                point.Y + 0.5f - Position.Y,
+                point.X + 0.5f - Position.X);
         }
 
         private bool PlayerInAttackDistance(Scene scene)

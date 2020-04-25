@@ -1,4 +1,6 @@
-﻿namespace objects.Monsters.Algorithms
+﻿using System.Numerics;
+
+namespace objects.Monsters.Algorithms
 {
     public class MapPoint
     {
@@ -10,6 +12,11 @@
         
         public readonly int X;
         public readonly int Y;
+
+        public static MapPoint FromVector2(Vector2 source)
+        {
+            return new MapPoint((int) source.Y, (int) source.X);
+        }
 
         public override int GetHashCode()
         {

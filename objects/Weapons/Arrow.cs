@@ -30,13 +30,7 @@ namespace objects.Weapons
             var newPosition = Position + new Vector2(dx, dy);
             var testX = (int) newPosition.X;
             var testY = (int) newPosition.Y;
-
-            if (!scene.Map.InBound(testY, testX) || scene.Map.At(testY, testX).Type == MapCellType.Wall)
-            {
-                Console.WriteLine($"hit wall at {testY} {testX}");
-                scene.RemoveObject(this);
-                return;
-            }
+            var hit = !scene.Map.InBound(testY, testX) || scene.Map.At(testY, testX).Type == MapCellType.Wall;
 
             var vertices = this.GetRotatedVertices();
             foreach (var obj in scene.Objects)
@@ -44,13 +38,18 @@ namespace objects.Weapons
                 if (obj is Arrow)
                     continue;
 
-                if (GeometryHelper.IsRectanglesIntersects(vertices, obj.GetRotatedVertices()))
-                {
-                    Console.WriteLine($"hit {obj} at {newPosition}");
-                    obj.OnShoot(scene, 42);
-                    scene.RemoveObject(this);
-                    return;
-                }
+                if (!GeometryHelper.IsRectanglesIntersects(vertices, obj.GetRotatedVertices()))
+                    continue;
+
+                obj.OnShoot(scene, 42);
+                hit = true;
+                break;
+            }
+
+            if (hit)
+            {
+                scene.RemoveObject(this);
+                return;
             }
 
             Position = newPosition;
