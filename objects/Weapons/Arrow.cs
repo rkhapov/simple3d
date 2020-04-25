@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
 using simple3d.MathUtils;

@@ -48,6 +48,11 @@ namespace simple3d.Drawing
 
         public Sprite CurrentFrame => frames[currentFrame];
 
+        public Animation GetClearCopy()
+        {
+            return new Animation(frames, durationOfFrame, path);
+        }
+
         public static Animation LoadFromDirectory(string directoryPath)
         {
             var directoryInfo = new DirectoryInfo(directoryPath);

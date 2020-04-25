@@ -26,7 +26,7 @@ namespace simple3d
         public Animation GetAnimation(string directoryPath)
         {
             if (nameToAnimationCache.TryGetValue(directoryPath, out var animation))
-                return animation;
+                return animation.GetClearCopy();
 
             return nameToAnimationCache[directoryPath] = Animation.LoadFromDirectory(directoryPath);
         }

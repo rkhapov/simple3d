@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using simple3d.Levels;
 
 namespace objects.Monsters.Algorithms
@@ -29,7 +30,7 @@ namespace objects.Monsters.Algorithms
                     break;
                 }
 
-                foreach (var (next, distance) in GetNeighbours(map, current))
+                foreach (var (next, distance) in current.GetNeighbours(map))
                 {
                     var newCost = distance + cost[current];
 
@@ -54,6 +55,9 @@ namespace objects.Monsters.Algorithms
                 c = previous[c];
             }
 
+            if (path.Count == 1)
+                path.Add(start);
+
             return path;
         }
 
@@ -65,49 +69,10 @@ namespace objects.Monsters.Algorithms
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int H(MapPoint v, MapPoint goal)
         {
-            //chebushev
-            var dx = v.X - goal.X;
-            if (dx < 0)
-                dx = -dx;
-
-            var dy = v.Y - goal.Y;
-            if (dy < 0)
-                dy = -dy;
-
-            return dx + dy;
+            return v.GetManhattanDistanceTo(goal);
         }
-
-        private static IEnumerable<(MapPoint point, int distance)> GetNeighbours(Map map, MapPoint p)
-        {
-            var mapHeight = map.Height;
-            var mapWidth = map.Width;
-
-            foreach (var offset in NeighboursOffsets)
-            {
-                var x = p.X + offset.X;
-                var y = p.Y + offset.Y;
-                if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight || map.At(y, x).Type != MapCellType.Empty)
-                    continue;
-                var distance = (x == p.X ? 0 : 1) + (y == p.Y ? 0 : 1);
-
-                yield return (new MapPoint(y, x), distance);
-            }
-        }
-
-        private static readonly MapPoint[] NeighboursOffsets = new[]
-        {
-            new MapPoint(-1, -1),
-            new MapPoint(-1, 0),
-            new MapPoint(-1, +1),
-            
-            new MapPoint(+1, 0),
-            new MapPoint(+1, -1),
-            new MapPoint(+1, +1),
-
-            new MapPoint(0, +1),
-            new MapPoint(0, -1)
-        };
     }
 }

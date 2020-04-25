@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using objects.Monsters.Algorithms;
 using simple3d.Drawing;
 using simple3d.Levels;
 using simple3d.MathUtils;
@@ -48,7 +49,7 @@ namespace objects.Monsters
         protected abstract int ViewDistance { get; }
         protected abstract float MoveSpeed { get; }
 
-        protected bool HaveWallOnStraightWayToPlayer(Scene scene)
+        protected bool CanSeePlayer(Scene scene)
         {
             var map = scene.Map;
             var player = scene.Player;
@@ -56,7 +57,7 @@ namespace objects.Monsters
             var lengthSquared = fromPlayerToUs.LengthSquared();
 
             if (lengthSquared > ViewDistance * ViewDistance)
-                return true;
+                return false;
 
             var distance = MathF.Sqrt(lengthSquared);
 
@@ -84,7 +85,7 @@ namespace objects.Monsters
                     hitWall = true;
             }
 
-            return hitWall;
+            return !hitWall;
         }
 
         protected void MoveOnDirection(Scene scene, float elapsedTime)
@@ -135,6 +136,13 @@ namespace objects.Monsters
                 return false;
 
             return true;
+        }
+        
+        protected float GetAngleToPoint(MapPoint point)
+        {
+            return MathF.Atan2(
+                point.Y + 0.5f - Position.Y,
+                point.X + 0.5f - Position.X);
         }
     }
 }
