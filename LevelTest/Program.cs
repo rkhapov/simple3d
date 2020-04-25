@@ -21,9 +21,9 @@ namespace LevelTest
             var resourceLoader = new ResourceCachedLoader();
             var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
             var loader = new ResourceCachedLoader();
-            var wallTexture = Sprite.Load("./sprites/wall1.png");
-            var floorTexture = Sprite.Load("./sprites/floor1.png");
-            var ceilingTexture = Sprite.Load("./sprites/ceiling1.png");
+            var wallTexture = Sprite.Load("./sprites/wall2.png");
+            var floorTexture = Sprite.Load("./sprites/floor2.png");
+            var ceilingTexture = Sprite.Load("./sprites/ceiling2.png");
          
 
             var sword = Sword.Create(loader);
@@ -33,9 +33,11 @@ namespace LevelTest
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture);
             var objects = new IMapObject[]
             {
-                GreenLight.Create(loader, new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0),
-                GreenLight.Create(loader, new Vector2(6.0f, 4.0f), new Vector2(0, 0), 0),
+               
                 new BaseAnimatedMapObj(new Vector2(2f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
+                new BaseAnimatedMapObj(new Vector2(13f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
+                new BaseAnimatedMapObj(new Vector2(2f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
+                new BaseAnimatedMapObj(new Vector2(13f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
                 Rat.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
             };
             var map = Map.FromStrings(new[]
