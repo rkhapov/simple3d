@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <Folder Include="animations" />
+        <Folder Include="animations\skeleton\guard_left" />
     </ItemGroup>
 
 </Project>
