@@ -50,5 +50,7 @@ namespace simple3d
 
             return nameToMusicCache[path] = Music.Load(path);
         }
+
+        public static readonly ResourceCachedLoader Instance = new ResourceCachedLoader();
     }
 }

@@ -24,7 +24,7 @@ namespace playground
                 UiResourcesHelper.PressStart2PFontPath,
                 UiResourcesHelper.CrossSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);
-            var resourceLoader = new ResourceCachedLoader();
+            var resourceLoader = ResourceCachedLoader.Instance;
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2);
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");

@@ -8,7 +8,7 @@ using simple3d.Sounds;
 
 namespace objects.Weapons
 {
-    public class FireBall : AnimatedObject
+    public class FireBall : Bullet
     {
         private enum FireBallState
         {
@@ -41,6 +41,8 @@ namespace objects.Weapons
 
         public IMapObject Target { get; }
 
+        private const int Damage = 10;
+
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
@@ -70,7 +72,7 @@ namespace objects.Weapons
 
             if (ShouldBlow())
             {
-                Target.OnShoot(scene, 100500);
+                Target.OnShoot(scene, Damage);
                 DoBlow();
                 return;
             }

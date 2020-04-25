@@ -8,6 +8,7 @@ using objects.Weapons;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
+using simple3d.MathUtils;
 using simple3d.Sounds;
 
 namespace objects.Monsters
@@ -68,6 +69,8 @@ namespace objects.Monsters
                 fireBallBlowSound);
         }
 
+        private static readonly Random random = new Random();
+
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
@@ -84,9 +87,17 @@ namespace objects.Monsters
 
             if (state == LichState.Shooting && GetCurrentAnimation().IsOver)
             {
-                scene.AddObject(new FireBall(Position,
-                    new Vector2(0.1f, 0.1f), 0, 3000, scene.Player,
-                    fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
+                var fireBallProbability = CanSeePlayer(scene) ? 0.4 : 1;
+
+                if (random.NextDouble() < fireBallProbability)
+                {
+                    SpawnFireBall(scene);
+                }
+                else
+                {
+                    SpawnShockBall(scene);
+                }
+
                 SetState(LichState.RunningFromPlayer);
                 return;
             }
@@ -111,6 +122,22 @@ namespace objects.Monsters
                         SetState(LichState.Shooting);
                 }
             }
+        }
+
+        private void SpawnShockBall(Scene scene)
+        {
+            var dd = scene.Player.Position - Position;
+            var angle = MathF.Atan2(dd.Y, dd.X);
+
+            scene.AddObject(ShockBall.Create(
+                Position, new Vector2(0.1f, 0.1f), angle, this));
+        }
+
+        private void SpawnFireBall(Scene scene)
+        {
+            scene.AddObject(new FireBall(Position,
+                new Vector2(0.1f, 0.1f), 0, 3000, scene.Player,
+                fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
         }
 
         private const int ShootingDistance = 10;

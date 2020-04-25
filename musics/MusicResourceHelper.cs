@@ -8,5 +8,6 @@
         public const string RatAttackPath = "./monsters/rat_attack.mp3";
         public const string FireBallBlowPath = "./weapons/fireball_blow.wav";
         public const string RatHitPath = "./monsters/rat_hit.mp3";
+        public const string ShockBlowPath = "./weapons/shock_blow.wav";
     }
 }
