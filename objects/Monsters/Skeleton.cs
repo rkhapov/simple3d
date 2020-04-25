@@ -47,11 +47,11 @@ namespace objects.Monsters
 
         public static Skeleton Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)
         {
-            var staticAnimation = loader.GetAnimation("./animations/rat/static");
-            var followingAndBlockingAnimation = loader.GetAnimation("./animations/rat/moving");
-            var attackRightAnimation = loader.GetAnimation("./animations/rat/attack");
-            var attackLeftAnimation = loader.GetAnimation("./animations/rat/attack");
-            var blockAnimation = loader.GetAnimation("./animations/rat/static");
+            var staticAnimation = loader.GetAnimation("./animations/skeleton/guard");
+            var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/guard");
+            var attackRightAnimation = loader.GetAnimation("./animations/skeleton/right_attack");
+            var attackLeftAnimation = loader.GetAnimation("./animations/skeleton/left_attack");
+            var blockAnimation = loader.GetAnimation("./animations/skeleton/guard");
 
             return new Skeleton(
                 staticAnimation,
