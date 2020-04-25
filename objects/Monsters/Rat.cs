@@ -92,8 +92,6 @@ namespace objects.Monsters
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
 
-            Console.WriteLine($"{state}");
-            
             if (state == RatState.Dead)
             {
                 return;
