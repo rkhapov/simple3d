@@ -7,7 +7,7 @@ using simple3d.Levels;
 
 namespace objects.Monsters
 {
-    public class Skeleton : BaseMonster
+    public class Skeleton :     BaseMonster
     {
         private enum SkeletonState
         {
