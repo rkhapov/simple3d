@@ -1,5 +1,6 @@
 ﻿using System;
 using simple3d.Drawing;
+using simple3d.MathUtils;
 
 namespace simple3d.Levels
 {
@@ -70,32 +71,24 @@ namespace simple3d.Levels
             };
         }
 
+        private const float MeleeDistance = 2f;
+        private const float MeleeDistanceSquared = MeleeDistance * MeleeDistance;
+
         public void DoLeftAttack(Scene scene)
         {
             State = MeleeWeaponState.AttackLeft;
             var player = scene.Player;
             var fov2 = player.FieldOfView * 0.5f;
-            var playerDirectionAngle = player.DirectionAngle;
             const float pi2 = MathF.PI * 0.5f;
 
             foreach (var obj in scene.Objects)
             {
                 var dv = obj.Position - player.Position;
-                var angle = playerDirectionAngle - MathF.Atan2(dv.Y, dv.X);
-
-                if (angle < -MathF.PI)
-                {
-                    angle += pi2;
-                }
-
-                if (angle > MathF.PI)
-                {
-                    angle -= pi2;
-                }
+                var angle = obj.GetAngleToPlayer(player);
 
                 var inFov = MathF.Abs(angle) < fov2;
 
-                if (inFov && dv.Length() < 1)
+                if (inFov && dv.LengthSquared() < MeleeDistanceSquared)
                 {
                     obj.OnLeftMeleeAttack(scene, 42);
                 }
@@ -107,27 +100,16 @@ namespace simple3d.Levels
             State = MeleeWeaponState.AttackRight;
             var player = scene.Player;
             var fov2 = player.FieldOfView * 0.5f;
-            var playerDirectionAngle = player.DirectionAngle;
             const float pi2 = MathF.PI * 0.5f;
 
             foreach (var obj in scene.Objects)
             {
                 var dv = obj.Position - player.Position;
-                var angle = playerDirectionAngle - MathF.Atan2(dv.Y, dv.X);
-
-                if (angle < -MathF.PI)
-                {
-                    angle += pi2;
-                }
-
-                if (angle > MathF.PI)
-                {
-                    angle -= pi2;
-                }
+                var angle = obj.GetAngleToPlayer(player);
 
                 var inFov = MathF.Abs(angle) < fov2;
 
-                if (inFov && dv.Length() < 1)
+                if (inFov && dv.LengthSquared() < MeleeDistanceSquared)
                 {
                     obj.OnRightMeleeAttack(scene, 42);
                 }
