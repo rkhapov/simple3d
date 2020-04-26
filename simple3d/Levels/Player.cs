@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Drawing;
@@ -65,6 +64,8 @@ namespace simple3d.Levels
         public PlayerState State { get; private set; } = PlayerState.Normal;
 
         public string LastNoteText { get; private set; }
+
+        public Monologue CurrentMonologue { get; set; }
 
         public void DoReadText(string text)
         {
