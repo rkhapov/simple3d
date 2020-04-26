@@ -63,29 +63,28 @@ namespace menu
             var scene = SceneReader.ReadFromStrings(
                 new[]
                 {
-                    "###########################################",
-                    "#..........######.P.#.....................#",
-                    "#..........#....d...d.....................#",
-                    "#..........c....#...#.....................#",
-                    "#..#########....##p##.....................#",
-                    "#..#.A...H......#...#.....................#",
-                    "#..l.....A......#...#.....................#",
-                    "#..##d######i#n##...#.....................#",
-                    "#..#....#...........#.....................#",
-                    "#..#....#...........#.....................#",
-                    "#..f.R..#...........#.....................#",
-                    "#..##d###############.....................#",
-                    "#..#....#..........#......................#",
-                    "#..#....#.......S..d......................#",
-                    "#..#.S..d..........#......................#",
-                    "#####m#####################################"
+                    "###############################",
+                    "#..........######.P.#.........#",
+                    "#..........#....d...d.........r",
+                    "#..........c....#...#.........#",
+                    "#..#########....##p##.........#",
+                    "#..#.A...H......#...#.........#",
+                    "#..l.....A......#...#.........#",
+                    "#..##d######i#n##...#.........s",
+                    "#..#....#...........#.........#",
+                    "#..#....#...........#.........#",
+                    "#..f.R..#...........#.........#",
+                    "#..##d###############.........#",
+                    "#..#....#.....H..A.#..........#",
+                    "#..#....d.......S..d..........e",
+                    "#..#.S..#.....H....#..........#",
+                    "#####m#########################"
                 }, storage.GetCellByChar, 0);
             
-            // scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
-            scene.AddObject(Note.Create(new Vector2(15.5f, 8.5f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
-            scene.AddObject(Note.Create(new Vector2(22f, 1f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
-            
+            scene.AddObject(Note.Create(new Vector2(7.0f, 6.0f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
+
             var map = scene.Map;
+            
             map.At(2, 20).SetTag("tutorialDoor");
             Trigger.AddTrigger(new Vector2(19f, 2f), 
                 (scene) => { Map.GetCellByTag("tutorialDoor").StartAnimatiom(() => { Map.GetCellByTag("tutorialDoor").Type = MapCellType.Empty; }); }, false);
@@ -99,6 +98,21 @@ namespace menu
             Trigger.AddTrigger(new Vector2(5f, 6f),
                 scene => Map.GetCellByTag("shootingDoor")
                     .StartAnimatiom(() => Map.GetCellByTag("shootingDoor").Type = MapCellType.Empty));
+            
+            map.At(11, 5).SetTag("fightingDoor");
+            Trigger.AddTrigger(new Vector2(5f, 10f),
+                scene => Map.GetCellByTag("fightingDoor")
+                    .StartAnimatiom(() => Map.GetCellByTag("fightingDoor").Type = MapCellType.Empty));
+            
+            map.At(13,8).SetTag("magicDoor");
+            Trigger.AddTrigger(new Vector2(7f, 13f),
+                scene => Map.GetCellByTag("magicDoor")
+                    .StartAnimatiom(() => Map.GetCellByTag("magicDoor").Type = MapCellType.Empty));
+            
+            map.At(13, 19).SetTag("tutorialExit");
+            Trigger.AddTrigger(new Vector2(18f, 13f),
+                scene => Map.GetCellByTag("tutorialExit")
+                    .StartAnimatiom(() => Map.GetCellByTag("tutorialExit").Type = MapCellType.Empty));
 
             var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             backGroundMusic.Play(-1);
@@ -155,7 +169,7 @@ namespace menu
                     'r' => new MapCell(MapCellType.Wall, scoreboard, scoreboard, ceilingTexture),
                     'i' => new MapCell(MapCellType.Wall, statusBarInfo, statusBarInfo, ceilingTexture),
                     'l' => new MapCell(MapCellType.Wall, shootingTutorial, shootingTutorial, ceilingTexture),
-                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture),
+                    'd' => new MapCell(MapCellType.Door, doorAnimation, wallTexture, ceilingTexture),
                     'p' => new MapCell(MapCellType.Wall, directionText, directionText, ceilingTexture),
                     'n' => new MapCell(MapCellType.Wall, collectiblesText, collectiblesText, ceilingTexture),
                     'f' => new MapCell(MapCellType.Wall, fightingTutorial, fightingTutorial, ceilingTexture),
