@@ -124,7 +124,11 @@ namespace menu
                 scene => Environment.Exit(0));
             
             Trigger.AddTrigger(new Vector2(29f, 7f), 
-                scene => Level1.Level1.StartOnEngine(engine));
+                scene =>
+                {
+                    Map.ClearTags();
+                    Level1.Level1.StartOnEngine(engine);
+                });
 
             var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             backGroundMusic.Play(-1);

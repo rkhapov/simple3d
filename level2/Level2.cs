@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using level3;
 using musics;
 using objects.Collectables;
 using objects.Environment;
@@ -53,9 +54,9 @@ namespace level2
             var scene = SceneReader.ReadFromStrings(new[]
             {
                 "$$$e$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",
-                "$P,,H$,,,,,,,,,,,,$AH,,,,,,,,,,,,,,,$################$",
+                "$,,,H$,,,,,,,,,,,,$AH,,,,,,,,,,,,,,,$#$e$############$",
                 "$,,,A$,,,,,,,,,,,,$AH,,,,,,,,,,,S,,,$#......##..R...#$",
-                "$,$$$$,,,,,,,,,,,,$,,,,,,,,,,,,,,,,,$#....S.##......#$",
+                "$,$$$$,,,,,,,,,,,,$,,,,,,,,,,,,,,,,,$#P...S.##......#$",
                 "$,$,,,,,,,,,,,,,,,$$$$$$$$$$$$,,,,,,$#...#.........L#$",
                 "$,$,,,,,,,,,,,,,,,,,,,,,,$H,$$d$,,$$$#S.............#$",
                 "$,$$$$$$$$$$$$$$$$$$$$$$$$$,,,,$,,$###......##......#$",
@@ -185,6 +186,12 @@ namespace level2
                     Map.GetCellByTag("door3").Type = MapCellType.Empty;
                 });
             });
+            
+            Trigger.AddTrigger(2, 39, (scene) =>
+            {
+                Map.ClearTags();
+                Level3.StartOnEngine(engine);
+            }, false);
 
 
             while (engine.Update(scene))

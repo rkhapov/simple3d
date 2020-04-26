@@ -25,10 +25,15 @@ namespace simple3d.Levels
                 cell.SpriteUpdate(time);
             }
         }
+        
+        private static object myLock = new object();
 
         public static void ClearTags()
         {
-            taggedCells.Clear();
+            lock (myLock)
+            {
+                taggedCells.Clear();
+            }
         }
         
         public static Map FromStrings(string[] strings, Func<char, MapCell> cellFactory)
