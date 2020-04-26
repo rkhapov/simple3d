@@ -20,7 +20,7 @@ namespace objects
         {
             if (Endurance < MaxEndurance)
             {
-                Endurance += elapsedMilliseconds * 0.001f;
+                Endurance += elapsedMilliseconds * 0.002f;
                 Endurance = MathF.Min(Endurance, MaxEndurance);
             }
 

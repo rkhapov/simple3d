@@ -296,6 +296,11 @@ namespace simple3d.Levels
             TryMove(scene, newPosition, map);
 
             var dEndurance = (oldPosition - player.Position).Length() * 0.3f;
+            if (Math.Abs(MovingSpeed - SprintMovingSpeed) < 1e-5f)
+            {
+                dEndurance += 2 * dEndurance;
+            }
+
             if (player.Endurance > dEndurance)
             {
                 player.Endurance -= dEndurance;
