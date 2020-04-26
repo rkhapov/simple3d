@@ -96,8 +96,10 @@ namespace simple3d
             var statusBarWidth = screen.Width;
             var statusBarSprite = Sprite.Load(UiResourcesHelper.StatusBarSpritePath);
             var bowSprite = Sprite.Load(UiResourcesHelper.BowMiniSpritePath);
+            var frameSprite = Sprite.Load(UiResourcesHelper.FrameSpritePath);
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
-            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, bowSprite, crossSprite);
+            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, 
+                bowSprite, crossSprite, frameSprite);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,

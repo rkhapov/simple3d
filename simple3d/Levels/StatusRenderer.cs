@@ -11,15 +11,18 @@ namespace simple3d.Levels
         private readonly Sprite bowSprite;
         private readonly Sprite swordSprite;
         private readonly Sprite crossSprite;
+        private readonly Sprite frameSprite;
         private readonly int statusBarHeight;
 
-        public StatusRenderer(Sprite barSprite, Sprite crossSprite, int statusBarHeight, Sprite bowSprite, Sprite swordSprite)
+        public StatusRenderer(Sprite barSprite, Sprite crossSprite, int statusBarHeight,
+            Sprite bowSprite, Sprite swordSprite, Sprite frameSprite)
         {
             this.barSprite = barSprite;
             this.bowSprite = bowSprite;
             this.swordSprite = swordSprite;
             this.crossSprite = crossSprite;
             this.statusBarHeight = statusBarHeight;
+            this.frameSprite = frameSprite;
         }
 
         public void Dispose()
@@ -81,7 +84,7 @@ namespace simple3d.Levels
         private void RenderStatusBar(IScreen screen, Scene scene)
         {
             DrawSprite(screen);
-            DrawStatusLines(screen, scene.Player, screen.Width / 4);
+            DrawStatusLines(screen, scene.Player, screen.Width / 8);
             DrawWeaponMiniature(screen, scene);
         }
 
@@ -149,10 +152,16 @@ namespace simple3d.Levels
             screen.DrawSprite(barSprite, screen.Height - statusBarHeight, 0);
         }
 
+        private void DrawFrame(IScreen screen, int y, int x)
+        {
+            screen.DrawSprite(frameSprite, y, x);
+        }
+
         private void DrawWeaponMiniature(IScreen screen, Scene scene)
         {
-            var weaponSpriteY = screen.Height - statusBarHeight + 10;
+            var weaponSpriteY = screen.Height - statusBarHeight;
             var weaponSpriteX = 700;
+            DrawFrame(screen,screen.Height - statusBarHeight , 700);
             if (scene.Player.Weapon is MeleeWeapon)
                 screen.DrawSprite(swordSprite, weaponSpriteY, weaponSpriteX);
             else 
