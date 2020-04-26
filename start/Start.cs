@@ -11,7 +11,7 @@ namespace start
         {
             var engine = EngineBuilder.BuildEngine25D(
                 new EngineOptions("simple 3d game", 720, 1280,
-                    true,
+                    false,
                     UiResourcesHelper.PressStart2PFontPath,
                     UiResourcesHelper.CrossSpritePath,
                     UiResourcesHelper.ScrollSpritePath));

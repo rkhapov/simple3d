@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata;
 using System.Runtime.Serialization;
 using musics;
 using objects.Monsters;
+using objects.Monsters.Algorithms;
 using objects.Weapons;
 using simple3d;
 using simple3d.Drawing;
@@ -111,14 +113,21 @@ namespace objects
 
         private IMapObject FindBestTarget(Scene scene)
         {
-            foreach (var obj in scene.Objects)
+            foreach (var obj in scene
+                .Objects.OrderBy(o => MapPoint.FromVector2(o.Position).GetManhattanDistanceTo(MapPoint.FromVector2(Position))))
             {
                 if (obj is BaseMonster monster)
                 {
-                    if (monster.IsAlive)
+                    if (!monster.IsAlive)
                     {
-                        return monster;   
+                        continue;
                     }
+
+                    var path = PathFinder.FindPath(scene.Map, MapPoint.FromVector2(obj.Position), MapPoint.FromVector2(Position));
+                    if (path == null)
+                        continue;
+
+                    return monster;
                 }
             }
 
