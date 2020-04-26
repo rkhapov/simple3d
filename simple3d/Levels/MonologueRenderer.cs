@@ -29,10 +29,22 @@ namespace simple3d.Levels
 
             var lines = scene.Player.CurrentMonologue.CurrentText
                 .Split(new[] {"\n", "\r"}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(l => textRenderer.RenderText(l, new SDL.SDL_Color()))
+                .Select(l => textRenderer.RenderText(l, new SDL.SDL_Color { r = 255, g = 255, b = 255}))
                 .ToArray();
 
             var startY = screen.Height - statusBarHeight - lines.Sum(k => lineHeight);
+            var minY = startY;
+            var maxY = startY + lines.Sum(k => lineHeight);
+            var minX = lines.Min(line => screen.Width / 2 - line.Width / 2);
+            var maxX = lines.Max(line => screen.Width / 2 + line.Width / 2);
+
+            for (var y = minY; y < maxY; y++)
+            {
+                for (var x = minX; x < maxX; x++)
+                {
+                    screen.Draw(y, x, 0, 0, 0);
+                }
+            }
 
             foreach (var (line, i) in lines.Select((l, i) => (l, i)))
             {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace simple3d.Levels
 {
@@ -19,6 +21,11 @@ namespace simple3d.Levels
             }
             currentText = 0;
             currentTime = 0.0f;
+        }
+
+        public Monologue((string msg, int duration)[] texts) :
+            this(texts.Select(t => t.msg).ToArray(), texts.Select(t => t.duration).ToArray())
+        {
         }
 
         public string CurrentText => texts[currentText];

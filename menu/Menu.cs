@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading.Channels;
 using musics;
 using objects;
+using objects.Collectables;
 using objects.Environment;
 using objects.Monsters;
 using objects.Monsters.Algorithms;
@@ -33,7 +35,7 @@ namespace menu
         {
             using var engine = EngineBuilder.BuildEngine25D(
                 new EngineOptions("simple 3d game", 720, 1280,
-                    false,
+                    true,
                     UiResourcesHelper.PressStart2PFontPath,
                     UiResourcesHelper.CrossSpritePath,
                     UiResourcesHelper.ScrollSpritePath));
@@ -54,17 +56,17 @@ namespace menu
                 new[]
                 {
                     "###########################################",
-                    "#P..c#....................................#",
-                    "#.###.....................................#",
+                    "#P.###....................................#",
+                    "#.####....................................#",
                     "#d##......................................#",
-                    "#..#......................................#",
-                    "#..#......................................#",
-                    "#..#......................................#",
-                    "#.........................................#",
-                    "#.........................................#",
-                    "#.........................................#",
-                    "#.........................................#",
-                    "#.........................................#",
+                    "#.##......................................#",
+                    "#.##......................................#",
+                    "#.##......................................#",
+                    "#.####################....................#",
+                    "#....H.....A..............................#",
+                    "#######################...................#",
+                    "#.#.......................................#",
+                    "#.#.......................................#",
                     "#.........................................#",
                     "#.........................................#",
                     "#.........................................#",
@@ -72,13 +74,51 @@ namespace menu
                 }, storage.GetCellByChar, MathF.PI / 2);
             
             scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
+            scene.AddObject(Note.Create(new Vector2(15.5f, 8.5f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
+            
             var map = scene.Map;
             map.At(3, 1).SetTag("startDoor");
-            Trigger.AddTrigger(new Vector2(1f, 1f), (scene) => {
-                Map.GetCellByTag("startDoor")
-                    .StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; });
-            });
+            Trigger.AddTrigger(new Vector2(1f, 1f), 
+                (scene) => { Map.GetCellByTag("startDoor").StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; }); });
 
+            Trigger.AddTrigger(new Vector2(1f, 1f), scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Движение: WASD", 2500),
+                        ("Камера: Стрелочки", 2500),
+                        ("Взаимодействие: E\nОткройте дверь и выберитесь наружу!", 2500),
+                    });
+            }, false);
+
+            Trigger.AddTrigger(3, 1, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Хорошо", 1500),
+                        ("А это предметы, которые можно собирать", 1500),
+                    });
+            }, false);
+
+            Trigger.AddTrigger(8, 2, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Это зелье восстанавливает здоровье", 1500),
+                    });
+            }, false);
+            
+            Trigger.AddTrigger(8, 6, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("А это стрелы, лишними не будут", 1500),
+                    });
+            }, false);
 
             var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             backGroundMusic.Play(-1);

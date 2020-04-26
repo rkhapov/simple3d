@@ -40,14 +40,15 @@ namespace simple3d.Levels
 
         public void Render(IScreen screen, Scene scene)
         {
-            var task1 = Task.Run(() => RenderWeapon(screen, scene));
+            var task1 = Task
+                .Run(() => RenderWeapon(screen, scene))
+                .ContinueWith((_) => monologueRenderer?.Render(screen, scene));
             var task2 = Task.Run(() => RenderStatusBar(screen, scene));
             var task3 = Task.Run(() => RenderCross(screen));
             var task4 = Task.Run(() => RenderLog(screen, scene));
             var task5 = Task.Run(() => notesRenderer?.Render(screen, scene));
-            var task6 = Task.Run(() => monologueRenderer?.Render(screen, scene));
 
-            Task.WhenAll(task1, task2, task3, task4, task5, task6).Wait();
+            Task.WhenAll(task1, task2, task3, task4, task5).Wait();
         }
 
         private void RenderLog(IScreen screen, Scene scene)
