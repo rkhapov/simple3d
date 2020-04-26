@@ -294,6 +294,7 @@ namespace simple3d.Levels
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var objectVertices in scene
                 .Objects
+                .Where(o => o != null)
                 .Select(o => o.GetRotatedVertices()))
             {
                 if (GeometryHelper.IsRectanglesIntersects(playerNewVertices, objectVertices))

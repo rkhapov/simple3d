@@ -38,7 +38,7 @@ namespace objects.Monsters
 
         public Lich(Vector2 position, Vector2 size, float directionAngle, Animation staticAnimation,
             Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation, Animation fireballBlowing, ISound fireballBlowSound, ISound evilLaugh, ISound deathSound) : base(position, size,
-            directionAngle, 42)
+            directionAngle, 200)
         {
             this.staticAnimation = staticAnimation;
             this.deadAnimation = deadAnimation;
@@ -155,7 +155,7 @@ namespace objects.Monsters
         private void SpawnFireBall(Scene scene)
         {
             scene.AddObject(new FireBall(Position,
-                new Vector2(0.1f, 0.1f), 0, 3000, scene.Player,
+                new Vector2(0.1f, 0.1f), 0, 6000, scene.Player,
                 fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
         }
 
