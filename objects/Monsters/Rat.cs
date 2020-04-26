@@ -37,7 +37,7 @@ namespace objects.Monsters
             Animation playerFollowing,
             Animation attackAnimation,
             Vector2 position, Vector2 size, float directionAngle, ISound deathSound, Animation deadAnimation, ISound attackSound, ISound hitSound) : base(
-            position, size, directionAngle, 84)
+            position, size, directionAngle, 20)
         {
             this.staticAnimation = staticAnimation;
             this.playerFollowing = playerFollowing;

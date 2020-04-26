@@ -40,7 +40,7 @@ namespace objects.Weapons
                 if (!GeometryHelper.IsRectanglesIntersects(vertices, obj.GetRotatedVertices()))
                     continue;
 
-                obj.OnShoot(scene, 42);
+                obj.OnShoot(scene, 20);
                 hit = true;
                 break;
             }

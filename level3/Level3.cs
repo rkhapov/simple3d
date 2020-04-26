@@ -4,31 +4,20 @@ using musics;
 using objects.Collectables;
 using objects.Environment;
 using simple3d;
-using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
 using simple3d.Sounds;
-using ui;
 using utils;
 
-namespace level2
+namespace level3
 {
-    public class Level2
+    public class Level3
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var options = new EngineOptions(
-                "simple 3d game",
-                720, 1280,
-                false,
-                UiResourcesHelper.PressStart2PFontPath,
-                UiResourcesHelper.CrossSpritePath,
-                UiResourcesHelper.ScrollSpritePath);
-            using var engine = EngineBuilder.BuildEngine25D(options);
-
-            StartOnEngine(engine);
+            Console.WriteLine("Hello World!");
         }
-
+        
         public static void StartOnEngine(IEngine engine)
         {
             var loader = ResourceCachedLoader.Instance;
@@ -193,7 +182,7 @@ namespace level2
 
             MusicHelper.StopPlaying();
         }
-        
+
         private class MapTextureStorage
         {
             private readonly Sprite ceilingTexture;

@@ -38,7 +38,7 @@ namespace objects.Monsters
 
         public Lich(Vector2 position, Vector2 size, float directionAngle, Animation staticAnimation,
             Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation, Animation fireballBlowing, ISound fireballBlowSound, ISound evilLaugh, ISound deathSound) : base(position, size,
-            directionAngle, 200)
+            directionAngle, 120)
         {
             this.staticAnimation = staticAnimation;
             this.deadAnimation = deadAnimation;

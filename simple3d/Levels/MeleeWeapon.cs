@@ -89,7 +89,7 @@ namespace simple3d.Levels
 
                 if (inFov && dv.LengthSquared() < MeleeDistanceSquared)
                 {
-                    obj.OnLeftMeleeAttack(scene, 42);
+                    obj.OnLeftMeleeAttack(scene, 10);
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace simple3d.Levels
 
                 if (inFov && dv.LengthSquared() < MeleeDistanceSquared)
                 {
-                    obj.OnRightMeleeAttack(scene, 42);
+                    obj.OnRightMeleeAttack(scene, 10);
                 }
             }
         }

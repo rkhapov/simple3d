@@ -45,7 +45,7 @@ namespace objects.Monsters
             Animation attackLeftAnimation,
             Animation blockRightAnimation,
             Animation blockLeftAnimation,
-            Vector2 position, Vector2 size, float directionAngle, Animation deadAnimation, ISound deathSound, ISound hitSound, ISound shieldHit) : base(position, size, directionAngle, 84)
+            Vector2 position, Vector2 size, float directionAngle, Animation deadAnimation, ISound deathSound, ISound hitSound, ISound shieldHit) : base(position, size, directionAngle, 40)
         {
             this.staticAnimation = staticAnimation;
             this.followingAndBlockingAnimation = followingAndBlockingAnimation;
