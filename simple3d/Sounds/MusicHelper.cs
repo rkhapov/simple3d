@@ -8,5 +8,10 @@ namespace simple3d.Sounds
         {
             return SDL_mixer.Mix_PlayingMusic() != 0;
         }
+
+        public static void StopPlaying()
+        {
+            SDL_mixer.Mix_HaltMusic();
+        }
     }
 }

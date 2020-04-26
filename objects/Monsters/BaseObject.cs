@@ -74,7 +74,7 @@ namespace objects.Monsters
                 var testY = (int) currentY;
                 var cell = map.At(testY, testX);
 
-                if (cell.Type == MapCellType.Wall)
+                if (cell.Type != MapCellType.Empty)
                     hitWall = true;
             }
 

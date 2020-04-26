@@ -148,7 +148,7 @@ namespace simple3d.Levels
                 boundSize,
                 linesHeight, linesWidth,
                 0xFF2020,
-                0xFF3C3C
+                0xFF5555
                 );
 
             DrawStatusLine(
