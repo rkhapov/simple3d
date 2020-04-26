@@ -109,6 +109,7 @@ namespace objects.Monsters
         private const float AttackDistance = 2f;
         private const float AttackDistanceSquared = AttackDistance * AttackDistance;
         private const float BlockingChance = 0.7f;
+        private const int Damage = 10;
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
@@ -121,7 +122,7 @@ namespace objects.Monsters
             {
                 SetState(SkeletonState.Static);
                 if(PlayerInAttackDistance(scene))
-                    DoLeftMeleeAttackOnPlayer(scene, 2);
+                    DoLeftMeleeAttackOnPlayer(scene, Damage);
                 return;
             }
             
@@ -129,7 +130,7 @@ namespace objects.Monsters
             {
                 SetState(SkeletonState.Static);
                 if(PlayerInAttackDistance(scene))
-                    DoRightMeleeAttackOnPlayer(scene, 2);
+                    DoRightMeleeAttackOnPlayer(scene, Damage);
                 return;
             }
 
@@ -173,7 +174,7 @@ namespace objects.Monsters
                 }
             }
         }
-        
+
         private bool TryGetDirectionToPlayer(Scene scene, out float angle)
         {
             angle = 0.0f;
