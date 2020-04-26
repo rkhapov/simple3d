@@ -50,7 +50,7 @@ namespace objects.Monsters
             state = RatState.Static;
         }
 
-        public static Rat Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)
+        public static Rat Create(ResourceCachedLoader loader, Vector2 position, float directionAngle)
         {
             var staticAnimation = loader.GetAnimation("./animations/rat/static");
             var playerFollowerAnimation = loader.GetAnimation("./animations/rat/moving");
@@ -59,6 +59,7 @@ namespace objects.Monsters
             var deadAnimation = loader.GetAnimation("./animations/rat/dead");
             var attackSound = loader.GetSound(MusicResourceHelper.RatAttackPath);
             var hitSound = loader.GetSound(MusicResourceHelper.RatHitPath);
+            var size = new Vector2(0.3f, 0.3f);
 
             return new Rat(
                 staticAnimation,
@@ -100,6 +101,7 @@ namespace objects.Monsters
             if (!IsAlive)
             {
                 SetState(RatState.Dead);
+                scene.EventsLogger.MonsterDeath("Крыса");
                 Size = Vector2.Zero;
                 return;
             }
@@ -125,6 +127,7 @@ namespace objects.Monsters
                     return;
                 }
 
+                scene.EventsLogger.MonsterAttacks("Крыса");
                 SetState(RatState.PlayerFollowing);
             }
 

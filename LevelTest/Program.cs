@@ -39,7 +39,7 @@ namespace LevelTest
                 new BaseAnimatedMapObj(new Vector2(2f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
                 new BaseAnimatedMapObj(new Vector2(12f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
                 //Rat.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
-                Lich.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0)
+                Lich.Create(loader, new Vector2(8.5f, 2.5f), 0)
             };
             var map = Map.FromStrings(new[]
             {

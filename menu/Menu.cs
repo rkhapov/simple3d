@@ -8,6 +8,7 @@ using simple3d;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
+using ui;
 
 namespace menu
 {
@@ -27,9 +28,12 @@ namespace menu
     {
         private static void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false, "./fonts/PressStart2P.ttf"));
-            var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
-            var loader = new ResourceCachedLoader();
+            using var engine = EngineBuilder.BuildEngine25D(
+                new EngineOptions("simple 3d game", 720, 1280,
+                    false,
+                    UiResourcesHelper.PressStart2PFontPath,
+                    UiResourcesHelper.CrossSpritePath,
+                    UiResourcesHelper.ScrollSpritePath));
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
@@ -40,35 +44,25 @@ namespace menu
             var statusBarInfo = Sprite.Load("./sprites/statusbarinfo.png");
             var tutorialEnd = Sprite.Load("./sprites/tutorialend.png");
 
-            var sword = Sword.Create(loader);
-            var bow = Bow.Create(loader);
-            player.Weapons = new Weapon[] {bow, sword};
-
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
                 startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd);
-            var objects = new IMapObject[]
-            {
-                GreenLight.Create(loader, new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0),
-                GreenLight.Create(loader, new Vector2(6.0f, 4.0f), new Vector2(0, 0), 0),
-                new Invisible(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0), 
-                Skeleton.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
-            };
-            var map = Map.FromStrings(new[]
-            {
-                "##c###########",
-                "#....#l###...#",
-                "#..#.#.......e",
-                "#..#.#.#.....#",
-                "#..#...#.....s",
-                "#..#i##......#",
-                "#..#.........r",
-                "#..#.........#",
-                "##############"
-            }, storage.GetCellByChar);
+            var scene = SceneReader.ReadFromStrings(
+                new[]
+                {
+                    "##c###########",
+                    "#....#l###...#",
+                    "#..#.#.......e",
+                    "#..#.#.#.....#",
+                    "#..#..S#.....s",
+                    "#..#i##......#",
+                    "#..#.........r",
+                    "#.P#.........#",
+                    "##############"
+                }, storage.GetCellByChar, MathF.PI);
             
-            var level = new Scene(player, map, objects);
+            scene.AddObject(new Invisible(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
             
-            while (engine.Update(level))
+            while (engine.Update(scene))
             {
             }
         }

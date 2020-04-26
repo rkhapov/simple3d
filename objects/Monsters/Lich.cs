@@ -52,7 +52,7 @@ namespace objects.Monsters
             this.state = LichState.Static;
         }
 
-        public static Lich Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float direction)
+        public static Lich Create(ResourceCachedLoader loader, Vector2 position, float direction)
         {
             var staticAnimation = loader.GetAnimation("./animations/lich/static");
             var deadAnimation = loader.GetAnimation("./animations/lich/dead");
@@ -63,6 +63,7 @@ namespace objects.Monsters
             var fireBallBlowSound = loader.GetSound(MusicResourceHelper.FireBallBlowPath);
             var laugh = loader.GetSound(MusicResourceHelper.LichEvilLaughPath);
             var deathSound = loader.GetSound(MusicResourceHelper.LichDeadPath);
+            var size = new Vector2(0.3f, 0.3f);
 
             return new Lich(
                 position, size, direction,
