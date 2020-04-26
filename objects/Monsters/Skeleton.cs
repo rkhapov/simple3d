@@ -7,7 +7,7 @@ using simple3d.Levels;
 
 namespace objects.Monsters
 {
-    public class Skeleton :     BaseMonster
+    public class Skeleton : BaseMonster
     {
         private enum SkeletonState
         {
@@ -50,7 +50,7 @@ namespace objects.Monsters
             state = SkeletonState.Static;
         }
 
-        public static Skeleton Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float directionAngle)
+        public static Skeleton Create(ResourceCachedLoader loader, Vector2 position, float directionAngle)
         {
             var staticAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
             var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
@@ -58,6 +58,7 @@ namespace objects.Monsters
             var attackLeftAnimation = loader.GetAnimation("./animations/skeleton/left_attack");
             var blockRightAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
             var blockLeftAnimation = loader.GetAnimation("./animations/skeleton/guard_left");
+            var size = new Vector2(0.3f, 0.3f);
 
             return new Skeleton(
                 staticAnimation,

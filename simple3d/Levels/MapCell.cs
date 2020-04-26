@@ -12,10 +12,9 @@ namespace simple3d.Levels
             CeilingSprite = ceilingSprite;
             FloorSprite = floorSprite;
             isAnimation = false;
-    
         }
 
-        public MapCell(MapCellType type, Animation animation, Sprite floorSprite, Sprite ceilingSprite, string tag)
+        public MapCell(MapCellType type, Animation animation, Sprite floorSprite, Sprite ceilingSprite)
         {
             this.animation = animation;
             isAnimation = true;
@@ -23,7 +22,10 @@ namespace simple3d.Levels
             WallSprite = animation.CurrentFrame;
             CeilingSprite = ceilingSprite;
             FloorSprite = floorSprite;
+        }
 
+        public void SetTag(string tag)
+        {
             Map.AddTaggedCall(tag, this);
         }
 

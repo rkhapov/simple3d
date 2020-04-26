@@ -10,7 +10,7 @@ namespace simple3d.Levels
     public abstract class Player : IMapObject
     {
         public readonly float FieldOfView = MathF.PI / 3;
-        public readonly float ViewDistance = 30.0f;
+        public readonly float ViewDistance = 60.0f;
         public const float WalkMovingSpeed = 0.003f;
         public const float SprintMovingSpeed = 0.005f;
         public float MovingSpeed { get; private set; } = WalkMovingSpeed;
@@ -294,6 +294,7 @@ namespace simple3d.Levels
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var objectVertices in scene
                 .Objects
+                .Where(o => o != null)
                 .Select(o => o.GetRotatedVertices()))
             {
                 if (GeometryHelper.IsRectanglesIntersects(playerNewVertices, objectVertices))

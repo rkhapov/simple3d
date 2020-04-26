@@ -38,7 +38,7 @@ namespace objects.Monsters
 
         public Lich(Vector2 position, Vector2 size, float directionAngle, Animation staticAnimation,
             Animation deadAnimation, Animation shootingAnimation, Animation runningAnimation, Animation fireballAnimation, Animation fireballBlowing, ISound fireballBlowSound, ISound evilLaugh, ISound deathSound) : base(position, size,
-            directionAngle, 42)
+            directionAngle, 200)
         {
             this.staticAnimation = staticAnimation;
             this.deadAnimation = deadAnimation;
@@ -52,7 +52,12 @@ namespace objects.Monsters
             this.state = LichState.Static;
         }
 
-        public static Lich Create(ResourceCachedLoader loader, Vector2 position, Vector2 size, float direction)
+        public static Lich Create(Vector2 position, float direction)
+        {
+            return Create(ResourceCachedLoader.Instance, position, direction);
+        }
+
+        public static Lich Create(ResourceCachedLoader loader, Vector2 position, float direction)
         {
             var staticAnimation = loader.GetAnimation("./animations/lich/static");
             var deadAnimation = loader.GetAnimation("./animations/lich/dead");
@@ -63,6 +68,7 @@ namespace objects.Monsters
             var fireBallBlowSound = loader.GetSound(MusicResourceHelper.FireBallBlowPath);
             var laugh = loader.GetSound(MusicResourceHelper.LichEvilLaughPath);
             var deathSound = loader.GetSound(MusicResourceHelper.LichDeadPath);
+            var size = new Vector2(0.3f, 0.3f);
 
             return new Lich(
                 position, size, direction,
@@ -149,7 +155,7 @@ namespace objects.Monsters
         private void SpawnFireBall(Scene scene)
         {
             scene.AddObject(new FireBall(Position,
-                new Vector2(0.1f, 0.1f), 0, 3000, scene.Player,
+                new Vector2(0.1f, 0.1f), 0, 6000, scene.Player,
                 fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
         }
 

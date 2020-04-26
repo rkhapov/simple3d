@@ -128,7 +128,7 @@ namespace objects.Weapons
 
 
         protected override int ViewDistance => 20;
-        protected override float MoveSpeed => 0.002f;
+        protected override float MoveSpeed => 0.003f;
 
         public override Animation CurrentAnimation
         {

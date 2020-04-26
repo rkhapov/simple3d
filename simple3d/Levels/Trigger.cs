@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -7,49 +8,37 @@ namespace simple3d.Levels
 {
     public class Trigger
     {
-        static Dictionary<Vector2, Trigger> allTriggers = new Dictionary<Vector2, Trigger>(); // 
+        static List<Trigger> allTriggers = new List<Trigger>(); // 
 
-        public static void AddTrigger(Vector2 position, Action<Scene> action, bool interact = true, bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
+        public static void AddTrigger(Vector2 position, Action<Scene> action, bool interact = true,
+            bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
         {
-            if (allTriggers.ContainsKey(position))
-            {
-                allTriggers[position] = new Trigger(action, interact);
-            }
-            else
-            {
-                allTriggers.Add(position, new Trigger(action, interact));
-            }
+            allTriggers.Add(new Trigger((int) position.Y, (int) position.X, action, interact));
+        }
+        
+        public static void AddTrigger(int y, int x, Action<Scene> action, bool interact = true,
+            bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
+        {
+            allTriggers.Add(new Trigger(y, x, action, interact));
         }
 
         public static void CheckAndDo(Vector2 position, Scene scene)
         {
-            position = new Vector2((int)position.X, (int)position.Y);
-            if (allTriggers.ContainsKey(position))
+            var xx = (int) position.X;
+            var yy = (int) position.Y;
+
+            foreach (var trigger in allTriggers.Where(trigger => trigger.x == xx && trigger.y == yy))
             {
-                if (allTriggers.ContainsKey(position))
+                if (trigger.interact)
                 {
-                    var trigger = allTriggers[position];
-                    if (trigger.interact)
-                    {
-                        if (scene.Player.interactMod)
-                        {
-                            trigger.DoIt(scene);
-                        }
-                    }
-                    else
+                    if (scene.Player.interactMod)
                     {
                         trigger.DoIt(scene);
                     }
                 }
-            }
-
-            if (scene.Player.interactMod)
-            {
-
-                position = new Vector2((int)position.X, (int)position.Y);
-                if (allTriggers.ContainsKey(position))
+                else
                 {
-                    allTriggers[position].DoIt(scene);
+                    trigger.DoIt(scene);
                 }
             }
         }
@@ -57,11 +46,16 @@ namespace simple3d.Levels
         private bool itsDone;
         private bool interact;
         private readonly Action<Scene> action;
-        private Trigger(Action<Scene> action, bool interact = true)
+        private readonly int x;
+        private readonly int y;
+
+        private Trigger(int y, int x, Action<Scene> action, bool interact = true)
         {
             this.interact = interact;
             itsDone = false;
             this.action = action;
+            this.x = x;
+            this.y = y;
         }
 
         public void DoIt(Scene scene)
@@ -72,7 +66,5 @@ namespace simple3d.Levels
                 itsDone = true;
             }
         }
-        
-
     }
 }

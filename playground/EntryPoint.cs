@@ -40,7 +40,7 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
+                Lich.Create(resourceLoader, new Vector2(6f, 14f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
                 HealingPotion.Create(new Vector2(6f, 6f)),
                 ArrowPack.Create(new Vector2(7f, 7f)),
@@ -110,7 +110,7 @@ namespace playground
             {
                 return c switch
                 {
-                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
+                    // 'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
                     '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
                     'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
                     'b' => new MapCell(MapCellType.TransparentObj, bedTexture, floorTexture, ceilingTexture),

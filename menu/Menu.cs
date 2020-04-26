@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading.Channels;
+using musics;
 using objects;
+using objects.Collectables;
 using objects.Environment;
 using objects.Monsters;
+using objects.Monsters.Algorithms;
 using objects.Weapons;
 using simple3d;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
+using ui;
+using utils;
 
 namespace menu
 {
-    internal class Invisible : BaseStaticMapObject
+    internal class InvisibleWall : BaseStaticMapObject
     {
-        public Invisible(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
+        public InvisibleWall(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
         {
         }
 
@@ -27,9 +33,12 @@ namespace menu
     {
         private static void Main(string[] args)
         {
-            using var engine = EngineBuilder.BuildEngine25D(new EngineOptions("simple 3d game", 720, 1280, false, "./fonts/PressStart2P.ttf"));
-            var player = new MyPlayer(new Vector2(2.0f, 7.0f), new Vector2(0.3f, 0.3f), MathF.PI);
-            var loader = new ResourceCachedLoader();
+            using var engine = EngineBuilder.BuildEngine25D(
+                new EngineOptions("simple 3d game", 720, 1280,
+                    true,
+                    UiResourcesHelper.PressStart2PFontPath,
+                    UiResourcesHelper.CrossSpritePath,
+                    UiResourcesHelper.ScrollSpritePath));
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
@@ -39,36 +48,82 @@ namespace menu
             var scoreboard = Sprite.Load("./sprites/scoreboard.png");
             var statusBarInfo = Sprite.Load("./sprites/statusbarinfo.png");
             var tutorialEnd = Sprite.Load("./sprites/tutorialend.png");
-
-            var sword = Sword.Create(loader);
-            var bow = Bow.Create(loader);
-            player.Weapons = new Weapon[] {bow, sword};
-
+            var doorAnimation = ResourceCachedLoader.Instance.GetAnimation("./animations/door");
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
-                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd);
-            var objects = new IMapObject[]
-            {
-                GreenLight.Create(loader, new Vector2(2.0f, 4.0f), new Vector2(0, 0), 0),
-                GreenLight.Create(loader, new Vector2(6.0f, 4.0f), new Vector2(0, 0), 0),
-                new Invisible(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0), 
-                Skeleton.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
-            };
-            var map = Map.FromStrings(new[]
-            {
-                "##c###########",
-                "#....#l###...#",
-                "#..#.#.......e",
-                "#..#.#.#.....#",
-                "#..#...#.....s",
-                "#..#i##......#",
-                "#..#.........r",
-                "#..#.........#",
-                "##############"
-            }, storage.GetCellByChar);
+                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd, doorAnimation);
+
+            var scene = SceneReader.ReadFromStrings(
+                new[]
+                {
+                    "###########################################",
+                    "#P.###....................................#",
+                    "#.####....................................#",
+                    "#d##......................................#",
+                    "#.##......................................#",
+                    "#.##......................................#",
+                    "#.##......................................#",
+                    "#.####################....................#",
+                    "#....H.....A..............................#",
+                    "#######################...................#",
+                    "#.#.......................................#",
+                    "#.#..............L........................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "###########################################"
+                }, storage.GetCellByChar, MathF.PI / 2);
             
-            var level = new Scene(player, map, objects);
+            scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
+            scene.AddObject(Note.Create(new Vector2(15.5f, 8.5f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
             
-            while (engine.Update(level))
+            var map = scene.Map;
+            map.At(3, 1).SetTag("startDoor");
+            Trigger.AddTrigger(new Vector2(1f, 1f), 
+                (scene) => { Map.GetCellByTag("startDoor").StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; }); });
+
+            Trigger.AddTrigger(new Vector2(1f, 1f), scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Движение: WASD", 2500),
+                        ("Камера: Стрелочки", 2500),
+                        ("Взаимодействие: E\nОткройте дверь и выберитесь наружу!", 2500),
+                    });
+            }, false);
+
+            Trigger.AddTrigger(3, 1, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Хорошо", 1500),
+                        ("А это предметы, которые можно собирать", 1500),
+                    });
+            }, false);
+
+            Trigger.AddTrigger(8, 2, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("Это зелье восстанавливает здоровье", 1500),
+                    });
+            }, false);
+            
+            Trigger.AddTrigger(8, 6, scene =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[]
+                    {
+                        ("А это стрелы, лишними не будут", 1500),
+                    });
+            }, false);
+
+            var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
+            backGroundMusic.Play(-1);
+
+            while (engine.Update(scene))
             {
             }
         }
@@ -83,9 +138,10 @@ namespace menu
             private readonly Sprite scoreboard;
             private readonly Sprite statusBarInfo;
             private readonly Sprite tutorialEnd;
+            private readonly Animation doorAnimation;
 
             public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite controls,
-                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd)
+                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd, Animation doorAnimation)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
@@ -96,6 +152,7 @@ namespace menu
                 this.scoreboard = scoreboard;
                 this.statusBarInfo = statusBarInfo;
                 this.tutorialEnd = tutorialEnd;
+                this.doorAnimation = doorAnimation;
             }
 
             public MapCell GetCellByChar(char c)
@@ -109,6 +166,7 @@ namespace menu
                     'r' => new MapCell(MapCellType.Wall, scoreboard, scoreboard, ceilingTexture),
                     'i' => new MapCell(MapCellType.Wall, statusBarInfo, statusBarInfo, ceilingTexture),
                     'l' => new MapCell(MapCellType.Wall, tutorialEnd, tutorialEnd, ceilingTexture),
+                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }

@@ -29,7 +29,7 @@ namespace objects.Weapons
             var newPosition = Position + new Vector2(dx, dy);
             var testX = (int) newPosition.X;
             var testY = (int) newPosition.Y;
-            var hit = !scene.Map.InBound(testY, testX) || scene.Map.At(testY, testX).Type == MapCellType.Wall;
+            var hit = !scene.Map.InBound(testY, testX) || scene.Map.At(testY, testX).Type != MapCellType.Empty;
 
             var vertices = this.GetRotatedVertices();
             foreach (var obj in scene.Objects)
