@@ -17,7 +17,7 @@ using utils;
 
 namespace menu
 {
-    internal class InvisibleWall : BaseStaticMapObject
+    class InvisibleWall : BaseStaticMapObject
     {
         public InvisibleWall(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
         {
@@ -29,7 +29,7 @@ namespace menu
         }
     }
 
-    internal static class Menu
+    static class Menu
     {
         private static void Main(string[] args)
         {
@@ -39,6 +39,11 @@ namespace menu
                     UiResourcesHelper.PressStart2PFontPath,
                     UiResourcesHelper.CrossSpritePath,
                     UiResourcesHelper.ScrollSpritePath));
+            StartOnEngine(engine);
+        }
+
+        public static void StartOnEngine(IEngine engine)
+        {
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
@@ -121,6 +126,7 @@ namespace menu
             {
             }
         }
+        
         private class MapTextureStorage
         {
             private readonly Sprite ceilingTexture;

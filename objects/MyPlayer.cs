@@ -72,12 +72,5 @@ namespace objects
         public override void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
         }
-        
-        private void SpawnFireBall(Scene scene)
-        {
-            scene.AddObject(new FireBall(Position,
-                new Vector2(0.1f, 0.1f), 0, 6000, scene.Player,
-                fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
-        }
     }
 }

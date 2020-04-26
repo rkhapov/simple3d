@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Level1\Level1.csproj" />
+      <ProjectReference Include="..\level2\level2.csproj" />
+      <ProjectReference Include="..\LevelTest\LevelTest.csproj" />
+      <ProjectReference Include="..\menu\menu.csproj" />
+      <ProjectReference Include="..\musics\musics.csproj" />
+      <ProjectReference Include="..\objects\objects.csproj" />
+      <ProjectReference Include="..\playground\playground.csproj" />
+      <ProjectReference Include="..\simple3d\simple3d.csproj" />
+      <ProjectReference Include="..\ui\ui.csproj" />
+      <ProjectReference Include="..\utils\utils.csproj" />
+    </ItemGroup>
+
+</Project>
