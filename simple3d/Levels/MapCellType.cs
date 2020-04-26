@@ -7,6 +7,7 @@ namespace simple3d.Levels
         Empty,
         Window,
         TransparentObj,
+        Door,
         Wall
     }
 
