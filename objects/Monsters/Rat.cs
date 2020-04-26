@@ -190,27 +190,28 @@ namespace objects.Monsters
             staticAnimation.Reset();
         }
 
-        private void DoReceiveDamage(int damage)
+        private void DoReceiveDamage(Scene scene, int damage)
         {
             if (!IsAlive)
                 return;
+            scene.EventsLogger.MonsterHit("Крыса", damage);
             ReceiveDamage(damage);
             PlayHitSound();
         }
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            DoReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            DoReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
-            DoReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
         private void PlayHitSound()

@@ -13,5 +13,10 @@
         public const string LichDeadPath = "./monsters/lich_dead.wav";
         public const string CollectionSoundPath = "./environment/collect.wav";
         public const string CollectionScrollPath = "./environment/scroll_collect.flac";
+        public const string SkeletonDeadPath = "./monsters/skeleton_death.wav";
+        public const string SkeletonHit = "./monsters/skeleton_hit.wav";
+        public const string SkeletonShieldHit = "./monsters/skeleton_shield.wav";
+        public const string PlayerDefence = "./monsters/player_defence.mp3";
+        public const string PlayerDamage = "./monsters/player_damage.wav";
     }
 }

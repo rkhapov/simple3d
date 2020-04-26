@@ -76,7 +76,6 @@ namespace simple3d.Levels
 
         public void DoLeftAttack(Scene scene)
         {
-            State = MeleeWeaponState.AttackLeft;
             var player = scene.Player;
             var fov2 = player.FieldOfView * 0.5f;
             const float pi2 = MathF.PI * 0.5f;
@@ -97,7 +96,6 @@ namespace simple3d.Levels
 
         public void DoRightAttack(Scene scene)
         {
-            State = MeleeWeaponState.AttackRight;
             var player = scene.Player;
             var fov2 = player.FieldOfView * 0.5f;
             const float pi2 = MathF.PI * 0.5f;

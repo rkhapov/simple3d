@@ -58,5 +58,15 @@ namespace simple3d.Levels
         {
             return messages.Select(msg => msg.Text);
         }
+
+        public void MonsterHit(string name, int damage)
+        {
+            EnqueueMessage($"{name} получает урон - {damage}");
+        }
+
+        public void SuccessfullyDefence(string name)
+        {
+            EnqueueMessage($"{name} отражает удар");
+        }
     }
 }

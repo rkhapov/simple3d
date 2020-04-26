@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Numerics;
+using musics;
 using objects.Monsters.Algorithms;
 using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
+using simple3d.Sounds;
 
 namespace objects.Monsters
 {
@@ -16,7 +18,8 @@ namespace objects.Monsters
             AttackLeft,
             AttackRight,
             BLockRight,
-            BlockLeft
+            BlockLeft,
+            Dead
         }
         protected override int ViewDistance => 20;
         protected override float MoveSpeed => 0.003f;
@@ -28,6 +31,10 @@ namespace objects.Monsters
         private readonly Animation attackLeftAnimation;
         private readonly Animation blockRightAnimation;
         private readonly Animation blockLeftAnimation;
+        private readonly Animation deadAnimation;
+        private readonly ISound hitSound;
+        private readonly ISound deathSound;
+        private readonly ISound shieldHit;
 
         private SkeletonState state;
 
@@ -38,7 +45,7 @@ namespace objects.Monsters
             Animation attackLeftAnimation,
             Animation blockRightAnimation,
             Animation blockLeftAnimation,
-            Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, 84)
+            Vector2 position, Vector2 size, float directionAngle, Animation deadAnimation, ISound deathSound, ISound hitSound, ISound shieldHit) : base(position, size, directionAngle, 84)
         {
             this.staticAnimation = staticAnimation;
             this.followingAndBlockingAnimation = followingAndBlockingAnimation;
@@ -46,6 +53,10 @@ namespace objects.Monsters
             this.attackLeftAnimation = attackLeftAnimation;
             this.blockRightAnimation = blockRightAnimation;
             this.blockLeftAnimation = blockLeftAnimation;
+            this.deadAnimation = deadAnimation;
+            this.deathSound = deathSound;
+            this.hitSound = hitSound;
+            this.shieldHit = shieldHit;
 
             state = SkeletonState.Static;
         }
@@ -53,12 +64,16 @@ namespace objects.Monsters
         public static Skeleton Create(ResourceCachedLoader loader, Vector2 position, float directionAngle)
         {
             var staticAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
-            var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
+            var followingAndBlockingAnimation = loader.GetAnimation("./animations/skeleton/moving");
             var attackRightAnimation = loader.GetAnimation("./animations/skeleton/right_attack");
             var attackLeftAnimation = loader.GetAnimation("./animations/skeleton/left_attack");
             var blockRightAnimation = loader.GetAnimation("./animations/skeleton/guard_right");
             var blockLeftAnimation = loader.GetAnimation("./animations/skeleton/guard_left");
             var size = new Vector2(0.3f, 0.3f);
+            var dead = loader.GetAnimation("./animations/skeleton/dead");
+            var deathSound = loader.GetSound(MusicResourceHelper.SkeletonDeadPath);
+            var hitSound = loader.GetSound(MusicResourceHelper.SkeletonHit);
+            var shieldHit = loader.GetSound(MusicResourceHelper.SkeletonShieldHit);
 
             return new Skeleton(
                 staticAnimation,
@@ -69,7 +84,11 @@ namespace objects.Monsters
                 blockLeftAnimation,
                 position,
                 size,
-                directionAngle);
+                directionAngle,
+                dead,
+                deathSound,
+                hitSound,
+                shieldHit);
         }
 
         private Animation GetCurrentAnimation()
@@ -82,6 +101,7 @@ namespace objects.Monsters
                 SkeletonState.AttackLeft => attackLeftAnimation,
                 SkeletonState.BLockRight => blockRightAnimation,
                 SkeletonState.BlockLeft => blockLeftAnimation,
+                SkeletonState.Dead => deadAnimation,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -93,6 +113,9 @@ namespace objects.Monsters
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
             base.OnWorldUpdate(scene, elapsedMilliseconds);
+
+            if (state == SkeletonState.Dead)
+                return;
 
             if (state == SkeletonState.AttackLeft && GetCurrentAnimation().IsOver)
             {
@@ -128,6 +151,8 @@ namespace objects.Monsters
                 {
                     return;
                 }
+
+                scene.EventsLogger.MonsterAttacks("Скелет");
 
                 SetState(SkeletonState.FollowingAndBlocking);
             }
@@ -199,33 +224,78 @@ namespace objects.Monsters
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
+            if (state == SkeletonState.Dead)
+                return;
+
             SetState(SkeletonState.BlockLeft);
-            Console.WriteLine("Blocking");
             if (!IsBlockSuccessful(BlockingChance))
             {
-                Console.WriteLine($"Block unsuccessful {Health}");
-                ReceiveDamage(damage);   
+                SetState(SkeletonState.BLockRight);
+                DoHit(scene, damage);
             }
+            else
+                DoDefence(scene);
 
             if (!IsAlive)
-                scene.RemoveObject(this);
+            {
+                Die(scene);
+            }
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            SetState(SkeletonState.BLockRight);
-            if(!IsBlockSuccessful(BlockingChance))
-                ReceiveDamage(damage);
-
+            if (state == SkeletonState.Dead)
+                return;
             
+            SetState(SkeletonState.BLockRight);
+            if (!IsBlockSuccessful(BlockingChance))
+            {
+                DoHit(scene, damage);
+                SetState(SkeletonState.BlockLeft);
+            }
+            else
+                DoDefence(scene);
+
             if (!IsAlive)
-                scene.RemoveObject(this);
+            {
+                Die(scene);
+            }
+        }
+
+        private void DoHit(Scene scene, int damage)
+        {
+            scene.EventsLogger.MonsterHit("Скелет", damage);
+            ReceiveDamage(damage);
+            hitSound.Play(0);
+            hitSound.Play(1);
+            hitSound.Play(0);
+        }
+
+        private void DoDefence(Scene scene)
+        {
+            scene.EventsLogger.SuccessfullyDefence("Скелет");
+            shieldHit.Play(0);
+        }
+
+        private void Die(Scene scene)
+        {
+            state = SkeletonState.Dead;
+            Size = Vector2.Zero;
+            deathSound.Play(0);
+            scene.EventsLogger.MonsterDeath("Скелет");
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
+            if (state != SkeletonState.AttackLeft || state != SkeletonState.AttackRight)
+                return;
+
+            DoHit(scene, damage);
+
             if (!IsAlive)
-                scene.RemoveObject(this);
+            {
+                Die(scene);
+            }
         }
     }
 }

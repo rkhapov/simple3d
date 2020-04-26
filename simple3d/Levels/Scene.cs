@@ -6,6 +6,7 @@ namespace simple3d.Levels
     public class Scene
     {
         private readonly HashSet<IMapObject> mapObjects;
+        private object myLock = new object();
         
         public Scene(Player player, Map map, IEnumerable<IMapObject> mapObjects)
         {
@@ -21,12 +22,18 @@ namespace simple3d.Levels
 
         public void RemoveObject(IMapObject obj)
         {
-            mapObjects.Remove(obj);
+            lock (myLock)
+            {
+                mapObjects.Remove(obj);
+            }
         }
 
         public void AddObject(IMapObject obj)
         {
-            mapObjects.Add(obj);
+            lock (myLock)
+            {
+                mapObjects.Add(obj);
+            }
         }
     }
 }
