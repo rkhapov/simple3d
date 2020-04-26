@@ -168,10 +168,6 @@ namespace simple3d
             if (EventsCycle.ExitRequested)
                 return false;
 
-            //TODO: remove this
-            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_q))
-                return false;
-
             foreach (var playerAction in Controller.GetCurrentPlayerActions())
             {
                 scene.Player.ProcessAction(playerAction, scene, elapsedMilliseconds);
@@ -208,9 +204,6 @@ namespace simple3d
             sceneRenderer.Render(Screen, scene, elapsedMilliseconds);
 
             statusBarRenderer.Render(Screen, scene);
-
-            if (Controller.IsKeyPressed(SDL_Keycode.SDLK_m))
-                miniMapRenderer.Render(Screen, scene);
 
             statusBarRenderer.Render(Screen, scene);
 
