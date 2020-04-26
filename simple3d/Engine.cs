@@ -175,7 +175,8 @@ namespace simple3d
         {
             Task.WhenAll(scene
                 .Objects
-                .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))));
+                .Select(obj => Task.Run(() => obj.OnWorldUpdate(scene, elapsedMilliseconds))))
+                .Wait();
 
             scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
 
