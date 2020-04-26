@@ -72,7 +72,5 @@ namespace objects
         public override void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
         }
-        
-
     }
 }
