@@ -16,6 +16,7 @@ namespace objects.Collectables
         public override string Name => "Исцеляющее зелье";
         protected override void OnCollect(Scene scene)
         {
+            scene.Player.Health += 7;
         }
 
         public static HealingPotion Create(Vector2 position)

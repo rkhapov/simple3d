@@ -189,12 +189,6 @@ namespace simple3d.Levels
         {
             MovingSpeed = action.Enabled ? SprintMovingSpeed : WalkMovingSpeed;
         }
-
-        protected virtual void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
-        {
-            throw new NotImplementedException();
-        }
-
         protected virtual void DoInteract(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             interactMod = true;
@@ -381,5 +375,7 @@ namespace simple3d.Levels
         public abstract void OnRightMeleeAttack(Scene scene, int damage);
 
         public abstract void OnShoot(Scene scene, int damage);
+        public abstract void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds);
+        
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Numerics;
+using musics;
 using objects.Monsters;
 using objects.Monsters.Algorithms;
+using simple3d;
 using simple3d.Drawing;
 using simple3d.Levels;
 using simple3d.Sounds;
@@ -79,6 +81,24 @@ namespace objects.Weapons
 
             DirectionAngle = angle;
             MoveOnDirection(scene, elapsedMilliseconds, MovingFlags.IgnoreObjects);
+        }
+
+        public static FireBall Create(Vector2 position, float lifeTimeMilliseconds, IMapObject target)
+        {
+            var loader = ResourceCachedLoader.Instance;
+            var moving = loader.GetAnimation("./animations/fireball/moving");
+            var blow = loader.GetAnimation("./animations/fireball/blow");
+            var blowSound = loader.GetSound(MusicResourceHelper.FireBallBlowPath);
+
+            return new FireBall(
+                position,
+                new Vector2(0.1f, 0.1f),
+                0,
+                lifeTimeMilliseconds,
+                target,
+                moving,
+                blow,
+                blowSound);
         }
 
         private void DoBlow()
