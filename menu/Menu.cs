@@ -42,15 +42,23 @@ namespace menu
             var wallTexture = Sprite.Load("./sprites/greystone.png");
             var floorTexture = Sprite.Load("./sprites/colorstone.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
+            
             var startButtonTexture = Sprite.Load("./sprites/startbutton_v4.png");
             var exitButton = Sprite.Load("./sprites/exitbutton_v1.png");
-            var controlsText = Sprite.Load("./sprites/controls_v4.png");
             var scoreboard = Sprite.Load("./sprites/scoreboard.png");
+
+            var directionText = Sprite.Load("./sprites/direction.png");
+            var controlsText = Sprite.Load("./sprites/controls_v5.png");
             var statusBarInfo = Sprite.Load("./sprites/statusbarinfo.png");
-            var tutorialEnd = Sprite.Load("./sprites/tutorialend.png");
+            var collectiblesText = Sprite.Load("./sprites/collectibles.png");
+            var shootingTutorial = Sprite.Load("./sprites/shooting_tutorial.png");
+            var fightingTutorial = Sprite.Load("./sprites/fight_tutorial.png");
+            var magicTutorial = Sprite.Load("./sprites/magic_tutorial.png");
+            
             var doorAnimation = ResourceCachedLoader.Instance.GetAnimation("./animations/door");
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
-                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd, doorAnimation);
+                startButtonTexture, exitButton, scoreboard, statusBarInfo, shootingTutorial, doorAnimation,
+                directionText, collectiblesText, fightingTutorial, magicTutorial);
 
             var scene = SceneReader.ReadFromStrings(
                 new[]
@@ -59,13 +67,13 @@ namespace menu
                     "#P.###....................................#",
                     "#.####....................................#",
                     "#d##......................................#",
-                    "#.##......................................#",
-                    "#.##......................................#",
-                    "#.##......................................#",
-                    "#.####################....................#",
-                    "#....H.....A..............................#",
-                    "#######################...................#",
-                    "#.#.......................................#",
+                    "#.##......................................m",
+                    "#.##......................................f",
+                    "#.##......................................l",
+                    "#.####################....................n",
+                    "#....H.....A..............................i",
+                    "#######################...................c",
+                    "#.#.......................................p",
                     "#.#..............L........................#",
                     "#.........................................#",
                     "#.........................................#",
@@ -137,11 +145,16 @@ namespace menu
             private readonly Sprite exitButton;
             private readonly Sprite scoreboard;
             private readonly Sprite statusBarInfo;
-            private readonly Sprite tutorialEnd;
+            private readonly Sprite shootingTutorial;
             private readonly Animation doorAnimation;
+            private readonly Sprite directionText;
+            private readonly Sprite collectiblesText;
+            private readonly Sprite fightingTutorial;
+            private readonly Sprite magicTutorial;
 
             public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite controls,
-                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd, Animation doorAnimation)
+                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite shootingTutorial, 
+                Animation doorAnimation, Sprite directionText, Sprite collectiblesText, Sprite fightingTutorial, Sprite magicTutorial)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
@@ -151,8 +164,12 @@ namespace menu
                 this.exitButton = exitButton;
                 this.scoreboard = scoreboard;
                 this.statusBarInfo = statusBarInfo;
-                this.tutorialEnd = tutorialEnd;
+                this.shootingTutorial = shootingTutorial;
                 this.doorAnimation = doorAnimation;
+                this.directionText = directionText;
+                this.collectiblesText = collectiblesText;
+                this.fightingTutorial = fightingTutorial;
+                this.magicTutorial = magicTutorial;
             }
 
             public MapCell GetCellByChar(char c)
@@ -165,8 +182,12 @@ namespace menu
                     'e' => new MapCell(MapCellType.Wall, exitButton, exitButton, ceilingTexture),
                     'r' => new MapCell(MapCellType.Wall, scoreboard, scoreboard, ceilingTexture),
                     'i' => new MapCell(MapCellType.Wall, statusBarInfo, statusBarInfo, ceilingTexture),
-                    'l' => new MapCell(MapCellType.Wall, tutorialEnd, tutorialEnd, ceilingTexture),
+                    'l' => new MapCell(MapCellType.Wall, shootingTutorial, shootingTutorial, ceilingTexture),
                     'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture),
+                    'p' => new MapCell(MapCellType.Wall, directionText, directionText, ceilingTexture),
+                    'n' => new MapCell(MapCellType.Wall, collectiblesText, collectiblesText, ceilingTexture),
+                    'f' => new MapCell(MapCellType.Wall, fightingTutorial, fightingTutorial, ceilingTexture),
+                    'm' => new MapCell(MapCellType.Wall, magicTutorial, magicTutorial, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }
