@@ -92,7 +92,7 @@ namespace objects.Weapons
 
             return new FireBall(
                 position,
-                new Vector2(0.1f, 0.1f),
+                new Vector2(0f, 0f),
                 0,
                 lifeTimeMilliseconds,
                 target,
@@ -135,13 +135,17 @@ namespace objects.Weapons
             angle = 0.0f;
 
             var myPoint = MapPoint.FromVector2(Position);
+            Console.WriteLine($"{myPoint}");
             var targetPoint = MapPoint.FromVector2(Target.Position);
+            Console.WriteLine($"{targetPoint}");
             var path = PathFinder.FindPath(scene.Map, targetPoint, myPoint);
-
+            
             if (path == null)
                 return false;
 
+            Console.WriteLine("before");
             angle = GetAngleToPoint(path[1]);
+            Console.WriteLine("after");
 
             return true;
         }

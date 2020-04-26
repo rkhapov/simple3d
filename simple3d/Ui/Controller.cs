@@ -70,6 +70,16 @@ namespace simple3d.Ui
                         : new PlayerAction(isPressed, PlayerActionType.MeleeRightAttack);
                 }
 
+                if (keycode == SDL.SDL_Keycode.SDLK_f)
+                {
+                    yield return new PlayerAction(isPressed, PlayerActionType.Magic);
+                }
+
+                if (keycode == SDL.SDL_Keycode.SDLK_g)
+                {
+                    yield return new PlayerAction(isPressed, PlayerActionType.SetSpell);
+                }
+
                 if (keycode == SDL.SDL_Keycode.SDLK_LCTRL)
                 {
                     yield return IsKeyPressed(SDL.SDL_Keycode.SDLK_RSHIFT)

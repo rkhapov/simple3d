@@ -50,8 +50,21 @@ namespace simple3d.Levels
         public int StartAmountOfArrows { get; set; }
         public Weapon Weapon => Weapons[WeaponIndex];
         public Weapon[] Weapons { get; set; }
+        
+        public Spells[] Spells { get; set; }
         public int WeaponIndex { get; set; }
 
+        public Spells CurrentSpell => Spells[SpellIndex];
+        public int SpellIndex { get; set; }
+
+        public void SetSpellToNext()
+        {
+            SpellIndex++;
+
+            if (SpellIndex == Spells.Length)
+                SpellIndex = 0;
+        }
+        
         public void SetWeaponToNext()
         {
             Weapon.GoStatic();
@@ -129,6 +142,9 @@ namespace simple3d.Levels
                 case PlayerActionType.SetWeapon:
                     DoSetWeapon(action, scene, elapsedMilliseconds);
                     break;
+                case PlayerActionType.SetSpell:
+                    DoSetSpell(action);
+                    break;
                 case PlayerActionType.Cancel:
                     State = PlayerState.Normal;
                     break;
@@ -137,11 +153,19 @@ namespace simple3d.Levels
             }
         }
 
-        public virtual void DoSetWeapon(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        public void DoSetSpell(PlayerAction action)
         {
             if (!action.Enabled)
                 return;
 
+            SetSpellToNext();
+        }
+
+        public virtual void DoSetWeapon(PlayerAction action, Scene scene, in float elapsedMilliseconds)
+        {
+            if (!action.Enabled)
+                return;
+            
             SetWeaponToNext();
         }
 

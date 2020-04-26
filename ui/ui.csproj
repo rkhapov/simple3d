@@ -17,6 +17,12 @@
         <None Update="animations\*\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="sprites\fireball.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="sprites\shockball.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
