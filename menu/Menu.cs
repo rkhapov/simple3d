@@ -29,7 +29,7 @@ namespace menu
         }
     }
 
-    static class Menu
+    public static class Menu
     {
         private static void Main(string[] args)
         {

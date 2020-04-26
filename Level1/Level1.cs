@@ -16,7 +16,7 @@ using ui;
 using utils;
 namespace Level1
 {
-    internal static class Level1
+    public static class Level1
     {
         public class StaticLich : BaseStaticMapObject
         {
@@ -40,6 +40,11 @@ namespace Level1
                 UiResourcesHelper.CrossSpritePath,
                 UiResourcesHelper.ScrollSpritePath);
             using var engine = EngineBuilder.BuildEngine25D(options);
+            StartOnEngine(engine);
+        }
+
+        public static void StartOnEngine(IEngine engine)
+        {
             var resourceLoader = ResourceCachedLoader.Instance;
             var player = new MyPlayer(new Vector2(2.0f, 2.0f), new Vector2(0.3f, 0.3f), MathF.PI / 2, 0);
             var wallTexture = Sprite.Load("./sprites/greystone.png");
