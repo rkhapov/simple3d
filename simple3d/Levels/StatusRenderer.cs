@@ -14,17 +14,20 @@ namespace simple3d.Levels
         private readonly Sprite crossSprite;
         private readonly ITextRenderer logTextRenderer;
         private readonly int statusBarHeight;
+        private readonly INotesRenderer notesRenderer;
 
         public StatusRenderer(
             Sprite barSprite,
             Sprite crossSprite,
             int statusBarHeight,
-            ITextRenderer logTextRenderer)
+            ITextRenderer logTextRenderer,
+            INotesRenderer notesRenderer)
         {
             this.barSprite = barSprite;
             this.crossSprite = crossSprite;
             this.statusBarHeight = statusBarHeight;
             this.logTextRenderer = logTextRenderer;
+            this.notesRenderer = notesRenderer;
         }
 
         public void Dispose()
@@ -38,8 +41,9 @@ namespace simple3d.Levels
             var task2 = Task.Run(() => RenderStatusBar(screen, scene));
             var task3 = Task.Run(() => RenderCross(screen));
             var task4 = Task.Run(() => RenderLog(screen, scene));
+            var task5 = Task.Run(() => notesRenderer?.Render(screen, scene));
 
-            Task.WhenAll(task1, task2, task3, task4).Wait();
+            Task.WhenAll(task1, task2, task3, task4, task5).Wait();
         }
 
         private void RenderLog(IScreen screen, Scene scene)

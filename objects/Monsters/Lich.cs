@@ -78,6 +78,7 @@ namespace objects.Monsters
         }
 
         private static readonly Random random = new Random();
+        private const string LichName = "Лич";
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
@@ -91,6 +92,7 @@ namespace objects.Monsters
                 SetState(LichState.Dead);
                 Size = Vector2.Zero;
                 deathSound.Play(0);
+                scene.EventsLogger.MonsterDeath(LichName);
                 return;
             }
 
@@ -115,6 +117,7 @@ namespace objects.Monsters
             {
                 if (CanSeePlayer(scene))
                 {
+                    scene.EventsLogger.MonsterAttacks(LichName);
                     evilLaugh.Play(0);
                     SetState(LichState.RunningFromPlayer);
                 }

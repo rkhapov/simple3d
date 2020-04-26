@@ -52,7 +52,7 @@ namespace simple3d
         public static Engine Create(EngineOptions options, IController controller, IEventsCycle eventsCycle,
             ISceneRenderer sceneRenderer)
         {
-            if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+            if (SDL_Init(SDL_INIT_VIDEO) < 0)
             {
                 throw new InvalidOperationException($"Cant initialize SDL2: {SDL_GetError()}");
             }
@@ -93,6 +93,12 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant allocate channels: {SDL_GetError()}");
             }
 
+            if (SDL_mixer.Mix_Volume(-1, 64) < 0)
+            {
+                throw new InvalidOperationException($"Min_Volume: {SDL_GetError()}");
+            }
+            
+
             var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth,
                 options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();
@@ -101,7 +107,8 @@ namespace simple3d
             var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
-            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, logTextRenderer);
+            var notesRenderer = new NotesRenderer(Sprite.Load(options.NotesSpritePath), logTextRenderer, statusBarHeight);
+            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, logTextRenderer, notesRenderer);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,

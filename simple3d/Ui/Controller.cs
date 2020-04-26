@@ -115,6 +115,11 @@ namespace simple3d.Ui
             {
                 yield return new PlayerAction(true, PlayerActionType.Interact);
             }
+
+            if (IsKeyPressed(SDL.SDL_Keycode.SDLK_ESCAPE))
+            {
+                yield return new PlayerAction(true, PlayerActionType.Cancel);
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
         MeleeLeftBlock,
         MeleeRightBlock,
         Shoot,
-        SetWeapon
+        SetWeapon,
+        Cancel
     }
 }

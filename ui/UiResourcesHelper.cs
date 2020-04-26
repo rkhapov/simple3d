@@ -6,5 +6,6 @@
         public const string PressStart2PFontPath = "./fonts/PressStart2P.ttf";
         public const string JoystickFontPath = "./fonts/joystick.ttf";
         public const string MiroslnFontPath = "./fonts/MIROSLN.ttf";
+        public const string ScrollSpritePath = "./sprites/scroll2.png";
     }
 }

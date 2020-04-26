@@ -18,7 +18,22 @@ namespace simple3d.Levels
 
         public void AddCollectOfItem(string itemName)
         {
-            var message = new Message {Text = $"Собрано {itemName}", LifeTime = MessageLifeTime};
+            EnqueueMessage($"Собрано {itemName}");
+        }
+
+        public void MonsterAttacks(string monsterName)
+        {
+            EnqueueMessage($"{monsterName} атакует");
+        }
+
+        public void MonsterDeath(string monsterName)
+        {
+            EnqueueMessage($"{monsterName} погибает");
+        }
+
+        private void EnqueueMessage(string text)
+        {
+            var message = new Message {Text = text, LifeTime = MessageLifeTime};
 
             messages.Enqueue(message);
 
