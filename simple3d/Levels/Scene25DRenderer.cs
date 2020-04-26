@@ -241,7 +241,10 @@ namespace simple3d.Levels
             var halfFov = fov / 2;
             var fov15 = fov / 1.5f;
 
-            foreach (var mapObject in scene.Objects.OrderByDescending(s => s.GetDistanceToPlayerSquared(player)))
+            foreach (var mapObject in scene
+                .Objects
+                .Where(s => s != null)
+                .OrderByDescending(s => s.GetDistanceToPlayerSquared(player)))
             {
                 var fromObjectToPlayer = mapObject.Position - player.Position;
 

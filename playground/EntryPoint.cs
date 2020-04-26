@@ -40,11 +40,11 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                // Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
+                Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
                 HealingPotion.Create(new Vector2(6f, 6f)),
                 ArrowPack.Create(new Vector2(7f, 7f)),
-                Note.Create(new Vector2(5f, 5f), "о, привет!")
+                Note.Create(new Vector2(5f, 5f), "о, привет!\nследующая строка\nотвратительно длинная строка с кучей слов капец\nа вот это уже максимум по длине лучше бы его не переступать ага га гус")
             };
             backGroundMusic.Play(-1);
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, bedTexture, doorAnimation);

@@ -93,6 +93,12 @@ namespace simple3d
                 throw new InvalidOperationException($"Cant allocate channels: {SDL_GetError()}");
             }
 
+            if (SDL_mixer.Mix_Volume(-1, 64) < 0)
+            {
+                throw new InvalidOperationException($"Min_Volume: {SDL_GetError()}");
+            }
+            
+
             var screen = Ui.Screen.Create(options.WindowTitle, options.ScreenHeight, options.ScreenWidth,
                 options.FullScreen);
             var miniMapRenderer = new MiniMapRenderer();
