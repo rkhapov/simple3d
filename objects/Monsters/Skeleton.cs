@@ -204,9 +204,10 @@ namespace objects.Monsters
             return probability - result >= 0;
         }
 
+        private static readonly Random rand = new Random();
+        
         private bool IsRightAttack(float probability)
         {
-            var rand = new Random();
             var result = rand.NextDouble();
 
             return probability - result >= 0;
@@ -294,6 +295,12 @@ namespace objects.Monsters
                 return;
             }
 
+            if (rand.Next() > 0.5)
+            {
+                scene.EventsLogger.ArrowMissed("Скелет");
+                return;
+            }
+            
             DoHit(scene, damage);
 
             if (!IsAlive)

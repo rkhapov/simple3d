@@ -150,7 +150,7 @@ namespace simple3d.Levels
             if (!action.Enabled)
                 return;
 
-            if (!(Weapon is ShootingWeapon shootingWeapon))
+            if (!(Weapon is ShootingWeapon shootingWeapon) || (shootingWeapon.State == ShootingWeaponState.Shooting && !shootingWeapon.AnimationIsOver))
                 return;
 
             if (CurrentAmountOfArrows != 0)
@@ -206,16 +206,28 @@ namespace simple3d.Levels
             if (!(Weapon is MeleeWeapon meleeWeapon))
                 return;
 
+            if (Endurance < MeleeEndurance)
+            {
+                return;
+            }
+
             if (meleeWeapon.State != MeleeWeaponState.AttackRight)
             {
                 meleeWeapon.State = MeleeWeaponState.AttackRight;
             }
         }
 
+        private const int MeleeEndurance = 5;
+        
         protected virtual void DoMeleeLeftAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State == MeleeWeaponState.AttackLeft)
                 return;
+
+            if (Endurance < MeleeEndurance)
+            {
+                return;
+            }
             
             if (meleeWeapon.State != MeleeWeaponState.AttackLeft)
             {
@@ -345,11 +357,13 @@ namespace simple3d.Levels
                     if (meleeWeapon.State == MeleeWeaponState.AttackLeft && meleeWeapon.AnimationIsOver)
                     {
                         meleeWeapon.DoLeftAttack(scene);
+                        Endurance = MathF.Max(Endurance - MeleeEndurance, 0);
                     }
                     
                     if (meleeWeapon.State == MeleeWeaponState.AttackRight && meleeWeapon.AnimationIsOver)
                     {
                         meleeWeapon.DoRightAttack(scene);
+                        Endurance = MathF.Max(Endurance - MeleeEndurance, 0);
                     }
                 }
 
