@@ -81,6 +81,7 @@ namespace utils
                 'H' => HealingPotion.Create(position),
                 'M' => ManaPotion.Create(position),
                 'A' => ArrowPack.Create(position),
+                'D' => Ded.Create(position),
                 _ => null
             };
         }
