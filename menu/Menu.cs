@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Numerics;
+using musics;
 using objects;
 using objects.Environment;
 using objects.Monsters;
+using objects.Monsters.Algorithms;
 using objects.Weapons;
 using simple3d;
 using simple3d.Builder;
 using simple3d.Drawing;
 using simple3d.Levels;
 using ui;
+using utils;
 
 namespace menu
 {
-    internal class Invisible : BaseStaticMapObject
+    internal class InvisibleWall : BaseStaticMapObject
     {
-        public Invisible(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
+        public InvisibleWall(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle, new Sprite(new [] {1}, 1,1))
         {
         }
 
@@ -43,25 +46,43 @@ namespace menu
             var scoreboard = Sprite.Load("./sprites/scoreboard.png");
             var statusBarInfo = Sprite.Load("./sprites/statusbarinfo.png");
             var tutorialEnd = Sprite.Load("./sprites/tutorialend.png");
-
+            var doorAnimation = ResourceCachedLoader.Instance.GetAnimation("./animations/door");
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, controlsText, 
-                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd);
+                startButtonTexture, exitButton, scoreboard, statusBarInfo, tutorialEnd, doorAnimation);
+
             var scene = SceneReader.ReadFromStrings(
                 new[]
                 {
-                    "##c###########",
-                    "#....#l###...#",
-                    "#..#.#.......e",
-                    "#..#.#.#.....#",
-                    "#..#..S#.....s",
-                    "#..#i##......#",
-                    "#..#.........r",
-                    "#.P#.........#",
-                    "##############"
-                }, storage.GetCellByChar, MathF.PI);
+                    "###########################################",
+                    "#P..c#....................................#",
+                    "#.###.....................................#",
+                    "#d##......................................#",
+                    "#..#......................................#",
+                    "#..#......................................#",
+                    "#..#......................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "#.........................................#",
+                    "###########################################"
+                }, storage.GetCellByChar, MathF.PI / 2);
             
-            scene.AddObject(new Invisible(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
-            
+            scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
+            var map = scene.Map;
+            map.At(3, 1).SetTag("startDoor");
+            Trigger.AddTrigger(new Vector2(1f, 1f), (scene) => {
+                Map.GetCellByTag("startDoor")
+                    .StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; });
+            });
+
+
+            var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
+            backGroundMusic.Play(-1);
+
             while (engine.Update(scene))
             {
             }
@@ -77,9 +98,10 @@ namespace menu
             private readonly Sprite scoreboard;
             private readonly Sprite statusBarInfo;
             private readonly Sprite tutorialEnd;
+            private readonly Animation doorAnimation;
 
             public MapTextureStorage(Sprite ceilingTexture, Sprite wallTexture, Sprite floorTexture, Sprite controls,
-                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd)
+                Sprite startButton, Sprite exitButton, Sprite scoreboard, Sprite statusBarInfo, Sprite tutorialEnd, Animation doorAnimation)
             {
                 this.ceilingTexture = ceilingTexture;
                 this.wallTexture = wallTexture;
@@ -90,6 +112,7 @@ namespace menu
                 this.scoreboard = scoreboard;
                 this.statusBarInfo = statusBarInfo;
                 this.tutorialEnd = tutorialEnd;
+                this.doorAnimation = doorAnimation;
             }
 
             public MapCell GetCellByChar(char c)
@@ -103,6 +126,7 @@ namespace menu
                     'r' => new MapCell(MapCellType.Wall, scoreboard, scoreboard, ceilingTexture),
                     'i' => new MapCell(MapCellType.Wall, statusBarInfo, statusBarInfo, ceilingTexture),
                     'l' => new MapCell(MapCellType.Wall, tutorialEnd, tutorialEnd, ceilingTexture),
+                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }

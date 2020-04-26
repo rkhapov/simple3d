@@ -33,12 +33,10 @@ namespace LevelTest
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture);
             var objects = new IMapObject[]
             {
-               
-                new BaseAnimatedMapObj(new Vector2(2f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
-                new BaseAnimatedMapObj(new Vector2(12f, 2f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
-                new BaseAnimatedMapObj(new Vector2(2f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
-                new BaseAnimatedMapObj(new Vector2(12f, 7f), new Vector2(), 0f, resourceLoader.GetAnimation("./animations/lamp")),
-                //Rat.Create(loader, new Vector2(8.5f, 2.5f), new Vector2(1.0f, 1.0f), 0),
+                Lamp1.Create(new Vector2(2f, 2f)),
+                Lamp1.Create(new Vector2(12f, 2f)),
+                Lamp1.Create(new Vector2(2f, 7f)),
+                Lamp1.Create(new Vector2(12f, 7f)),
                 Lich.Create(loader, new Vector2(8.5f, 2.5f), 0)
             };
             var map = Map.FromStrings(new[]

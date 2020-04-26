@@ -9,6 +9,7 @@
       <ProjectReference Include="..\objects\objects.csproj" />
       <ProjectReference Include="..\simple3d\simple3d.csproj" />
       <ProjectReference Include="..\ui\ui.csproj" />
+      <ProjectReference Include="..\utils\utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>

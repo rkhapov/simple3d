@@ -52,6 +52,11 @@ namespace objects.Monsters
             this.state = LichState.Static;
         }
 
+        public static Lich Create(Vector2 position, float direction)
+        {
+            return Create(ResourceCachedLoader.Instance, position, direction);
+        }
+
         public static Lich Create(ResourceCachedLoader loader, Vector2 position, float direction)
         {
             var staticAnimation = loader.GetAnimation("./animations/lich/static");

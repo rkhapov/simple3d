@@ -44,8 +44,9 @@ namespace simple3d.Levels
                     var yRayUnit = MathF.Cos(rayAngle);
                     var ray = ComputeRay(rayAngle, player, scene.Map, xRayUnit, yRayUnit);
                     var cosinePerspectiveCorrection = MathF.Cos(directionAngle - ray.Angle);
-                    ZBuffer[x] = ray.Targets.Peek().Length;
-              
+                    if (ray.Targets.Count != 0)
+                        ZBuffer[x] = ray.Targets.Peek().Length;
+
                     while (ray.Targets.Count != 0)
                     {
                         var target = ray.Targets.Pop();

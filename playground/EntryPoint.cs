@@ -110,7 +110,7 @@ namespace playground
             {
                 return c switch
                 {
-                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
+                    // 'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
                     '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
                     'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
                     'b' => new MapCell(MapCellType.TransparentObj, bedTexture, floorTexture, ceilingTexture),

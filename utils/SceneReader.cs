@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using objects;
+using objects.Collectables;
 using objects.Monsters;
 using objects.Weapons;
 using simple3d;
 using simple3d.Levels;
 
-namespace objects
+namespace utils
 {
     public static class SceneReader
     {
@@ -56,6 +58,8 @@ namespace objects
                 'R' => (IMapObject) Rat.Create(ResourceCachedLoader.Instance, position, 0),
                 'S' => Skeleton.Create(ResourceCachedLoader.Instance, position, 0),
                 'L' => Lich.Create(ResourceCachedLoader.Instance, position, 0),
+                'H' => HealingPotion.Create(position),
+                'A' => ArrowPack.Create(position),
                 _ => null
             };
         }

@@ -50,6 +50,11 @@ namespace objects.Monsters
             state = RatState.Static;
         }
 
+        public static Rat Create(Vector2 position, float directionAngle)
+        {
+            return Create(ResourceCachedLoader.Instance, position, directionAngle);
+        }
+
         public static Rat Create(ResourceCachedLoader loader, Vector2 position, float directionAngle)
         {
             var staticAnimation = loader.GetAnimation("./animations/rat/static");
