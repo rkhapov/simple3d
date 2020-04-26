@@ -287,8 +287,11 @@ namespace objects.Monsters
 
         public override void OnShoot(Scene scene, int damage)
         {
-            if (state != SkeletonState.AttackLeft || state != SkeletonState.AttackRight)
+            if (state != SkeletonState.AttackLeft && state != SkeletonState.AttackRight)
+            {
+                DoDefence(scene);
                 return;
+            }
 
             DoHit(scene, damage);
 
