@@ -301,7 +301,8 @@ namespace simple3d.Levels
             }
 
             Position = newPosition;
-            Trigger.CheckAndDo(Position, this);
+
+            Trigger.CheckAndDo(Position, scene);
         }
 
         public virtual void OnWorldUpdate(Scene scene, float elapsedMilliseconds)

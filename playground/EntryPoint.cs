@@ -73,9 +73,9 @@ namespace playground
             }, storage.GetCellByChar);
             var level = new Scene(player, map, objects);
 
-            Trigger.AddTrigger(new Vector2(8f, 5f), () => {
+            Trigger.AddTrigger(new Vector2(8f, 5f), (scene) => {
                 Console.WriteLine("OPPEEEN THE DOOOOR");
-                player.CurrentMonologue = new Monologue(
+                scene.Player.CurrentMonologue = new Monologue(
                     new[] {"привет!\nну и что?", "а\nэто\nвторой монолог лол!"},
                     new[] {3000, 3000}
                     );

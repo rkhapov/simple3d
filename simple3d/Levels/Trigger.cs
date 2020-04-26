@@ -9,7 +9,7 @@ namespace simple3d.Levels
     {
         static Dictionary<Vector2, Trigger> allTriggers = new Dictionary<Vector2, Trigger>(); // 
 
-        public static void AddTrigger(Vector2 position, Action action, bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
+        public static void AddTrigger(Vector2 position, Action<Scene> action, bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
         {
             if (allTriggers.ContainsKey(position))
             {
@@ -21,31 +21,31 @@ namespace simple3d.Levels
             }
         }
 
-        public static void CheckAndDo(Vector2 position, Player player)
+        public static void CheckAndDo(Vector2 position, Scene scene)
         {
-            if (player.interactMod)
+            if (scene.Player.interactMod)
             {
                 position = new Vector2((int)position.X, (int)position.Y);
                 if (allTriggers.ContainsKey(position))
                 {
-                    allTriggers[position].DoIt();
+                    allTriggers[position].DoIt(scene);
                 }
             }
         }
 
         private bool itsDone;
-        private Action action;
-        private Trigger(Action action)
+        private readonly Action<Scene> action;
+        private Trigger(Action<Scene> action)
         {
             itsDone = false;
             this.action = action;
         }
 
-        public void DoIt()
+        public void DoIt(Scene scene)
         {
             if (!itsDone)
             {
-                action();
+                action(scene);
                 itsDone = true;
             }
         }
