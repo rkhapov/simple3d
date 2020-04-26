@@ -107,8 +107,17 @@ namespace simple3d
             var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
-            var notesRenderer = new NotesRenderer(Sprite.Load(options.NotesSpritePath), logTextRenderer, statusBarHeight);
-            var statusBarRenderer = new StatusRenderer(statusBarSprite, crossSprite, statusBarHeight, logTextRenderer, notesRenderer);
+            var notesTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
+            var notesRenderer = new NotesRenderer(Sprite.Load(options.NotesSpritePath), notesTextRenderer, statusBarHeight);
+            var monologueTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
+            var monologueRenderer = new MonologueRenderer(monologueTextRenderer, statusBarHeight);
+            var statusBarRenderer = new StatusRenderer(
+                statusBarSprite,
+                crossSprite,
+                statusBarHeight,
+                logTextRenderer,
+                notesRenderer,
+                monologueRenderer);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,
@@ -160,6 +169,14 @@ namespace simple3d
             scene.Player.OnWorldUpdate(scene, elapsedMilliseconds);
 
             scene.EventsLogger.Update(elapsedMilliseconds);
+
+            if (scene.Player.CurrentMonologue == null)
+                return;
+
+            scene.Player.CurrentMonologue.Update(elapsedMilliseconds);
+
+            if (scene.Player.CurrentMonologue.IsOver)
+                scene.Player.CurrentMonologue = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

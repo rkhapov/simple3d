@@ -75,6 +75,10 @@ namespace playground
 
             Trigger.AddTrigger(new Vector2(8f, 5f), () => {
                 Console.WriteLine("OPPEEEN THE DOOOOR");
+                player.CurrentMonologue = new Monologue(
+                    new[] {"привет!\nну и что?", "а\nэто\nвторой монолог лол!"},
+                    new[] {3000, 3000}
+                    );
                 Map.GetCellByTag("door1").StartAnimatiom(() => { Map.GetCellByTag("door1").Type = MapCellType.Empty; });
             });
 
