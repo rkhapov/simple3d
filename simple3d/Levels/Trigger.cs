@@ -9,7 +9,8 @@ namespace simple3d.Levels
     public class Trigger
     {
         static List<Trigger> allTriggers = new List<Trigger>(); // 
-
+        
+        
         public static void AddTrigger(Vector2 position, Action<Scene> action, bool interact = true,
             bool reapetable = false) // можно удалять в дальнеейшем если не повторяемое но хз
         {

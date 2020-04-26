@@ -25,6 +25,12 @@ namespace simple3d.Levels
                 cell.SpriteUpdate(time);
             }
         }
+
+        public static void ClearTags()
+        {
+            taggedCells.Clear();
+        }
+        
         public static Map FromStrings(string[] strings, Func<char, MapCell> cellFactory)
         {
             var height = strings.Length;
