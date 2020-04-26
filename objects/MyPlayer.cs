@@ -7,7 +7,7 @@ namespace objects
 {
     public class MyPlayer : Player
     {
-        public MyPlayer(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle)
+        public MyPlayer(Vector2 position, Vector2 size, float directionAngle, int startAmountOfArrows) : base(position, size, directionAngle, startAmountOfArrows)
         {
         }
 
@@ -24,15 +24,23 @@ namespace objects
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
-            if (meleeWeapon.State != MeleeWeaponState.BlockLeft)
+            if (Weapon is MeleeWeapon meleeWeapon)
+            {
+                if (meleeWeapon.State != MeleeWeaponState.BlockLeft)
+                    Health -= damage;
+            }
+            else
                 Health -= damage;
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
-            if (meleeWeapon.State != MeleeWeaponState.BlockRight)
+            if (Weapon is MeleeWeapon meleeWeapon)
+            {
+                if (meleeWeapon.State != MeleeWeaponState.BlockRight)
+                    Health -= damage;
+            }
+            else
                 Health -= damage;
         }
 

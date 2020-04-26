@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using simple3d.Drawing;
+using simple3d.SDL2;
+using simple3d.Tools;
 using simple3d.Ui;
 
 namespace simple3d.Levels
@@ -86,6 +88,9 @@ namespace simple3d.Levels
             DrawSprite(screen);
             DrawStatusLines(screen, scene.Player, screen.Width / 8);
             DrawWeaponMiniature(screen, scene);
+            DrawSpellMiniature(screen, scene);
+            DrawFaceMiniature(screen, scene);
+            // DrawArrowsCount(screen, scene, );
         }
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
@@ -161,11 +166,35 @@ namespace simple3d.Levels
         {
             var weaponSpriteY = screen.Height - statusBarHeight;
             var weaponSpriteX = 700;
-            DrawFrame(screen,screen.Height - statusBarHeight , 700);
+            DrawFrame(screen,weaponSpriteY , weaponSpriteX);
             if (scene.Player.Weapon is MeleeWeapon)
                 screen.DrawSprite(swordSprite, weaponSpriteY, weaponSpriteX);
             else 
                 screen.DrawSprite(bowSprite, weaponSpriteY, weaponSpriteX);
+        }
+
+        private void DrawSpellMiniature(IScreen screen, Scene scene)
+        {
+            var spellSpriteY = screen.Height - statusBarHeight;
+            var spellSpriteX = 550;
+            DrawFrame(screen, spellSpriteY, spellSpriteX);
+        }
+
+        private void DrawFaceMiniature(IScreen screen, Scene scene)
+        {
+            var faceSpriteY = screen.Height - statusBarHeight;
+            var faceSpriteX = 400;
+            DrawFrame(screen, faceSpriteY, faceSpriteX);
+        }
+
+        private void DrawArrowsCount(IScreen screen, Scene scene, ITextRenderer textRenderer)
+        {
+            var arrowsCountY = screen.Height - statusBarHeight;
+            var arrowsCountX = 800;
+            var currentAmountOfArrows = scene.Player.CurrentAmountOfArrows;
+            var maxAmountOfArrows = scene.Player.MaxAmountOfArrows;
+            textRenderer.RenderText($"{currentAmountOfArrows} / {maxAmountOfArrows}", new SDL.SDL_Color(), screen, arrowsCountY,
+                arrowsCountX);
         }
     }
 }
