@@ -111,6 +111,8 @@ namespace simple3d
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
             var arrowSprite = Sprite.Load(UiResourcesHelper.ArrowSpritePath);
             var swordSprite = Sprite.Load(UiResourcesHelper.SwordSpritePath);
+            var fireBallSprite = Sprite.Load(UiResourcesHelper.FireBallSpritePath);
+            var shockBallSprite = Sprite.Load(UiResourcesHelper.ShockBallSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var notesTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var statusTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 20);
@@ -128,7 +130,9 @@ namespace simple3d
                 swordSprite,
                 frameSprite,
                 statusTextRenderer,
-                arrowSprite);
+                arrowSprite,
+                fireBallSprite,
+                shockBallSprite);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,

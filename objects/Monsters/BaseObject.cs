@@ -82,13 +82,13 @@ namespace objects.Monsters
         }
 
         [Flags]
-        protected enum MovingFlags
+        public enum MovingFlags
         {
             Standard = 1,
             IgnoreObjects = 2
         }
 
-        protected void MoveOnDirection(Scene scene, float elapsedTime, MovingFlags flags = MovingFlags.Standard)
+        public void MoveOnDirection(Scene scene, float elapsedTime, MovingFlags flags = MovingFlags.Standard)
         {
             var map = scene.Map;
             var dx = MathF.Cos(DirectionAngle) * MoveSpeed * elapsedTime;

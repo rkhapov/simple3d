@@ -54,6 +54,7 @@ namespace utils
                         var sword = Sword.Create(ResourceCachedLoader.Instance);
                         var bow = Bow.Create(ResourceCachedLoader.Instance);
                         player.Weapons = new Weapon[] {bow, sword};
+                        player.Spells = new Spells[] {Spells.FireBall, Spells.ShockBall};
                     }
                 }
             }
@@ -78,6 +79,7 @@ namespace utils
                 'S' => Skeleton.Create(ResourceCachedLoader.Instance, position, 0),
                 'L' => Lich.Create(ResourceCachedLoader.Instance, position, 0),
                 'H' => HealingPotion.Create(position),
+                'M' => ManaPotion.Create(position),
                 'A' => ArrowPack.Create(position),
                 _ => null
             };

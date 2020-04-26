@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Numerics;
 using System.Reflection.Metadata;
+using System.Runtime.Serialization;
 using musics;
+using objects.Monsters;
 using objects.Weapons;
 using simple3d;
 using simple3d.Drawing;
@@ -71,6 +73,56 @@ namespace objects
 
         public override void DoMagic(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
+            if (!action.Enabled)
+                return;
+
+            if (CurrentSpell == simple3d.Levels.Spells.ShockBall)
+            {
+                if (SpellPoints >= 5)
+                {
+                    SpellPoints -= 5;
+                    SpawnShockBall(scene);
+                }
+            }
+            else
+            {
+                if (SpellPoints >= 5)
+                {
+                    SpellPoints -= 5;
+                    SpawnFireBall(scene, FindBestTarget(scene), elapsedMilliseconds);
+                }
+            }
+        }
+        
+        private void SpawnFireBall(Scene scene, IMapObject target, float ellapsed)
+        {
+            var fireBall = FireBall.Create(scene.Player.Position, 6000, target);
+            scene.AddObject(fireBall);
+            fireBall.OnWorldUpdate(scene, ellapsed);
+        }
+
+        private void SpawnShockBall(Scene scene)
+        {
+            var eyeX = MathF.Sin(DirectionAngle);
+            var eyeY = MathF.Cos(DirectionAngle);
+            var playerAngle = MathF.Atan2(eyeY, eyeX);
+            scene.AddObject(ShockBall.Create(scene.Player.Position, new Vector2(0.1f, 0.1f), playerAngle, this));
+        }
+
+        private IMapObject FindBestTarget(Scene scene)
+        {
+            foreach (var obj in scene.Objects)
+            {
+                if (obj is BaseMonster monster)
+                {
+                    if (monster.IsAlive)
+                    {
+                        return monster;   
+                    }
+                }
+            }
+
+            return this;
         }
     }
 }
