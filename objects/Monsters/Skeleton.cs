@@ -295,7 +295,7 @@ namespace objects.Monsters
                 return;
             }
 
-            if (rand.Next() > 0.5)
+            if (rand.NextDouble() > 0.3)
             {
                 scene.EventsLogger.ArrowMissed("Скелет");
                 return;

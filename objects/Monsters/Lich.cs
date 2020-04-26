@@ -159,7 +159,7 @@ namespace objects.Monsters
                 fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
         }
 
-        private const int ShootingDistance = 15;
+        private const int ShootingDistance = 10;
 
         private bool CanShoot(Scene scene)
         {
@@ -220,7 +220,7 @@ namespace objects.Monsters
             ReceiveDamage(damage);
         }
         
-        protected override int ViewDistance => 15;
+        protected override int ViewDistance => 30;
         protected override float MoveSpeed => 0.004f;
         public override Animation CurrentAnimation => GetCurrentAnimation();
 

@@ -14,6 +14,7 @@ namespace simple3d.Levels
         private const float MessageLifeTime = 3000f;
         private const int MaxSize = 10;
 
+        private object myLock = new object();
         private readonly Queue<Message> messages = new Queue<Message>();
 
         public void AddCollectOfItem(string itemName)
@@ -38,30 +39,39 @@ namespace simple3d.Levels
 
         private void EnqueueMessage(string text)
         {
-            var message = new Message {Text = text, LifeTime = MessageLifeTime};
+            lock (myLock)
+            {
+                var message = new Message {Text = text, LifeTime = MessageLifeTime};
 
-            messages.Enqueue(message);
+                messages.Enqueue(message);
 
-            if (messages.Count > MaxSize)
-                messages.Dequeue();
+                if (messages.Count > MaxSize)
+                    messages.Dequeue();
+            }
         }
 
         public void Update(float elapsedMilliseconds)
         {
-            foreach (var message in messages.Where(m => m != null).ToArray())
+            lock (myLock)
             {
-                message.LifeTime -= elapsedMilliseconds;
-            }
+                foreach (var message in messages.Where(m => m != null).ToArray())
+                {
+                    message.LifeTime -= elapsedMilliseconds;
+                }
 
-            while (messages.Count > 0 && messages.Peek().LifeTime < 0)
-            {
-                messages.Dequeue();
+                while (messages.Count > 0 && messages.Peek().LifeTime < 0)
+                {
+                    messages.Dequeue();
+                }
             }
         }
 
         public IEnumerable<string> GetMessages()
         {
-            return messages.Select(msg => msg.Text);
+            lock (myLock)
+            {
+                return messages.Select(msg => msg.Text).ToArray();
+            }
         }
 
         public void MonsterHit(string name, int damage)
