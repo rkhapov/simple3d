@@ -43,7 +43,7 @@ namespace objects.Weapons
 
         public IMapObject Target { get; }
 
-        private const int Damage = 10;
+        private const int Damage = 50;
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {

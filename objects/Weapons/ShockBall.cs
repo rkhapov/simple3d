@@ -35,7 +35,7 @@ namespace objects.Weapons
             blowAnimation.Reset();
         }
 
-        private const int Damage = 5;
+        private const int Damage = 25;
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
         {
