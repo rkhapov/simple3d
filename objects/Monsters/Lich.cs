@@ -180,7 +180,10 @@ namespace objects.Monsters
                 .ToArray();
 
             if (pointsToRun.Length < 1)
+            {
+                Console.WriteLine("There is no points to Run1");
                 return false;
+            }
 
             var pathToPoint = PathFinder.FindPath(scene.Map, pointsToRun[0], myPoint);
 
@@ -218,7 +221,7 @@ namespace objects.Monsters
         }
         
         protected override int ViewDistance => 15;
-        protected override float MoveSpeed => 0.003f;
+        protected override float MoveSpeed => 0.004f;
         public override Animation CurrentAnimation => GetCurrentAnimation();
 
         private void SetState(LichState newState)
