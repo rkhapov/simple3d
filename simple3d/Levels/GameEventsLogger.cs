@@ -48,7 +48,7 @@ namespace simple3d.Levels
 
         public void Update(float elapsedMilliseconds)
         {
-            foreach (var message in messages)
+            foreach (var message in messages.Where(m => m != null).ToArray())
             {
                 message.LifeTime -= elapsedMilliseconds;
             }
@@ -72,6 +72,11 @@ namespace simple3d.Levels
         public void SuccessfullyDefence(string name)
         {
             EnqueueMessage($"{name} отражает удар");
+        }
+
+        public void ArrowMissed(string name)
+        {
+            EnqueueMessage($"Стрела прошла мимо {name}!");
         }
     }
 }
