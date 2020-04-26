@@ -31,7 +31,7 @@ namespace utils
 
                     if (player == null && c == 'P')
                     {
-                        player = new MyPlayer(new Vector2(x + 0.5f, y + 0.5f), new Vector2(0.3f, 0.3f), startPlayerDirectionAngle);
+                        player = new MyPlayer(new Vector2(x + 0.5f, y + 0.5f), new Vector2(0.3f, 0.3f), startPlayerDirectionAngle, 10);
                         var sword = Sword.Create(ResourceCachedLoader.Instance);
                         var bow = Bow.Create(ResourceCachedLoader.Instance);
                         player.Weapons = new Weapon[] {bow, sword};

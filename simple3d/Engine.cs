@@ -111,6 +111,7 @@ namespace simple3d
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var notesTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
+            // var statusTextRenderer = 
             var notesRenderer = new NotesRenderer(Sprite.Load(options.NotesSpritePath), notesTextRenderer, statusBarHeight);
             var monologueTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var monologueRenderer = new MonologueRenderer(monologueTextRenderer, statusBarHeight);
@@ -120,7 +121,10 @@ namespace simple3d
                 statusBarHeight,
                 logTextRenderer,
                 notesRenderer,
-                monologueRenderer);
+                monologueRenderer,
+                bowSprite,
+                crossSprite,
+                frameSprite);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,

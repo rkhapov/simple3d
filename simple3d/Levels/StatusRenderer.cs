@@ -14,6 +14,7 @@ namespace simple3d.Levels
         private readonly Sprite bowSprite;
         private readonly Sprite swordSprite;
         private readonly Sprite crossSprite;
+        private readonly Sprite frameSprite;
         private readonly ITextRenderer logTextRenderer;
         private readonly int statusBarHeight;
         private readonly INotesRenderer notesRenderer;
@@ -25,7 +26,10 @@ namespace simple3d.Levels
             int statusBarHeight,
             ITextRenderer logTextRenderer,
             INotesRenderer notesRenderer,
-            IMonologueRenderer monologueRenderer)
+            IMonologueRenderer monologueRenderer,
+            Sprite bowSprite,
+            Sprite swordSprite,
+            Sprite frameSprite)
         {
             this.barSprite = barSprite;
             this.bowSprite = bowSprite;
