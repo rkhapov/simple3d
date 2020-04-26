@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Level1\Level1.csproj" />
       <ProjectReference Include="..\objects\objects.csproj" />
       <ProjectReference Include="..\simple3d\simple3d.csproj" />
       <ProjectReference Include="..\ui\ui.csproj" />

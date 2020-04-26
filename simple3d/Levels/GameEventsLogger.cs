@@ -22,6 +22,11 @@ namespace simple3d.Levels
             EnqueueMessage($"Собрано {itemName}");
         }
 
+        public void AddDeathAnnouncement()
+        {
+            EnqueueMessage("Вы погибли");
+        }
+        
         public void MonsterAttacks(string monsterName)
         {
             EnqueueMessage($"{monsterName} атакует");
