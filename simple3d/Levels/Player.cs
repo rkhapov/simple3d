@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using simple3d.Drawing;
 using simple3d.MathUtils;
+using simple3d.Sounds;
 
 namespace simple3d.Levels
 {
@@ -189,18 +190,24 @@ namespace simple3d.Levels
 
         protected virtual void DoMeleeRightAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
-            if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State == MeleeWeaponState.AttackRight)
+            if (!(Weapon is MeleeWeapon meleeWeapon))
                 return;
 
-            meleeWeapon.DoRightAttack(scene);
+            if (meleeWeapon.State != MeleeWeaponState.AttackRight)
+            {
+                meleeWeapon.State = MeleeWeaponState.AttackRight;
+            }
         }
 
         protected virtual void DoMeleeLeftAttack(PlayerAction action, Scene scene, in float elapsedMilliseconds)
         {
             if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State == MeleeWeaponState.AttackLeft)
                 return;
-
-            meleeWeapon.DoLeftAttack(scene);
+            
+            if (meleeWeapon.State != MeleeWeaponState.AttackLeft)
+            {
+                meleeWeapon.State = MeleeWeaponState.AttackLeft;
+            }
         }
 
         protected virtual void DoMoveRight(PlayerAction action, Scene scene, in float elapsedMilliseconds)
@@ -318,6 +325,19 @@ namespace simple3d.Levels
                 if (Weapon is ShootingWeapon shootingWeapon && shootingWeapon.State == ShootingWeaponState.Shooting)
                 {
                     shootingWeapon.SpawnArrow(scene);
+                }
+
+                if (Weapon is MeleeWeapon meleeWeapon)
+                {
+                    if (meleeWeapon.State == MeleeWeaponState.AttackLeft && meleeWeapon.AnimationIsOver)
+                    {
+                        meleeWeapon.DoLeftAttack(scene);
+                    }
+                    
+                    if (meleeWeapon.State == MeleeWeaponState.AttackRight && meleeWeapon.AnimationIsOver)
+                    {
+                        meleeWeapon.DoRightAttack(scene);
+                    }
                 }
 
                 Weapon.GoStatic();

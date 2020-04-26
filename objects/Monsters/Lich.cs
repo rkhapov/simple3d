@@ -159,7 +159,7 @@ namespace objects.Monsters
                 fireballAnimation.GetClearCopy(), fireballBlowing.GetClearCopy(), fireballBlowSound));
         }
 
-        private const int ShootingDistance = 10;
+        private const int ShootingDistance = 15;
 
         private bool CanShoot(Scene scene)
         {
@@ -198,21 +198,27 @@ namespace objects.Monsters
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
-            ReceiveDamage(damage);
+            DoReceiveDamage(scene, damage);
         }
 
+        private void DoReceiveDamage(Scene scene, int damage)
+        {
+            scene.EventsLogger.MonsterHit("Лич", damage);
+            ReceiveDamage(damage);
+        }
+        
         protected override int ViewDistance => 15;
-        protected override float MoveSpeed => 0.001f;
+        protected override float MoveSpeed => 0.003f;
         public override Animation CurrentAnimation => GetCurrentAnimation();
 
         private void SetState(LichState newState)

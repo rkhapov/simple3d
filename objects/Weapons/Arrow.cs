@@ -24,8 +24,8 @@ namespace objects.Weapons
         {
             var xRayUnit = MathF.Sin(DirectionAngle);
             var yRayUnit = MathF.Cos(DirectionAngle);
-            var dx = xRayUnit * 0.05f * elapsedMilliseconds;
-            var dy = yRayUnit * 0.05f * elapsedMilliseconds;
+            var dx = xRayUnit * 0.02f * elapsedMilliseconds;
+            var dy = yRayUnit * 0.02f * elapsedMilliseconds;
             var newPosition = Position + new Vector2(dx, dy);
             var testX = (int) newPosition.X;
             var testY = (int) newPosition.Y;

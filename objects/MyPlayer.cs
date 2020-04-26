@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Numerics;
 using System.Reflection.Metadata;
+using musics;
+using simple3d;
 using simple3d.Levels;
+using simple3d.Sounds;
 
 namespace objects
 {
@@ -9,6 +12,8 @@ namespace objects
     {
         public MyPlayer(Vector2 position, Vector2 size, float directionAngle) : base(position, size, directionAngle)
         {
+            defenceSound = ResourceCachedLoader.Instance.GetSound(MusicResourceHelper.PlayerDefence);
+            hitSound = ResourceCachedLoader.Instance.GetSound(MusicResourceHelper.PlayerDamage);
         }
 
         public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
@@ -21,24 +26,45 @@ namespace objects
 
             base.OnWorldUpdate(scene, elapsedMilliseconds);
         }
+        
+        
+        private readonly ISound hitSound;
+        private readonly ISound defenceSound;
 
         public override void OnLeftMeleeAttack(Scene scene, int damage)
         {
-            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
-            if (meleeWeapon.State != MeleeWeaponState.BlockLeft)
-                Health -= damage;
+            if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State != MeleeWeaponState.BlockLeft)
+            {
+                DoHit(scene, damage);
+                return;
+            }
+
+            defenceSound.Play(0);
+            scene.EventsLogger.SuccessfullyDefence("Игрок");
         }
 
         public override void OnRightMeleeAttack(Scene scene, int damage)
         {
-            if (!(Weapon is MeleeWeapon meleeWeapon)) return;
-            if (meleeWeapon.State != MeleeWeaponState.BlockRight)
-                Health -= damage;
+            if (!(Weapon is MeleeWeapon meleeWeapon) || meleeWeapon.State != MeleeWeaponState.BlockRight)
+            {
+                DoHit(scene, damage);
+                return;
+            }
+
+            defenceSound.Play(0);
+            scene.EventsLogger.SuccessfullyDefence("Игрок");
         }
 
         public override void OnShoot(Scene scene, int damage)
         {
+            DoHit(scene, damage);
+        }
+
+        private void DoHit(Scene scene, int damage)
+        {
             Health -= damage;
+            hitSound.Play(0);
+            scene.EventsLogger.MonsterHit("Игрок", damage);
         }
     }
 }

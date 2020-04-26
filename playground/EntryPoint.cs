@@ -40,7 +40,8 @@ namespace playground
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             var objects = new IMapObject[]
             {
-                Lich.Create(resourceLoader, new Vector2(6f, 14f), 0.0f),
+                Lich.Create(resourceLoader, new Vector2(6f, 6f), 0.0f),
+                Skeleton.Create(resourceLoader, new Vector2(6f, 6f), 0.0f),
                 GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
                 HealingPotion.Create(new Vector2(6f, 6f)),
                 ArrowPack.Create(new Vector2(7f, 7f)),
@@ -51,12 +52,12 @@ namespace playground
             var map = Map.FromStrings(new[]
             {
                 "###############################",
-                "#.........#...................#",
-                "#..#..........#...............#",
-                "#.........############........#",
-                "##........o..........#........#",
-                "#b........d..........###......#",
-                "#b........o..........#........#",
+                "#.............................#",
+                "#.............................#",
+                "#.............................#",
+                "##...................#........#",
+                "#b...................###......#",
+                "#b...................#........#",
                 "####......##########.#........#",
                 "##...................#......###",
                 "#........####........#........#",
@@ -72,15 +73,6 @@ namespace playground
                 "###############################"
             }, storage.GetCellByChar);
             var level = new Scene(player, map, objects);
-
-            Trigger.AddTrigger(new Vector2(8f, 5f), (scene) => {
-                Console.WriteLine("OPPEEEN THE DOOOOR");
-                scene.Player.CurrentMonologue = new Monologue(
-                    new[] {"привет!\nну и что?", "а\nэто\nвторой монолог лол!"},
-                    new[] {3000, 3000}
-                    );
-                Map.GetCellByTag("door1").StartAnimatiom(() => { Map.GetCellByTag("door1").Type = MapCellType.Empty; });
-            }, false);
 
             while (engine.Update(level))
             {
