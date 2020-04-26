@@ -23,6 +23,9 @@ namespace simple3d.Levels
         private readonly Sprite arrowSprite;
         private readonly Sprite fireBallSprite;
         private readonly Sprite shockBallSprite;
+        private readonly Sprite faceSprite;
+        private readonly Sprite faceHurtedSprite;
+        private readonly Sprite faceBadSprite;
 
         public StatusRenderer(
             Sprite barSprite,
@@ -37,7 +40,10 @@ namespace simple3d.Levels
             ITextRenderer textRenderer,
             Sprite arrowSprite,
             Sprite fireBallSprite,
-            Sprite shockBallSprite)
+            Sprite shockBallSprite,
+            Sprite faceSprite,
+            Sprite faceHurtedSprite,
+            Sprite faceBadSprite)
         {
             this.barSprite = barSprite;
             this.bowSprite = bowSprite;
@@ -52,6 +58,9 @@ namespace simple3d.Levels
             this.arrowSprite = arrowSprite;
             this.fireBallSprite = fireBallSprite;
             this.shockBallSprite = shockBallSprite;
+            this.faceSprite = faceSprite;
+            this.faceHurtedSprite = faceHurtedSprite;
+            this.faceBadSprite = faceBadSprite;
         }
 
         public void Dispose()
@@ -236,6 +245,12 @@ namespace simple3d.Levels
             var faceSpriteY = screen.Height - statusBarHeight;
             var faceSpriteX = 400;
             DrawFrame(screen, faceSpriteY, faceSpriteX);
+            if (scene.Player.Health <= 32 && scene.Player.Health >= 23)
+                screen.DrawSprite(faceSprite, faceSpriteY, faceSpriteX + 10);
+            else if (scene.Player.Health < 23 && scene.Player.Health >= 12)
+                screen.DrawSprite(faceHurtedSprite, faceSpriteY, faceSpriteX + 10);
+            else if (scene.Player.Health < 12)
+                screen.DrawSprite(faceBadSprite, faceSpriteY, faceSpriteX + 10);
         }
 
         private void DrawArrowsCount(IScreen screen, Scene scene, ITextRenderer textRenderer)

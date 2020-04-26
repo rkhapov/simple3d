@@ -113,6 +113,9 @@ namespace simple3d
             var swordSprite = Sprite.Load(UiResourcesHelper.SwordSpritePath);
             var fireBallSprite = Sprite.Load(UiResourcesHelper.FireBallSpritePath);
             var shockBallSprite = Sprite.Load(UiResourcesHelper.ShockBallSpritePath);
+            var faceSprite = Sprite.Load(UiResourcesHelper.FaceSprintPath);
+            var faceHurtedSprite = Sprite.Load(UiResourcesHelper.FaceHurtedSpritePath);
+            var faceBadSprite = Sprite.Load(UiResourcesHelper.FaceBadSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var notesTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var statusTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 20);
@@ -132,7 +135,10 @@ namespace simple3d
                 statusTextRenderer,
                 arrowSprite,
                 fireBallSprite,
-                shockBallSprite);
+                shockBallSprite,
+                faceSprite,
+                faceHurtedSprite,
+                faceBadSprite);
             var textRenderer = options.FontPath == null ? null : TextRenderer.Load(options.FontPath, 24);
 
             return new Engine(screen, controller, eventsCycle, sceneRenderer, miniMapRenderer, statusBarRenderer,
