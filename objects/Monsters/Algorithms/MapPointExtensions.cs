@@ -46,7 +46,7 @@ namespace objects.Monsters.Algorithms
                     continue;
                 var distance = (x == p.X ? 0 : 1) + (y == p.Y ? 0 : 1);
 
-                yield return (new MapPoint(y, x), distance);
+                yield return (new MapPoint(y, x), 1);
             }
         }
 
