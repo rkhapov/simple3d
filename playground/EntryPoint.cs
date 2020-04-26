@@ -80,7 +80,7 @@ namespace playground
                     new[] {3000, 3000}
                     );
                 Map.GetCellByTag("door1").StartAnimatiom(() => { Map.GetCellByTag("door1").Type = MapCellType.Empty; });
-            });
+            }, false);
 
             while (engine.Update(level))
             {
