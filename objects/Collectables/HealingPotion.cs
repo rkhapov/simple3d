@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using musics;
 using simple3d;
 using simple3d.Drawing;
@@ -16,7 +17,7 @@ namespace objects.Collectables
         public override string Name => "Исцеляющее зелье";
         protected override void OnCollect(Scene scene)
         {
-            scene.Player.Health += 7;
+            scene.Player.Health = MathF.Min(scene.Player.MaxHealth, scene.Player.Health + 7);
         }
 
         public static HealingPotion Create(Vector2 position)
