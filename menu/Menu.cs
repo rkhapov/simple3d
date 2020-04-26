@@ -64,69 +64,41 @@ namespace menu
                 new[]
                 {
                     "###########################################",
-                    "#P.###....................................#",
-                    "#.####....................................#",
-                    "#d##......................................#",
-                    "#.##......................................m",
-                    "#.##......................................f",
-                    "#.##......................................l",
-                    "#.####################....................n",
-                    "#....H.....A..............................i",
-                    "#######################...................c",
-                    "#.#.......................................p",
-                    "#.#..............L........................#",
-                    "#.........................................#",
-                    "#.........................................#",
-                    "#.........................................#",
-                    "###########################################"
-                }, storage.GetCellByChar, MathF.PI / 2);
+                    "#..........######.P.#.....................#",
+                    "#..........#....d...d.....................#",
+                    "#..........c....#...#.....................#",
+                    "#..#########....##p##.....................#",
+                    "#..#.A...H......#...#.....................#",
+                    "#..l.....A......#...#.....................#",
+                    "#..##d######i#n##...#.....................#",
+                    "#..#....#...........#.....................#",
+                    "#..#....#...........#.....................#",
+                    "#..f.R..#...........#.....................#",
+                    "#..##d###############.....................#",
+                    "#..#....#..........#......................#",
+                    "#..#....#.......S..d......................#",
+                    "#..#.S..d..........#......................#",
+                    "#####m#####################################"
+                }, storage.GetCellByChar, 0);
             
-            scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
+            // scene.AddObject(new InvisibleWall(new Vector2(9.0f, 3.0f), new Vector2(0.1f, 10.0f), 0));
             scene.AddObject(Note.Create(new Vector2(15.5f, 8.5f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
+            scene.AddObject(Note.Create(new Vector2(22f, 1f), "Просто записка.\nЧтобы закрыть нажмите ESC"));
             
             var map = scene.Map;
-            map.At(3, 1).SetTag("startDoor");
-            Trigger.AddTrigger(new Vector2(1f, 1f), 
-                (scene) => { Map.GetCellByTag("startDoor").StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; }); });
+            map.At(2, 20).SetTag("tutorialDoor");
+            Trigger.AddTrigger(new Vector2(19f, 2f), 
+                (scene) => { Map.GetCellByTag("tutorialDoor").StartAnimatiom(() => { Map.GetCellByTag("tutorialDoor").Type = MapCellType.Empty; }); }, false);
 
-            Trigger.AddTrigger(new Vector2(1f, 1f), scene =>
-            {
-                scene.Player.CurrentMonologue = new Monologue(
-                    new[]
-                    {
-                        ("Движение: WASD", 2500),
-                        ("Камера: Стрелочки", 2500),
-                        ("Взаимодействие: E\nОткройте дверь и выберитесь наружу!", 2500),
-                    });
-            }, false);
-
-            Trigger.AddTrigger(3, 1, scene =>
-            {
-                scene.Player.CurrentMonologue = new Monologue(
-                    new[]
-                    {
-                        ("Хорошо", 1500),
-                        ("А это предметы, которые можно собирать", 1500),
-                    });
-            }, false);
-
-            Trigger.AddTrigger(8, 2, scene =>
-            {
-                scene.Player.CurrentMonologue = new Monologue(
-                    new[]
-                    {
-                        ("Это зелье восстанавливает здоровье", 1500),
-                    });
-            }, false);
+            map.At(2, 16).SetTag("menuDoor");
+            Trigger.AddTrigger(new Vector2(17f, 2f),
+                (scene) => Map.GetCellByTag("menuDoor")
+                    .StartAnimatiom(() => Map.GetCellByTag("menuDoor").Type = MapCellType.Empty), false);
             
-            Trigger.AddTrigger(8, 6, scene =>
-            {
-                scene.Player.CurrentMonologue = new Monologue(
-                    new[]
-                    {
-                        ("А это стрелы, лишними не будут", 1500),
-                    });
-            }, false);
+            map.At(7,5).SetTag("shootingDoor");
+            Trigger.AddTrigger(new Vector2(5f, 6f),
+                scene => Map.GetCellByTag("shootingDoor")
+                    .StartAnimatiom(() => Map.GetCellByTag("shootingDoor").Type = MapCellType.Empty));
 
             var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             backGroundMusic.Play(-1);
