@@ -42,6 +42,7 @@ namespace simple3d.Levels
         {
             if (isAnimation)
             {
+                Type = MapCellType.TransparentObj;
                 animation.Reset();
                 isStart = true;
                 this.invoking = invoking;

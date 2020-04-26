@@ -1,20 +1,35 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading.Channels;
 using musics;
-using simple3d.Builder;
-using simple3d.Drawing;
-using simple3d.Levels;
 using objects;
 using objects.Collectables;
 using objects.Environment;
 using objects.Monsters;
+using objects.Monsters.Algorithms;
 using objects.Weapons;
 using simple3d;
+using simple3d.Builder;
+using simple3d.Drawing;
+using simple3d.Levels;
 using ui;
+using utils;
 namespace Level1
 {
-    internal static class EntryPoint
+    internal static class Level1
     {
+        public class StaticLich : BaseStaticMapObject
+        {
+            public StaticLich(Vector2 position, Vector2 size, float directionAngle, Sprite sprite) : base(position, size, directionAngle, sprite)
+            {
+
+            }
+
+            public override void OnWorldUpdate(Scene scene, float elapsedMilliseconds)
+            {
+
+            }
+        }
         private static unsafe void Main(string[] args)
         {
             var options = new EngineOptions(
@@ -32,37 +47,32 @@ namespace Level1
             var windowTexture = Sprite.Load("./sprites/window.png");
             var ceilingTexture = Sprite.Load("./sprites/wood.png");
             var bedTexture = Sprite.Load("./sprites/bed.png");
+            var lichSprite = Sprite.Load("./animations/lich/static/1.png");
             var sword = Sword.Create(resourceLoader);
             var bow = Bow.Create(resourceLoader);
             var doorAnimation = resourceLoader.GetAnimation("./animations/door");
             player.Weapons = new Weapon[] { sword, bow };
             var backGroundMusic = resourceLoader.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
-            var objects = new IMapObject[]
-            {
-                Lich.Create(resourceLoader, new Vector2(6f, 14f), new Vector2(0.6f, 0.6f), 0.0f),
-                GreenLight.Create(resourceLoader, new Vector2(8.0f, 8.0f), new Vector2(0, 0), 0),
-                HealingPotion.Create(new Vector2(6f, 6f)),
-                ArrowPack.Create(new Vector2(7f, 7f)),
-                Note.Create(new Vector2(5f, 5f), "о, привет!\nследующая строка\nотвратительно длинная строка с кучей слов капец\nа вот это уже максимум по длине лучше бы его не переступать ага га гус")
-            };
+
             backGroundMusic.Play(-1);
             var storage = new MapTextureStorage(ceilingTexture, wallTexture, floorTexture, windowTexture, bedTexture, doorAnimation);
-            var map = Map.FromStrings(new[]
-            {
+            var scene = SceneReader.ReadFromStrings(
+                new[]
+                {
                 "########################################################",
-                "#....#..........................................#......#",
-                "#....#..........................................#......#",
-                "#....#..........................................#......#",
-                "##o###..........................................####.###",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
-                "#......................................................#",
+                "#P...#...#......................................#......#",
+                "#....#...#......................................#......#",
+                "#....#...#......................................#......#",
+                "##d#######d#....................................####.###",
+                "#......#AHA#...1.......................................#",
+                "#......oAHA#...........................................#",
+                "#......#AHA#...........................................#",
+                "#......#o###...........................................#",
+                "#......#...#...........................................#",
+                "#..........#...........................................#",
+                "#.1....#####...........................................#",
+                "#.t...n#...............................................#",
+                "##D#####...............................................#",
                 "#......................................................#",
                 "#......................................................#",
                 "#......................................................#",
@@ -81,24 +91,57 @@ namespace Level1
                 "#....#...........................................#.....#",
                 "#....#...........................................#.....#",
                 "########################################################",
-            }, storage.GetCellByChar);
-            var level = new Scene(player, map, objects);
+                }, storage.GetCellByChar, MathF.PI / 2);
 
-            Trigger.AddTrigger(new Vector2(8f, 5f), (scene) =>
+            scene.Map.At(4, 2).SetTag("startDoor");
+            Trigger.AddTrigger(new Vector2(2f, 3f), (scene) =>
             {
                 Console.WriteLine("OPPEEEN THE DOOOOR");
                 scene.Player.CurrentMonologue = new Monologue(
-                    new[] { "привет!\nну и что?", "а\nэто\nвторой монолог лол!" },
-                    new[] { 3000, 3000 }
+                    new[] {
+                        ("Хмм... открыто", 2000)
+                    }
                     );
-                Map.GetCellByTag("door1").StartAnimatiom(() => { Map.GetCellByTag("door1").Type = MapCellType.Empty; });
-            }, false);
+                Map.GetCellByTag("startDoor").StartAnimatiom(() => { Map.GetCellByTag("startDoor").Type = MapCellType.Empty; });
+            });
+            Trigger.AddTrigger(new Vector2(6f, 6f), (scene) =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(
+                    new[] {
+                        ("Сколько всего... интересно кто это все сюда принес и зачем...", 3000)
+                    }
+                    );
+            
+         }, false);
+            scene.AddObject(Note.Create(new Vector2(2,   8), "Этот мир так чудесен, бузупречная флора и фауна,\n безупречный баланс рас... \n "));
+           
+            CreateTextTrigger(new Vector2(2f, 5f), new[] { ("Интересно, кто оставил эту записку?", 3000) }); 
+            scene.AddObject(Note.Create(new Vector2(2, 8), "Этот мир так чудесен, бузупречная флора и фауна,\n безупречный баланс рас... \n "));
+            scene.AddObject(Note.Create(new Vector2(9, 9), "Люди - средние по физическим данным, но самые умные представители\n разумных существ." +
+                "Особых конфронтаций ни с кем нет,\n но ксенофобии к другим расам, конечно, достаточно"));
+            CreateTextTrigger(new Vector2(2f, 11f), new[] { ("Судя по этим записям этот мир действительно хорош.\n Жаль я его совершенно не помню. ", 5000),
+            ("Вот только почерк мне кажется уж очень знакомым...", 4000)});
 
-            while (engine.Update(level))
+            while (engine.Update(scene))
             {
             }
         }
 
+        private static void CreateTextTrigger(Vector2 pos, (string msg, int duration)[] texts )
+        {
+            Trigger.AddTrigger(pos, (scene) =>
+            {
+                scene.Player.CurrentMonologue = new Monologue(texts);
+            }, false);
+        }
+
+        private static void CreateDoorOpenTrigger(Vector2 pos, string tag)
+        {
+            Trigger.AddTrigger(pos, (scene) =>
+            {      
+                Map.GetCellByTag(tag).StartAnimatiom(() => { Map.GetCellByTag(tag).Type = MapCellType.Empty; });
+            });
+        }
         private class MapTextureStorage
         {
             private readonly Sprite ceilingTexture;
@@ -122,13 +165,15 @@ namespace Level1
             {
                 return c switch
                 {
-                    'd' => new MapCell(MapCellType.TransparentObj, doorAnimation, wallTexture, ceilingTexture, "door1"),
+                    'd' => new MapCell(MapCellType.Door, doorAnimation, wallTexture, ceilingTexture),
                     '#' => new MapCell(MapCellType.Wall, wallTexture, wallTexture, ceilingTexture),
                     'o' => new MapCell(MapCellType.Window, windowTexture, floorTexture, ceilingTexture),
                     'b' => new MapCell(MapCellType.TransparentObj, bedTexture, floorTexture, ceilingTexture),
                     _ => new MapCell(MapCellType.Empty, floorTexture, floorTexture, ceilingTexture)
                 };
             }
+
+            
         }
     }
 }
