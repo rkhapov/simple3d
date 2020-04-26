@@ -15,7 +15,7 @@ namespace utils
         static void PrintIntresting(string[] map)
         {
             int count = 0;
-            List<char> ignor = new List<char>() { '#', '.', 'o', '$', '#', 'A', 'R', 'H', '@', '%' };
+            List<char> ignor = new List<char>() { '#', '.', 'o', '$', '#', 'A', 'R', 'H', '@', '%', 'z' };
             for (var y = 0; y < map.Length; y++)
             {
                 for (var x = 0; x < map[y].Length; x++)
@@ -24,7 +24,7 @@ namespace utils
                     {
                         count++;
                     }
-                    if ( !ignor.Contains(map[y][x]))
+                    if (!ignor.Contains(map[y][x]))
                         Console.WriteLine(string.Format("{0} - _1={1} _2={2}", map[y][x], x, y));
                 }
             }
