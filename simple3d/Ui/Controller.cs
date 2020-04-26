@@ -46,25 +46,11 @@ namespace simple3d.Ui
                     yield return new PlayerAction(isPressed, PlayerActionType.Sprint);
                 }
 
-                if (keycode == SDL.SDL_Keycode.SDLK_v)
-                {
-                    yield return IsKeyPressed(SDL.SDL_Keycode.SDLK_RSHIFT)
-                        ? new PlayerAction(isPressed, PlayerActionType.MeleeLeftBlock)
-                        : new PlayerAction(isPressed, PlayerActionType.MeleeLeftAttack);
-                }
-
-                if (keycode == SDL.SDL_Keycode.SDLK_b)
-                {
-                    yield return IsKeyPressed(SDL.SDL_Keycode.SDLK_RSHIFT)
-                        ? new PlayerAction(isPressed, PlayerActionType.MeleeRightBlock)
-                        : new PlayerAction(isPressed, PlayerActionType.MeleeRightAttack);
-                }
-
                 if (keycode == SDL.SDL_Keycode.SDLK_RSHIFT)
                 {
-                    if (IsKeyPressed(SDL.SDL_Keycode.SDLK_b))
+                    if (IsKeyPressed(SDL.SDL_Keycode.SDLK_SPACE))
                         yield return new PlayerAction(isPressed, PlayerActionType.MeleeRightBlock);
-                    else if (IsKeyPressed(SDL.SDL_Keycode.SDLK_v))
+                    else if (IsKeyPressed(SDL.SDL_Keycode.SDLK_LCTRL))
                         yield return new PlayerAction(isPressed, PlayerActionType.MeleeLeftBlock);
                     else
                         yield return new PlayerAction(false, PlayerActionType.MeleeLeftBlock);
@@ -78,7 +64,19 @@ namespace simple3d.Ui
                 if (keycode == SDL.SDL_Keycode.SDLK_SPACE)
                 {
                     yield return new PlayerAction(isPressed, PlayerActionType.Shoot);
+
+                    yield return IsKeyPressed(SDL.SDL_Keycode.SDLK_RSHIFT)
+                        ? new PlayerAction(isPressed, PlayerActionType.MeleeRightBlock)
+                        : new PlayerAction(isPressed, PlayerActionType.MeleeRightAttack);
                 }
+
+                if (keycode == SDL.SDL_Keycode.SDLK_LCTRL)
+                {
+                    yield return IsKeyPressed(SDL.SDL_Keycode.SDLK_RSHIFT)
+                        ? new PlayerAction(isPressed, PlayerActionType.MeleeLeftBlock)
+                        : new PlayerAction(isPressed, PlayerActionType.MeleeLeftAttack);
+                }
+                
             }
 
             if (IsKeyPressed(SDL.SDL_Keycode.SDLK_LEFT))
