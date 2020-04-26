@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using musics;
 using simple3d;
 using simple3d.Drawing;
@@ -13,10 +14,11 @@ namespace objects.Collectables
         {
         }
 
-        public override string Name => "Пачка Стрел";
+        public override string Name => "5 Стрел";
 
         protected override void OnCollect(Scene scene)
         {
+            scene.Player.CurrentAmountOfArrows += Math.Min(5, scene.Player.MaxAmountOfArrows - scene.Player.CurrentAmountOfArrows);
         }
 
         public static ArrowPack Create(Vector2 position)

@@ -31,6 +31,11 @@ namespace simple3d.Levels
             EnqueueMessage($"{monsterName} погибает");
         }
 
+        public void NoMoreArrows()
+        {
+            EnqueueMessage("Стрелы закончились...");
+        }
+
         private void EnqueueMessage(string text)
         {
             var message = new Message {Text = text, LifeTime = MessageLifeTime};

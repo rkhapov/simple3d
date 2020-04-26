@@ -152,7 +152,14 @@ namespace simple3d.Levels
             if (!(Weapon is ShootingWeapon shootingWeapon))
                 return;
 
-            shootingWeapon.MakeShoot(scene);
+            if (CurrentAmountOfArrows != 0)
+            {
+                shootingWeapon.MakeShoot(scene);
+                CurrentAmountOfArrows--;
+            }
+
+            else
+                scene.EventsLogger.NoMoreArrows();
         }
 
         protected virtual void DoMeleeRightBlock(PlayerAction action, Scene scene, in float elapsedMilliseconds)

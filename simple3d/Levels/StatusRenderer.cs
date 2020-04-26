@@ -19,6 +19,8 @@ namespace simple3d.Levels
         private readonly int statusBarHeight;
         private readonly INotesRenderer notesRenderer;
         private readonly IMonologueRenderer monologueRenderer;
+        private readonly ITextRenderer statusTextRenderer;
+        private readonly Sprite arrowSprite;
 
         public StatusRenderer(
             Sprite barSprite,
@@ -29,7 +31,9 @@ namespace simple3d.Levels
             IMonologueRenderer monologueRenderer,
             Sprite bowSprite,
             Sprite swordSprite,
-            Sprite frameSprite)
+            Sprite frameSprite,
+            ITextRenderer textRenderer,
+            Sprite arrowSprite)
         {
             this.barSprite = barSprite;
             this.bowSprite = bowSprite;
@@ -40,6 +44,8 @@ namespace simple3d.Levels
             this.frameSprite = frameSprite;
             this.notesRenderer = notesRenderer;
             this.monologueRenderer = monologueRenderer;
+            this.statusTextRenderer = textRenderer;
+            this.arrowSprite = arrowSprite;
         }
 
         public void Dispose()
@@ -124,7 +130,8 @@ namespace simple3d.Levels
             DrawWeaponMiniature(screen, scene);
             DrawSpellMiniature(screen, scene);
             DrawFaceMiniature(screen, scene);
-            // DrawArrowsCount(screen, scene, );
+            DrawArrowsCount(screen, scene, statusTextRenderer);
+            DrawArrows(screen);
         }
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
@@ -223,12 +230,24 @@ namespace simple3d.Levels
 
         private void DrawArrowsCount(IScreen screen, Scene scene, ITextRenderer textRenderer)
         {
-            var arrowsCountY = screen.Height - statusBarHeight;
-            var arrowsCountX = 800;
+            var arrowsCountY = screen.Height - statusBarHeight + 30;
+            var arrowsCountX = 1000;
             var currentAmountOfArrows = scene.Player.CurrentAmountOfArrows;
             var maxAmountOfArrows = scene.Player.MaxAmountOfArrows;
             textRenderer.RenderText($"{currentAmountOfArrows} / {maxAmountOfArrows}", new SDL.SDL_Color(), screen, arrowsCountY,
                 arrowsCountX);
+        }
+
+        private void DrawArrows(IScreen screen)
+        {
+            var y = screen.Height - statusBarHeight;
+            var arrow1Y = y + 10;
+            var arrow1X = 850;
+            var arrow2Y = y + 30;
+            var arrow3Y = y + 50;
+            screen.DrawSprite(arrowSprite, arrow1Y, arrow1X);
+            screen.DrawSprite(arrowSprite, arrow2Y, arrow1X);
+            screen.DrawSprite(arrowSprite, arrow3Y, arrow1X);
         }
     }
 }
