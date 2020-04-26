@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using simple3d.Levels;
 
@@ -30,7 +31,8 @@ namespace objects.Monsters.Algorithms
                     break;
                 }
 
-                foreach (var (next, distance) in current.GetNeighbours(map))
+                var neighbours = current.GetNeighbours(map).ToArray();
+                foreach (var (next, distance) in neighbours)
                 {
                     var newCost = distance + cost[current];
 
