@@ -9,6 +9,7 @@ using simple3d.Levels;
 using simple3d.SDL2;
 using simple3d.Tools;
 using simple3d.Ui;
+using ui;
 using static simple3d.SDL2.SDL;
 
 namespace simple3d
@@ -104,7 +105,9 @@ namespace simple3d
             var miniMapRenderer = new MiniMapRenderer();
             var statusBarHeight = screen.Height / 8;
             var statusBarWidth = screen.Width;
-            var statusBarSprite = NoiseSpriteGenerator.GenerateSmoothedNoiseSprite(statusBarHeight, statusBarWidth);
+            var statusBarSprite = Sprite.Load(UiResourcesHelper.StatusBarSpritePath);
+            var bowSprite = Sprite.Load(UiResourcesHelper.BowMiniSpritePath);
+            var frameSprite = Sprite.Load(UiResourcesHelper.FrameSpritePath);
             var crossSprite = options.CrossSpritePath == null ? null : Sprite.Load(options.CrossSpritePath);
             var logTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);
             var notesTextRenderer = TextRenderer.Load(options.FontPath, screen.Height / 50);

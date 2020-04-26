@@ -11,6 +11,8 @@ namespace simple3d.Levels
     public class StatusRenderer : IStatusBarRenderer
     {
         private readonly Sprite barSprite;
+        private readonly Sprite bowSprite;
+        private readonly Sprite swordSprite;
         private readonly Sprite crossSprite;
         private readonly ITextRenderer logTextRenderer;
         private readonly int statusBarHeight;
@@ -26,9 +28,12 @@ namespace simple3d.Levels
             IMonologueRenderer monologueRenderer)
         {
             this.barSprite = barSprite;
+            this.bowSprite = bowSprite;
+            this.swordSprite = swordSprite;
             this.crossSprite = crossSprite;
             this.statusBarHeight = statusBarHeight;
             this.logTextRenderer = logTextRenderer;
+            this.frameSprite = frameSprite;
             this.notesRenderer = notesRenderer;
             this.monologueRenderer = monologueRenderer;
         }
@@ -111,7 +116,11 @@ namespace simple3d.Levels
         private void RenderStatusBar(IScreen screen, Scene scene)
         {
             DrawSprite(screen);
-            DrawStatusLines(screen, scene.Player, screen.Width / 4);
+            DrawStatusLines(screen, scene.Player, screen.Width / 8);
+            DrawWeaponMiniature(screen, scene);
+            DrawSpellMiniature(screen, scene);
+            DrawFaceMiniature(screen, scene);
+            // DrawArrowsCount(screen, scene, );
         }
 
         private void DrawStatusLines(IScreen screen, Player player, int linesWidth)
@@ -127,7 +136,9 @@ namespace simple3d.Levels
                 screen.Height - statusBarHeight + partSize,
                 boundSize,
                 linesHeight, linesWidth,
-                0xFF5349);
+                0xFF2020,
+                0xFF3C3C
+                );
 
             DrawStatusLine(
                 screen,
@@ -135,7 +146,8 @@ namespace simple3d.Levels
                 screen.Height - statusBarHeight + partSize * 3,
                 boundSize,
                 linesHeight, linesWidth,
-                0x0000FF);
+                0x0000FF,
+                0x00096);
 
 
             DrawStatusLine(
@@ -144,11 +156,13 @@ namespace simple3d.Levels
                 screen.Height - statusBarHeight + partSize * 5,
                 boundSize,
                 linesHeight, linesWidth,
-                0x006400);
+                0x009600,
+                0x006400
+            );
         }
 
         private static void DrawStatusLine(
-            IScreen screen, float percentile, int yStart, int xStart, int height, int width, int color)
+            IScreen screen, float percentile, int yStart, int xStart, int height, int width, int color, int color2)
         {
             var yEnd = yStart + height;
             var xEnd = xStart + width;
@@ -158,8 +172,12 @@ namespace simple3d.Levels
             {
                 for (var x = xStart; x < xEnd; x++)
                 {
-                    if (x < xBound || y == yStart || y == yEnd - 1 || x == xStart || x == xEnd - 1)
+                    if (x < xBound - 1 || y <= yStart + 1 || y >= yEnd - 2 || x <= xStart + 1 || x >= xEnd - 2)
                         screen.Draw(y, x, color);
+                    else
+                    {
+                        screen.Draw(y, x, color2);
+                    }
                 }
             }
         }
@@ -167,6 +185,46 @@ namespace simple3d.Levels
         private void DrawSprite(IScreen screen)
         {
             screen.DrawSprite(barSprite, screen.Height - statusBarHeight, 0);
+        }
+
+        private void DrawFrame(IScreen screen, int y, int x)
+        {
+            screen.DrawSprite(frameSprite, y, x);
+        }
+
+        private void DrawWeaponMiniature(IScreen screen, Scene scene)
+        {
+            var weaponSpriteY = screen.Height - statusBarHeight;
+            var weaponSpriteX = 700;
+            DrawFrame(screen,weaponSpriteY , weaponSpriteX);
+            if (scene.Player.Weapon is MeleeWeapon)
+                screen.DrawSprite(swordSprite, weaponSpriteY, weaponSpriteX);
+            else 
+                screen.DrawSprite(bowSprite, weaponSpriteY, weaponSpriteX);
+        }
+
+        private void DrawSpellMiniature(IScreen screen, Scene scene)
+        {
+            var spellSpriteY = screen.Height - statusBarHeight;
+            var spellSpriteX = 550;
+            DrawFrame(screen, spellSpriteY, spellSpriteX);
+        }
+
+        private void DrawFaceMiniature(IScreen screen, Scene scene)
+        {
+            var faceSpriteY = screen.Height - statusBarHeight;
+            var faceSpriteX = 400;
+            DrawFrame(screen, faceSpriteY, faceSpriteX);
+        }
+
+        private void DrawArrowsCount(IScreen screen, Scene scene, ITextRenderer textRenderer)
+        {
+            var arrowsCountY = screen.Height - statusBarHeight;
+            var arrowsCountX = 800;
+            var currentAmountOfArrows = scene.Player.CurrentAmountOfArrows;
+            var maxAmountOfArrows = scene.Player.MaxAmountOfArrows;
+            textRenderer.RenderText($"{currentAmountOfArrows} / {maxAmountOfArrows}", new SDL.SDL_Color(), screen, arrowsCountY,
+                arrowsCountX);
         }
     }
 }

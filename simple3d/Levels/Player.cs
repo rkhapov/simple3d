@@ -15,7 +15,7 @@ namespace simple3d.Levels
         public const float SprintMovingSpeed = 0.005f;
         public float MovingSpeed { get; private set; } = WalkMovingSpeed;
 
-        protected Player(Vector2 position, Vector2 size, float directionAngle)
+        protected Player(Vector2 position, Vector2 size, float directionAngle, int startAmountOfArrows)
         {
             Position = position;
             Size = size;
@@ -26,6 +26,9 @@ namespace simple3d.Levels
             Endurance = MaxEndurance;
             MaxSpellPoints = 32;
             SpellPoints = MaxSpellPoints;
+            MaxAmountOfArrows = 30;
+            StartAmountOfArrows = startAmountOfArrows;
+            CurrentAmountOfArrows = startAmountOfArrows;
         }
 
         public Vector2 Position { get; set; }
@@ -41,6 +44,9 @@ namespace simple3d.Levels
         public int MaxEndurance { get; set; }
         public float SpellPoints { get; set; }
         public int MaxSpellPoints { get; set; }
+        public int MaxAmountOfArrows { get; }
+        public int CurrentAmountOfArrows { get; set; }
+        public int StartAmountOfArrows { get; set; }
         public Weapon Weapon => Weapons[WeaponIndex];
         public Weapon[] Weapons { get; set; }
         public int WeaponIndex { get; set; }
