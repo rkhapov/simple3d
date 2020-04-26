@@ -21,6 +21,8 @@ namespace simple3d.Levels
         private readonly IMonologueRenderer monologueRenderer;
         private readonly ITextRenderer statusTextRenderer;
         private readonly Sprite arrowSprite;
+        private readonly Sprite fireBallSprite;
+        private readonly Sprite shockBallSprite;
 
         public StatusRenderer(
             Sprite barSprite,
@@ -33,7 +35,9 @@ namespace simple3d.Levels
             Sprite swordSprite,
             Sprite frameSprite,
             ITextRenderer textRenderer,
-            Sprite arrowSprite)
+            Sprite arrowSprite,
+            Sprite fireBallSprite,
+            Sprite shockBallSprite)
         {
             this.barSprite = barSprite;
             this.bowSprite = bowSprite;
@@ -46,6 +50,8 @@ namespace simple3d.Levels
             this.monologueRenderer = monologueRenderer;
             this.statusTextRenderer = textRenderer;
             this.arrowSprite = arrowSprite;
+            this.fireBallSprite = fireBallSprite;
+            this.shockBallSprite = shockBallSprite;
         }
 
         public void Dispose()
@@ -219,6 +225,10 @@ namespace simple3d.Levels
             var spellSpriteY = screen.Height - statusBarHeight;
             var spellSpriteX = 550;
             DrawFrame(screen, spellSpriteY, spellSpriteX);
+            if (scene.Player.CurrentSpell == Spells.FireBall)
+                screen.DrawSprite(fireBallSprite, spellSpriteY, spellSpriteX);
+            else
+                screen.DrawSprite(shockBallSprite, spellSpriteY, spellSpriteX);
         }
 
         private void DrawFaceMiniature(IScreen screen, Scene scene)

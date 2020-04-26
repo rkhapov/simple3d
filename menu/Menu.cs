@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Channels;
 using musics;
 using objects;
@@ -73,7 +74,7 @@ namespace menu
                     "#..........#....d...d.........r",
                     "#..........c....#...#.........#",
                     "#..#########....##p##.........#",
-                    "#..#.A...H......#...#.........#",
+                    "#..#.A.M.H......#...#.........#",
                     "#..l.....A......#...#.........#",
                     "#..##d######i#n##...#.........s",
                     "#..#....#...........#.........#",
@@ -118,12 +119,23 @@ namespace menu
             Trigger.AddTrigger(new Vector2(18f, 13f),
                 scene => Map.GetCellByTag("tutorialExit")
                     .StartAnimatiom(() => Map.GetCellByTag("tutorialExit").Type = MapCellType.Empty));
+            
+            Trigger.AddTrigger(new Vector2(29f, 13f), 
+                scene => Environment.Exit(0));
+            
+            Trigger.AddTrigger(new Vector2(29f, 7f), 
+                scene => Level1.Level1.StartOnEngine(engine));
 
             var backGroundMusic = ResourceCachedLoader.Instance.GetMusic(MusicResourceHelper.EnvironmentDungeonMusic);
             backGroundMusic.Play(-1);
 
             while (engine.Update(scene))
             {
+                if (scene.Player.Health <= 0)
+                {
+                    Map.ClearTags();
+                    StartOnEngine(engine);
+                }
             }
         }
         

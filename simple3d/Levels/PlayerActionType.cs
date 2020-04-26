@@ -17,6 +17,7 @@
         MeleeRightBlock,
         Shoot,
         SetWeapon,
+        SetSpell,
         Cancel
     }
 }

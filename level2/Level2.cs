@@ -189,6 +189,11 @@ namespace level2
 
             while (engine.Update(scene))
             {
+                if (scene.Player.Health <= 0)
+                {
+                    Map.ClearTags();
+                    StartOnEngine(engine);
+                }
             }
 
             MusicHelper.StopPlaying();
