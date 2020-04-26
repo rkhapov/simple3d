@@ -162,8 +162,8 @@ namespace simple3d.Levels
                 screen.Height - statusBarHeight + partSize,
                 boundSize,
                 linesHeight, linesWidth,
-                0xFF2020,
-                0xFF5555
+                0xF5001D,
+                0x9F0013
                 );
 
             DrawStatusLine(
